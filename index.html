@@ -113,6 +113,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script type="text/babel">
 const { useState, useEffect, useCallback } = React;
 const SB_URL = "https://rvsldfentjjuukgozrzv.supabase.co";
@@ -516,20 +517,169 @@ function CandidatsView({ api, candidats, reload }) {
   const [ed, setEd] = useState(null);
   const [del, setDel] = useState(null);
   const [se, setSe] = useState("");
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState(null);
   const fl = candidats.filter(c => { if (!se) return true; const q = se.toLowerCase(); return c.nom.toLowerCase().includes(q) || c.prenom.toLowerCase().includes(q) || c.matricule.toLowerCase().includes(q); });
   const save = async (d) => { try { if (ed) await api.update("candidats", ed.id, d); else await api.insert("candidats", d); setSf(false); setEd(null); reload(); } catch (e) { alert(e.message); } };
   const rm = async () => { if (del) { try { await api.remove("candidats", del.id); } catch (e) { alert(e.message); } setDel(null); reload(); } };
+
+  const normalize = (str) => {
+    if (!str) return "";
+    return str.toString().trim().toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+  };
+
+  const findColumn = (headers, possibilities) => {
+    for (const h of headers) {
+      const hn = normalize(h);
+      for (const p of possibilities) {
+        if (hn.includes(normalize(p))) return h;
+      }
+    }
+    return null;
+  };
+
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImporting(true);
+    setImportResult(null);
+    try {
+      const data = await file.arrayBuffer();
+      const wb = XLSX.read(data);
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+
+      if (rows.length === 0) { setImportResult({ error: "Fichier vide" }); setImporting(false); return; }
+
+      const headers = Object.keys(rows[0]);
+      const colMatricule = findColumn(headers, ["matricule", "mat", "code"]);
+      const colNom = findColumn(headers, ["nom", "family", "last"]);
+      const colPrenom = findColumn(headers, ["prenom", "prénom", "first", "given"]);
+      const colNomPrenom = findColumn(headers, ["noms et prenom", "nom et prenom", "nomsetprenom", "nometprenom", "nom prenom", "nomprenom", "nom complet", "full name"]);
+      const colCIN = findColumn(headers, ["cin", "cin_pass", "cinpass", "carte", "identite", "identité", "passeport", "passport"]);
+      const colDateNais = findColumn(headers, ["date", "naissance", "birth", "datenaissance", "datedenaissance"]);
+      const colNationalite = findColumn(headers, ["nationalite", "nationalité", "nation", "pays"]);
+
+      // Need either separate nom+prenom OR combined column
+      if (!colNom && !colPrenom && !colNomPrenom) {
+        setImportResult({ error: "Colonnes 'Nom'/'Prénom' ou 'Noms et Prénom' non trouvées. Colonnes détectées: " + headers.join(", ") });
+        setImporting(false);
+        return;
+      }
+
+      let imported = 0, skipped = 0, errors = 0;
+      for (const row of rows) {
+        let nom = "", prenom = "";
+
+        if (colNomPrenom) {
+          // Combined column: split "BEN ALI Mohamed" or "Mohamed BEN ALI"
+          const full = String(row[colNomPrenom] || "").trim();
+          if (!full) { skipped++; continue; }
+          const words = full.split(/\s+/);
+          if (words.length === 1) {
+            nom = words[0]; prenom = "";
+          } else if (words.length === 2) {
+            nom = words[0]; prenom = words[1];
+          } else {
+            // Heuristic: uppercase words = nom, rest = prenom
+            const upperWords = words.filter(w => w === w.toUpperCase() && w.length > 1);
+            const otherWords = words.filter(w => w !== w.toUpperCase() || w.length <= 1);
+            if (upperWords.length > 0 && otherWords.length > 0) {
+              nom = upperWords.join(" ");
+              prenom = otherWords.join(" ");
+            } else {
+              // Default: last word = prenom, rest = nom
+              prenom = words[words.length - 1];
+              nom = words.slice(0, -1).join(" ");
+            }
+          }
+        } else {
+          nom = colNom ? String(row[colNom] || "").trim() : "";
+          prenom = colPrenom ? String(row[colPrenom] || "").trim() : "";
+        }
+
+        if (!nom && !prenom) { skipped++; continue; }
+
+        let dateNais = "";
+        if (colDateNais && row[colDateNais]) {
+          const raw = row[colDateNais];
+          if (typeof raw === "number") {
+            // Excel serial date
+            const d = new Date((raw - 25569) * 86400 * 1000);
+            dateNais = d.toISOString().slice(0, 10);
+          } else {
+            const s = String(raw).trim();
+            // Try DD/MM/YYYY
+            const parts = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+            if (parts) {
+              dateNais = parts[3] + "-" + parts[2].padStart(2, "0") + "-" + parts[1].padStart(2, "0");
+            } else if (s.match(/^\d{4}-\d{2}-\d{2}$/)) {
+              dateNais = s;
+            }
+          }
+        }
+
+        const candidat = {
+          matricule: colMatricule ? String(row[colMatricule] || "").trim() : ("ATE-" + String(imported + 1).padStart(3, "0")),
+          nom: nom,
+          prenom: prenom,
+          cin: colCIN ? String(row[colCIN] || "").trim() : "",
+          date_naissance: dateNais || null,
+          notes: colNationalite && row[colNationalite] ? "Nationalité: " + String(row[colNationalite]).trim() : ""
+        };
+
+        try {
+          await api.insert("candidats", candidat);
+          imported++;
+        } catch (err) {
+          errors++;
+        }
+      }
+      setImportResult({ imported, skipped, errors, total: rows.length });
+      reload();
+    } catch (err) {
+      setImportResult({ error: "Erreur de lecture: " + err.message });
+    }
+    setImporting(false);
+    e.target.value = "";
+  };
+
   return (
     <div>
       <div className="filters">
         <input className="input" value={se} onChange={e => setSe(e.target.value)} placeholder="Rechercher..." style={{ width: 220, maxWidth: '100%' }} />
-        <div className="spacer" /><button className="btn btn-teal" onClick={() => { setEd(null); setSf(true); }}>+ Candidat</button>
+        <div className="spacer" />
+        <label className="btn btn-purple" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: importing ? 0.5 : 1 }}>
+          📥 {importing ? "Import..." : "Importer Excel"}
+          <input type="file" accept=".xlsx,.xls,.csv" onChange={handleImport} style={{ display: 'none' }} disabled={importing} />
+        </label>
+        <button className="btn btn-teal" onClick={() => { setEd(null); setSf(true); }}>+ Candidat</button>
       </div>
+
+      {importResult && (
+        <div style={{ padding: '12px 16px', borderRadius: 10, marginBottom: 16, background: importResult.error ? 'rgba(239,68,68,0.08)' : 'rgba(16,185,129,0.08)', border: importResult.error ? '1px solid rgba(239,68,68,0.2)' : '1px solid rgba(16,185,129,0.2)' }}>
+          {importResult.error ? (
+            <div style={{ color: 'var(--red)', fontSize: 13 }}>❌ {importResult.error}</div>
+          ) : (
+            <div style={{ fontSize: 13 }}>
+              <span style={{ color: 'var(--green)', fontWeight: 700 }}>✅ {importResult.imported} candidats importés</span>
+              {importResult.skipped > 0 && <span style={{ color: 'var(--orange)', marginLeft: 12 }}>⚠ {importResult.skipped} lignes ignorées</span>}
+              {importResult.errors > 0 && <span style={{ color: 'var(--red)', marginLeft: 12 }}>❌ {importResult.errors} erreurs</span>}
+              <span style={{ color: 'var(--dim)', marginLeft: 12 }}>({importResult.total} lignes lues)</span>
+            </div>
+          )}
+          <button className="btn-icon" onClick={() => setImportResult(null)} style={{ float: 'right', marginTop: -24 }}>✕</button>
+        </div>
+      )}
+
       <div className="table-container desktop-only">
         {fl.map(c => (
-          <div key={c.id} className="table-row" style={{ gridTemplateColumns: '100px 1fr 100px 120px 36px' }} onClick={() => { setEd(c); setSf(true); }}>
+          <div key={c.id} className="table-row" style={{ gridTemplateColumns: '100px 1fr 100px 100px 120px 36px' }} onClick={() => { setEd(c); setSf(true); }}>
             <span className="mono" style={{ fontSize: 10, color: 'var(--dim)' }}>{c.matricule}</span>
             <div><div style={{ fontSize: 13, fontWeight: 600 }}>{c.prenom} {c.nom}</div><div style={{ fontSize: 11, color: 'var(--dim)' }}>CIN: {c.cin || "—"}</div></div>
+            <span style={{ fontSize: 11, color: 'var(--dim)' }}>{c.date_naissance || "—"}</span>
             <span style={{ fontSize: 11, color: 'var(--dim)' }}>{c.telephone || "—"}</span>
             <span style={{ fontSize: 11, color: 'var(--dim)' }}>{c.organisme_formation || "—"}</span>
             <button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(c); }}>🗑</button>
@@ -541,7 +691,7 @@ function CandidatsView({ api, candidats, reload }) {
         {fl.map(c => (
           <div key={c.id} className="mobile-card" onClick={() => { setEd(c); setSf(true); }}>
             <div className="mobile-card-header"><div><div className="mobile-card-title">{c.prenom} {c.nom}</div><div className="mobile-card-id mono">{c.matricule}</div></div><button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(c); }}>🗑</button></div>
-            <div className="mobile-card-footer"><span style={{ fontSize: 11, color: 'var(--dim)' }}>CIN: {c.cin || "—"}</span><span style={{ fontSize: 11, color: 'var(--dim)' }}>{c.organisme_formation || "—"}</span></div>
+            <div className="mobile-card-footer"><span style={{ fontSize: 11, color: 'var(--dim)' }}>CIN: {c.cin || "—"}</span><span style={{ fontSize: 11, color: 'var(--dim)' }}>{c.date_naissance || "—"}</span></div>
           </div>
         ))}
         {fl.length === 0 && <Empty text="Aucun candidat" />}
