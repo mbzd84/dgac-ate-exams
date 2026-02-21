@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DGAC — Examens ATE</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🎓</text></svg>">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ATE Exams">
+<meta name="theme-color" content="#0A0F1E">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0A0F1E;--card:#111833;--card-hover:#152040;--border:rgba(255,255,255,0.06);--border-light:rgba(255,255,255,0.1);--text:#E2E8F0;--muted:rgba(255,255,255,0.4);--dim:rgba(255,255,255,0.25);--accent:#6366F1;--accent-dark:#4338CA;--red:#EF4444;--orange:#F59E0B;--green:#10B981;--purple:#A78BFA;--cyan:#22D3EE;--teal:#14B8A6;--pink:#EC4899;--safe-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+.header{padding:14px 28px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(10,15,30,0.97);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.header-title{font-size:15px;font-weight:700;letter-spacing:-0.3px}
+.header-sub{font-size:10px;color:var(--dim);letter-spacing:0.5px}
+.header-right{display:flex;gap:8px;align-items:center}
+.desktop-tabs{display:flex;align-items:center;gap:2px;background:rgba(255,255,255,0.03);border-radius:10px;padding:3px;flex-wrap:wrap}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,15,30,0.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:4px 2px;padding-bottom:calc(4px + var(--safe-bottom));z-index:100;justify-content:space-around}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:none;color:var(--muted);font-size:9px;font-family:inherit;font-weight:600;cursor:pointer;padding:4px 3px;border-radius:8px;min-width:42px;position:relative}
+.mobile-nav-btn.active{color:var(--accent)}
+.mobile-nav-btn .nav-icon{font-size:18px}
+.mobile-nav-btn .nav-badge{position:absolute;top:0;right:0;font-size:8px;font-weight:700;background:var(--red);color:#fff;padding:1px 4px;border-radius:8px;font-family:'JetBrains Mono',monospace}
+.tab-btn{padding:6px 12px;border-radius:7px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;background:transparent;color:var(--muted);transition:all 0.15s;white-space:nowrap}
+.tab-btn.active{background:rgba(99,102,241,0.2);color:var(--accent)}
+.tab-count{font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:8px;background:rgba(255,255,255,0.06)}
+.tab-btn.active .tab-count{background:rgba(99,102,241,0.3);color:var(--accent)}
+.btn{padding:8px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity 0.15s}
+.btn:hover{opacity:0.85}.btn:disabled{opacity:0.5;cursor:not-allowed}.btn:active{transform:scale(0.97)}
+.btn-accent{background:var(--accent);color:#fff}.btn-orange{background:var(--orange);color:#fff}.btn-green{background:var(--green);color:#fff}.btn-purple{background:var(--purple);color:#fff}.btn-red{background:var(--red);color:#fff}.btn-teal{background:var(--teal);color:#fff}.btn-pink{background:var(--pink);color:#fff}
+.btn-outline{padding:7px 14px;background:transparent;border:1px solid rgba(99,102,241,0.3);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--accent)}
+.btn-outline-red{border-color:rgba(239,68,68,0.3);color:var(--red)}
+.btn-sm{padding:5px 12px;font-size:11px}.btn-full{width:100%;padding:12px 0}
+.btn-icon{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:8px}
+.btn-fab{position:fixed;bottom:76px;right:16px;width:50px;height:50px;border-radius:50%;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.4);z-index:90;display:none;align-items:center;justify-content:center;color:#fff}
+.input,.select,.textarea{width:100%;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border-light);border-radius:8px;color:var(--text);font-size:14px;outline:none;font-family:inherit}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent)}.select{cursor:pointer}.textarea{min-height:70px;resize:vertical}
+.label{font-size:11px;color:var(--muted);margin-bottom:4px;display:block;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px}.card-padded{padding:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+.kpi-bar{position:absolute;top:0;left:0;width:3px;height:100%;border-radius:14px 0 0 14px}
+.kpi-label{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:600}
+.kpi-value{font-size:26px;font-weight:700;margin-top:3px}.kpi-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap}
+.table-container{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.table-row{display:grid;padding:12px 18px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background 0.1s}
+.table-row:hover{background:var(--card-hover)}
+.mobile-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;cursor:pointer}
+.mobile-card:active{border-color:rgba(99,102,241,0.3)}
+.mobile-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.mobile-card-title{font-size:14px;font-weight:600}.mobile-card-id{font-size:11px;color:var(--dim);margin-top:2px}
+.mobile-card-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.mobile-card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:10px}
+.modal{background:#111833;border:1px solid var(--border-light);border-radius:16px;padding:24px;max-width:94vw;max-height:90vh;overflow-y:auto;width:540px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-title{font-size:18px;font-weight:700}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-span{grid-column:1/-1}
+.filters{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.filter-group{display:flex;gap:3px;background:rgba(255,255,255,0.03);border-radius:8px;padding:3px;flex-wrap:wrap}
+.filter-btn{padding:6px 12px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:var(--muted);white-space:nowrap}
+.filter-btn.active{background:rgba(99,102,241,0.2);color:var(--accent)}.spacer{flex:1}
+.empty{padding:40px 20px;text-align:center;color:var(--dim);font-size:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}.grid-span{grid-column:1/-1}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:420px;max-width:100%}.login-header{text-align:center;margin-bottom:32px}
+.login-icon{font-size:48px;margin-bottom:14px}.login-title{font-size:22px;font-weight:700}
+.login-sub{color:var(--muted);font-size:14px;margin-top:6px}
+.error-box{padding:10px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;color:var(--red);font-size:12px;margin-bottom:14px}
+.user-badge{display:flex;align-items:center;gap:8px;padding:5px 12px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:12px;color:var(--muted)}
+.user-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.note-grid{display:grid;gap:6px;margin:16px 0}
+.note-row{display:grid;grid-template-columns:1fr 80px 50px;gap:8px;align-items:center;padding:8px 12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px}
+.note-row .matiere-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-row .coef{font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.note-input{width:100%;padding:6px 8px;background:rgba(255,255,255,0.06);border:1px solid var(--border-light);border-radius:6px;color:var(--text);font-size:14px;font-family:'JetBrains Mono',monospace;text-align:center;outline:none}
+.note-input:focus{border-color:var(--accent)}
+.note-input.absent{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:var(--red)}
+.result-admis{color:var(--green);font-weight:700}.result-ajourne{color:var(--red);font-weight:700}.result-attente{color:var(--orange);font-weight:700}
+.moyenne-display{font-size:28px;font-weight:700;text-align:center;padding:16px;border-radius:12px;margin-bottom:16px}
+.section-title{font-size:15px;font-weight:700;margin-bottom:14px;margin-top:24px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}.stat-row:last-child{border:none}
+@media(max-width:768px){
+  .header{padding:10px 14px}.header-title{font-size:13px}.header-sub{display:none}
+  .desktop-tabs{display:none!important}.header-right .user-badge{display:none}.header-right .btn-outline:not(.btn-outline-red){display:none}
+  .mobile-nav{display:flex!important}.btn-fab{display:flex!important}
+  main{padding:14px 12px 90px 12px!important}
+  .filters{gap:6px}.filter-group{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .filter-btn{padding:5px 9px;font-size:10px;flex-shrink:0}
+  .form-grid{grid-template-columns:1fr}.form-span{grid-column:1}
+  .grid-2,.grid-3{grid-template-columns:1fr}.grid-span{grid-column:1}
+  .modal{padding:20px 16px;width:100%;max-width:100%;border-radius:14px 14px 0 0;position:fixed;bottom:0;left:0;right:0;max-height:92vh}
+  .modal-overlay{align-items:flex-end;padding:0}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:8px}.kpi{padding:12px 14px}.kpi-value{font-size:22px}.kpi-label{font-size:8px}
+  .desktop-only{display:none!important}.mobile-only{display:block!important}
+  .input,.select,.textarea{font-size:16px;padding:12px}.btn{padding:10px 18px;font-size:14px}.btn-full{padding:14px 0}
+  .filters .btn{display:none}
+  .note-row{grid-template-columns:1fr 60px 45px}.note-row .matiere-name{font-size:11px}
+}
+@media(min-width:769px){.mobile-only{display:none!important}.mobile-nav{display:none!important}.btn-fab{display:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useEffect,useCallback}=React;
+const SB_URL="https://rvsldfentjjuukgozrzv.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2c2xkZmVudGpqdXVrZ296cnp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NzA0MDEsImV4cCI6MjA4NzI0NjQwMX0.PAFfUgH1-cmrd7HULo0H46Bzs9q3fwX3qoxjBgnvCdQ";
+const PASS_MARK=13;
+
+const authApi={async login(e,p){const r=await fetch(`${SB_URL}/auth/v1/token?grant_type=password`,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({email:e,password:p})});const d=await r.json();if(!r.ok)throw new Error(d.error_description||d.msg||"Échec");return d},async logout(t){await fetch(`${SB_URL}/auth/v1/logout`,{method:"POST",headers:{apikey:SB_KEY,Authorization:`Bearer ${t}`,"Content-Type":"application/json"}})},async getUser(t){const r=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${t}`}});if(!r.ok)throw new Error("Expiré");return r.json()}};
+const createApi=(t)=>{const h={apikey:SB_KEY,Authorization:`Bearer ${t}`,"Content-Type":"application/json",Prefer:"return=representation"};const b=`${SB_URL}/rest/v1`;return{async select(tb,q=""){const r=await fetch(`${b}/${tb}?${q}`,{headers:h});if(!r.ok)throw new Error(r.statusText);return r.json()},async insert(tb,d){const r=await fetch(`${b}/${tb}`,{method:"POST",headers:h,body:JSON.stringify(d)});if(!r.ok){const e=await r.json();throw new Error(e.message||r.statusText)}return r.json()},async update(tb,id,d){const r=await fetch(`${b}/${tb}?id=eq.${id}`,{method:"PATCH",headers:h,body:JSON.stringify(d)});if(!r.ok)throw new Error(r.statusText);return r.json()},async remove(tb,id){const r=await fetch(`${b}/${tb}?id=eq.${id}`,{method:"DELETE",headers:h});if(!r.ok)throw new Error(r.statusText);return true},async upsert(tb,d){const r=await fetch(`${b}/${tb}`,{method:"POST",headers:{...h,Prefer:"return=representation,resolution=merge-duplicates"},body:JSON.stringify(d)});if(!r.ok){const e=await r.json();throw new Error(e.message||r.statusText)}return r.json()}}};
+
+const STATUTS_SESSION=["Planifiée","En cours","Terminée","Délibérée","Archivée"];
+const STATUTS_INSCRIPTION=["Inscrit","Absent","Retiré"];
+const RESULTATS=["En attente","Admis","Ajourné"];
+const SC={"Planifiée":"#6366F1","En cours":"#F59E0B","Terminée":"#22D3EE","Délibérée":"#10B981","Archivée":"rgba(255,255,255,0.3)","Inscrit":"#6366F1","Absent":"#EF4444","Retiré":"rgba(255,255,255,0.3)","En attente":"#F59E0B","Admis":"#10B981","Ajourné":"#EF4444"};
+
+// UI
+function Badge({children,color}){return <span className="badge" style={{background:`${color||'#888'}18`,color:color||'#888'}}>{children}</span>}
+function Tag({label}){return <Badge color={SC[label]}>{label}</Badge>}
+function Empty({text}){return <div className="empty">{text}</div>}
+function KPI({label,value,sub,color}){return(<div className="kpi"><div className="kpi-bar" style={{background:color}}/><div className="kpi-label">{label}</div><div className="kpi-value mono" style={{color}}>{value}</div>{sub&&<div className="kpi-sub">{sub}</div>}</div>)}
+function Modal({onClose,title,width,children}){return(<div className="modal-overlay" onClick={onClose}><div className="modal" style={{width:width||540}} onClick={e=>e.stopPropagation()}><div className="modal-header"><h3 className="modal-title">{title}</h3><button className="btn-icon" onClick={onClose} style={{fontSize:20}}>✕</button></div>{children}</div></div>)}
+function Field({label,span,children}){return <div className={span?"form-span":""}><label className="label">{label}</label>{children}</div>}
+function Sel({value,onChange,options}){return(<select className="select" value={value} onChange={e=>onChange(e.target.value)}>{options.map(o=><option key={o} value={o}>{o}</option>)}</select>)}
+function ConfirmDelete({item,onConfirm,onCancel}){return(<Modal onClose={onCancel} title="Supprimer ?" width={400}><p style={{color:'var(--muted)',fontSize:14}}>Supprimer <strong style={{color:'var(--red)'}}>{item}</strong> ?</p><div style={{display:'flex',gap:10,justifyContent:'flex-end',marginTop:20}}><button className="btn btn-outline" onClick={onCancel}>Annuler</button><button className="btn btn-red" onClick={onConfirm}>Supprimer</button></div></Modal>)}
+function FAB({onClick,color}){return(<button className="btn-fab" style={{background:color||'var(--accent)'}} onClick={onClick}>+</button>)}
+function ResultBadge({r}){return <span className={r==="Admis"?"result-admis":r==="Ajourné"?"result-ajourne":"result-attente"}>{r}</span>}
+
+function calcMoyenne(notes,matieres){
+  let totalCoefNote=0,totalCoef=0;
+  notes.forEach(n=>{
+    if(n.note!==null&&n.note!==undefined&&!n.absent){
+      const mat=matieres.find(m=>m.id===n.matiere_uuid);
+      if(mat){totalCoefNote+=n.note*mat.coefficient;totalCoef+=mat.coefficient}
+    }
+  });
+  return totalCoef>0?totalCoefNote/totalCoef:null;
+}
+
+// LOGIN
+function LoginScreen({onLogin}){const[email,setEmail]=useState("");const[pw,setPw]=useState("");const[ld,setLd]=useState(false);const[err,setErr]=useState("");const go=async()=>{if(!email||!pw){setErr("Remplissez les deux champs");return}setLd(true);setErr("");try{const d=await authApi.login(email,pw);localStorage.setItem("ate_token",d.access_token);localStorage.setItem("ate_email",d.user.email);onLogin(d.access_token,d.user)}catch(e){setErr(e.message==="Invalid login credentials"?"Email ou mot de passe incorrect":e.message)}setLd(false)};return(<div className="login-page"><div className="login-box"><div className="login-header"><div className="login-icon">🎓</div><h1 className="login-title">Examens ATE — DGAC</h1><p className="login-sub">Agent Technique d'Exploitation — Gestion des examens</p></div><div className="card card-padded"><div style={{marginBottom:16}}><label className="label">Email</label><input className="input" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="votre.email@dgac.tn" onKeyDown={e=>e.key==='Enter'&&go()}/></div><div style={{marginBottom:16}}><label className="label">Mot de passe</label><input className="input" type="password" value={pw} onChange={e=>setPw(e.target.value)} placeholder="••••••••" onKeyDown={e=>e.key==='Enter'&&go()}/></div>{err&&<div className="error-box">{err}</div>}<button className="btn btn-accent btn-full" onClick={go} disabled={ld} style={{background:'linear-gradient(135deg,#6366F1,#4338CA)'}}>{ld?"Connexion...":"Se connecter"}</button></div><p style={{textAlign:'center',marginTop:14,fontSize:12,color:'var(--dim)'}}>Direction Générale de l'Aviation Civile — Tunisie</p></div></div>)}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function Dashboard({sessions,candidats,inscriptions,notes,matieres,onNav}){
+  const totalCandidats=candidats.length;const totalSessions=sessions.length;
+  const inscrAvecMoy=inscriptions.filter(i=>i.moyenne_ponderee!==null);
+  const admis=inscriptions.filter(i=>i.resultat==="Admis").length;
+  const ajournes=inscriptions.filter(i=>i.resultat==="Ajourné").length;
+  const tauxReussite=inscrAvecMoy.length>0?Math.round((admis/(admis+ajournes))*100):0;
+  const sessionsActives=sessions.filter(s=>["Planifiée","En cours"].includes(s.statut));
+  const moyGen=inscrAvecMoy.length>0?(inscrAvecMoy.reduce((s,i)=>s+Number(i.moyenne_ponderee),0)/inscrAvecMoy.length).toFixed(2):"-";
+
+  return(<div>
+    <div className="kpi-grid">
+      <KPI label="Sessions" value={totalSessions} sub={`${sessionsActives.length} active${sessionsActives.length>1?'s':''}`} color="#6366F1"/>
+      <KPI label="Candidats" value={totalCandidats} sub="inscrits" color="#22D3EE"/>
+      <KPI label="Taux réussite" value={`${tauxReussite}%`} sub={`${admis} admis / ${admis+ajournes}`} color="#10B981"/>
+      <KPI label="Moyenne gén." value={moyGen} sub="/20" color={Number(moyGen)>=PASS_MARK?"#10B981":"#F59E0B"}/>
+    </div>
+
+    <div className="grid-2">
+      <div className="card card-padded">
+        <div className="section-title" style={{marginTop:0}}>📅 Sessions actives</div>
+        {sessionsActives.length===0&&<div style={{color:'var(--dim)',fontSize:13}}>Aucune session active</div>}
+        {sessionsActives.slice(0,5).map(s=>{const nb=inscriptions.filter(i=>i.session_uuid===s.id).length;return(<div key={s.id} className="stat-row"><div><div style={{fontSize:13,fontWeight:600}}>{s.intitule}</div><div style={{fontSize:11,color:'var(--dim)'}}>{s.date_debut||"—"} • {s.lieu||"—"}</div></div><div style={{display:'flex',gap:6,alignItems:'center'}}><Tag label={s.statut}/><Badge color="#22D3EE">{nb} cand.</Badge></div></div>)})}
+        <button className="btn-outline btn-sm" onClick={()=>onNav("sessions")} style={{marginTop:12}}>Voir toutes →</button>
+      </div>
+      <div className="card card-padded">
+        <div className="section-title" style={{marginTop:0}}>📊 Résultats récents</div>
+        {inscriptions.filter(i=>i.resultat!=="En attente").length===0&&<div style={{color:'var(--dim)',fontSize:13}}>Aucun résultat</div>}
+        {inscriptions.filter(i=>i.resultat!=="En attente").slice(0,8).map(i=>{const c=candidats.find(x=>x.id===i.candidat_uuid);const s=sessions.find(x=>x.id===i.session_uuid);return(<div key={i.id} className="stat-row"><div><div style={{fontSize:13,fontWeight:500}}>{c?.prenom} {c?.nom}</div><div style={{fontSize:11,color:'var(--dim)'}}>{s?.intitule||"—"}</div></div><div style={{display:'flex',gap:8,alignItems:'center'}}><span className="mono" style={{fontSize:13,color:Number(i.moyenne_ponderee)>=PASS_MARK?'var(--green)':'var(--red)'}}>{Number(i.moyenne_ponderee).toFixed(2)}</span><ResultBadge r={i.resultat}/></div></div>)})}
+      </div>
+    </div>
+
+    <div className="card card-padded" style={{marginTop:16}}>
+      <div className="section-title" style={{marginTop:0}}>📚 Programme ATE — {matieres.length} matières</div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:8}}>
+        {matieres.sort((a,b)=>a.ordre-b.ordre).map(m=>(<div key={m.id} style={{display:'flex',justifyContent:'space-between',padding:'6px 10px',background:'rgba(255,255,255,0.02)',borderRadius:6,fontSize:12}}><span style={{color:'var(--text)'}}>{m.nom}</span><span className="mono" style={{color:'var(--accent)',fontWeight:700}}>×{m.coefficient}</span></div>))}
+      </div>
+    </div>
+  </div>)
+}
+
+// ============================================================
+// FORMS
+// ============================================================
+function SessionForm({session,onClose,onSave}){const[f,setF]=useState(session||{session_id:"",intitule:"",date_debut:"",date_fin:"",lieu:"",president_jury:"",membres_jury:"",statut:"Planifiée",notes:""});return(<Modal onClose={onClose} title={session?"Modifier session":"Nouvelle Session"}><div className="form-grid"><Field label="ID Session *"><input className="input" value={f.session_id} onChange={e=>setF({...f,session_id:e.target.value})} placeholder="S-2026-01"/></Field><Field label="Statut"><Sel value={f.statut} onChange={v=>setF({...f,statut:v})} options={STATUTS_SESSION}/></Field><Field label="Intitulé *" span><input className="input" value={f.intitule} onChange={e=>setF({...f,intitule:e.target.value})} placeholder="Session Juin 2026"/></Field><Field label="Date début"><input type="date" className="input" value={f.date_debut||""} onChange={e=>setF({...f,date_debut:e.target.value})}/></Field><Field label="Date fin"><input type="date" className="input" value={f.date_fin||""} onChange={e=>setF({...f,date_fin:e.target.value})}/></Field><Field label="Lieu"><input className="input" value={f.lieu||""} onChange={e=>setF({...f,lieu:e.target.value})}/></Field><Field label="Président jury"><input className="input" value={f.president_jury||""} onChange={e=>setF({...f,president_jury:e.target.value})}/></Field><Field label="Membres jury" span><textarea className="textarea" value={f.membres_jury||""} onChange={e=>setF({...f,membres_jury:e.target.value})} placeholder="Nom 1, Nom 2..."/></Field><Field label="Notes" span><textarea className="textarea" value={f.notes||""} onChange={e=>setF({...f,notes:e.target.value})}/></Field></div><button className="btn btn-accent btn-full" style={{marginTop:16}} onClick={()=>onSave(f)}>{session?"Enregistrer":"Créer"}</button></Modal>)}
+
+function CandidatForm({candidat,onClose,onSave}){const[f,setF]=useState(candidat||{matricule:"",nom:"",prenom:"",cin:"",date_naissance:"",telephone:"",email:"",organisme_formation:"",notes:""});return(<Modal onClose={onClose} title={candidat?"Modifier candidat":"Nouveau Candidat"}><div className="form-grid"><Field label="Matricule *"><input className="input" value={f.matricule} onChange={e=>setF({...f,matricule:e.target.value})} placeholder="ATE-2026-001"/></Field><Field label="CIN"><input className="input" value={f.cin||""} onChange={e=>setF({...f,cin:e.target.value})}/></Field><Field label="Nom *"><input className="input" value={f.nom} onChange={e=>setF({...f,nom:e.target.value})}/></Field><Field label="Prénom *"><input className="input" value={f.prenom} onChange={e=>setF({...f,prenom:e.target.value})}/></Field><Field label="Date naissance"><input type="date" className="input" value={f.date_naissance||""} onChange={e=>setF({...f,date_naissance:e.target.value})}/></Field><Field label="Téléphone"><input className="input" value={f.telephone||""} onChange={e=>setF({...f,telephone:e.target.value})}/></Field><Field label="Email"><input className="input" type="email" value={f.email||""} onChange={e=>setF({...f,email:e.target.value})}/></Field><Field label="Organisme"><input className="input" value={f.organisme_formation||""} onChange={e=>setF({...f,organisme_formation:e.target.value})}/></Field><Field label="Notes" span><textarea className="textarea" value={f.notes||""} onChange={e=>setF({...f,notes:e.target.value})}/></Field></div><button className="btn btn-teal btn-full" style={{marginTop:16}} onClick={()=>onSave(f)}>{candidat?"Enregistrer":"Créer"}</button></Modal>)}
+
+function InscriptionForm({sessions,candidats,inscription,onClose,onSave}){const[f,setF]=useState(inscription||{candidat_uuid:candidats[0]?.id||"",session_uuid:sessions[0]?.id||"",statut:"Inscrit",observations:""});return(<Modal onClose={onClose} title={inscription?"Modifier inscription":"Nouvelle Inscription"}><div className="form-grid"><Field label="Candidat *"><select className="select" value={f.candidat_uuid} onChange={e=>setF({...f,candidat_uuid:e.target.value})}><option value="">—</option>{candidats.map(c=><option key={c.id} value={c.id}>{c.prenom} {c.nom} ({c.matricule})</option>)}</select></Field><Field label="Session *"><select className="select" value={f.session_uuid} onChange={e=>setF({...f,session_uuid:e.target.value})}><option value="">—</option>{sessions.map(s=><option key={s.id} value={s.id}>{s.intitule}</option>)}</select></Field><Field label="Statut"><Sel value={f.statut} onChange={v=>setF({...f,statut:v})} options={STATUTS_INSCRIPTION}/></Field><Field label="Observations" span><textarea className="textarea" value={f.observations||""} onChange={e=>setF({...f,observations:e.target.value})}/></Field></div><button className="btn btn-orange btn-full" style={{marginTop:16}} onClick={()=>onSave(f)}>{inscription?"Enregistrer":"Inscrire"}</button></Modal>)}
+
+function DeliberationForm({delib,sessions,onClose,onSave}){const[f,setF]=useState(delib||{session_uuid:sessions[0]?.id||"",date_deliberation:new Date().toISOString().slice(0,10),membres_presents:"",observations_generales:"",decision_jury:"",pv_valide:false});return(<Modal onClose={onClose} title={delib?"Modifier délibération":"Nouvelle Délibération"}><div className="form-grid"><Field label="Session *"><select className="select" value={f.session_uuid} onChange={e=>setF({...f,session_uuid:e.target.value})}><option value="">—</option>{sessions.map(s=><option key={s.id} value={s.id}>{s.intitule}</option>)}</select></Field><Field label="Date"><input type="date" className="input" value={f.date_deliberation} onChange={e=>setF({...f,date_deliberation:e.target.value})}/></Field><Field label="Membres présents" span><textarea className="textarea" value={f.membres_presents||""} onChange={e=>setF({...f,membres_presents:e.target.value})}/></Field><Field label="Observations" span><textarea className="textarea" value={f.observations_generales||""} onChange={e=>setF({...f,observations_generales:e.target.value})}/></Field><Field label="Décision jury" span><textarea className="textarea" value={f.decision_jury||""} onChange={e=>setF({...f,decision_jury:e.target.value})}/></Field><Field label="PV validé"><label style={{display:'flex',alignItems:'center',gap:8,cursor:'pointer'}}><input type="checkbox" checked={f.pv_valide} onChange={e=>setF({...f,pv_valide:e.target.checked})}/><span style={{fontSize:13}}>Oui, le PV est validé</span></label></Field></div><button className="btn btn-purple btn-full" style={{marginTop:16}} onClick={()=>onSave(f)}>{delib?"Enregistrer":"Créer"}</button></Modal>)}
+
+// ============================================================
+// NOTES ENTRY (heart of the platform)
+// ============================================================
+function NotesEntry({api,inscription,matieres,existingNotes,onClose,onSaved}){
+  const[noteValues,setNoteValues]=useState({});const[saving,setSaving]=useState(false);
+  useEffect(()=>{const nv={};matieres.forEach(m=>{const ex=existingNotes.find(n=>n.matiere_uuid===m.id);nv[m.id]=ex?{note:ex.note!==null?String(ex.note):"",absent:ex.absent||false}:{note:"",absent:false}});setNoteValues(nv)},[matieres,existingNotes]);
+
+  const setNote=(mid,val)=>setNoteValues(p=>({...p,[mid]:{...p[mid],note:val,absent:false}}));
+  const toggleAbsent=(mid)=>setNoteValues(p=>({...p,[mid]:{note:"",absent:!p[mid]?.absent}}));
+
+  // Calculate live moyenne
+  let totalCN=0,totalC=0;
+  matieres.forEach(m=>{const v=noteValues[m.id];if(v&&!v.absent&&v.note!==""){const n=parseFloat(v.note);if(!isNaN(n)){totalCN+=n*m.coefficient;totalC+=m.coefficient}}});
+  const moy=totalC>0?(totalCN/totalC):null;
+  const moyStr=moy!==null?moy.toFixed(2):"-";
+  const passed=moy!==null&&moy>=PASS_MARK;
+
+  const handleSave=async()=>{setSaving(true);try{const notesToSave=matieres.map(m=>{const v=noteValues[m.id]||{};return{inscription_uuid:inscription.id,matiere_uuid:m.id,note:v.absent?null:(v.note!==""?parseFloat(v.note):null),absent:v.absent||false}});
+    // Save each note
+    for(const n of notesToSave){const ex=existingNotes.find(x=>x.matiere_uuid===n.matiere_uuid);if(ex){await api.update("notes",ex.id,n)}else{await api.insert("notes",n)}}
+    // Update inscription moyenne
+    const result=moy!==null?(moy>=PASS_MARK?"Admis":"Ajourné"):"En attente";
+    await api.update("inscriptions",inscription.id,{moyenne_ponderee:moy,resultat:result});
+    onSaved()}catch(e){alert("Erreur: "+e.message)}setSaving(false)};
+
+  return(<Modal onClose={onClose} title="Saisie des Notes" width={640}>
+    <div className="moyenne-display" style={{background:moy===null?'rgba(255,255,255,0.04)':passed?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)',color:moy===null?'var(--dim)':passed?'var(--green)':'var(--red)'}}>{moyStr}<span style={{fontSize:14,fontWeight:400,marginLeft:8}}>/20 {moy!==null&&(passed?"— ADMIS":"— AJOURNÉ")}</span></div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 60px 45px',gap:8,padding:'6px 12px',fontSize:10,color:'var(--dim)',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>
+      <span>Matière (coef)</span><span style={{textAlign:'center'}}>Note</span><span style={{textAlign:'center'}}>Abs.</span>
+    </div>
+    <div className="note-grid">
+      {matieres.sort((a,b)=>a.ordre-b.ordre).map(m=>{const v=noteValues[m.id]||{};return(
+        <div key={m.id} className="note-row">
+          <div><div className="matiere-name">{m.nom}</div><div className="coef">coef ×{m.coefficient}</div></div>
+          <input className={`note-input ${v.absent?'absent':''}`} type="number" min="0" max="20" step="0.25" value={v.absent?"ABS":v.note} disabled={v.absent} onChange={e=>setNote(m.id,e.target.value)} placeholder="—"/>
+          <div style={{textAlign:'center'}}><input type="checkbox" checked={v.absent||false} onChange={()=>toggleAbsent(m.id)} style={{cursor:'pointer',width:18,height:18}}/></div>
+        </div>
+      )})}
+    </div>
+    <button className="btn btn-accent btn-full" style={{marginTop:16}} onClick={handleSave} disabled={saving}>{saving?"Enregistrement...":"💾 Enregistrer les notes"}</button>
+  </Modal>)
+}
+
+// ============================================================
+// VIEWS
+// ============================================================
+function SessionsView({api,sessions,inscriptions,reload}){const[sf,setSf]=useState(false);const[ed,setEd]=useState(null);const[del,setDel]=useState(null);const[fil,setFil]=useState("Tous");
+  const fl=sessions.filter(s=>fil==="Tous"||s.statut===fil);
+  const save=async(d)=>{try{if(ed)await api.update("sessions",ed.id,d);else await api.insert("sessions",d);setSf(false);setEd(null);reload()}catch(e){alert(e.message)}};
+  const rm=async()=>{if(del){try{await api.remove("sessions",del.id)}catch(e){alert(e.message)}setDel(null);reload()}};
+  return(<div><div className="filters"><div className="filter-group">{["Tous",...STATUTS_SESSION].map(s=>(<button key={s} className={`filter-btn ${fil===s?'active':''}`} onClick={()=>setFil(s)}>{s}</button>))}</div><div className="spacer"/><button className="btn btn-accent" onClick={()=>{setEd(null);setSf(true)}}>+ Session</button></div>
+    <div className="table-container desktop-only">{fl.map(s=>{const nb=inscriptions.filter(i=>i.session_uuid===s.id).length;return(<div key={s.id} className="table-row" style={{gridTemplateColumns:'90px 1fr 100px 80px 80px 36px'}} onClick={()=>{setEd(s);setSf(true)}}><span className="mono" style={{fontSize:10,color:'var(--dim)'}}>{s.session_id}</span><div><div style={{fontSize:13,fontWeight:600}}>{s.intitule}</div><div style={{fontSize:11,color:'var(--dim)'}}>{s.lieu||"—"} • {s.president_jury||"—"}</div></div><span style={{fontSize:11,color:'var(--dim)'}}>{s.date_debut||"—"}</span><Tag label={s.statut}/><Badge color="#22D3EE">{nb} cand.</Badge><button className="btn-icon" onClick={e=>{e.stopPropagation();setDel(s)}}>🗑</button></div>)})}{fl.length===0&&<Empty text="Aucune session"/>}</div>
+    <div className="mobile-only">{fl.map(s=>{const nb=inscriptions.filter(i=>i.session_uuid===s.id).length;return(<div key={s.id} className="mobile-card" onClick={()=>{setEd(s);setSf(true)}}><div className="mobile-card-header"><div><div className="mobile-card-title">{s.intitule}</div><div className="mobile-card-id mono">{s.session_id}</div></div><button className="btn-icon" onClick={e=>{e.stopPropagation();setDel(s)}}>🗑</button></div><div className="mobile-card-meta"><Tag label={s.statut}/><Badge color="#22D3EE">{nb} cand.</Badge></div><div className="mobile-card-footer"><span style={{fontSize:11,color:'var(--dim)'}}>{s.lieu||"—"} • {s.date_debut||"—"}</span></div></div>)})}{fl.length===0&&<Empty text="Aucune session"/>}</div>
+    <FAB onClick={()=>{setEd(null);setSf(true)}} color="var(--accent)"/>{sf&&<SessionForm session={ed} onClose={()=>{setSf(false);setEd(null)}} onSave={save}/>}{del&&<ConfirmDelete item={del.session_id} onConfirm={rm} onCancel={()=>setDel(null)}/>}
+  </div>)
+}
+
+function CandidatsView({api,candidats,reload}){const[sf,setSf]=useState(false);const[ed,setEd]=useState(null);const[del,setDel]=useState(null);const[se,setSe]=useState("");
+  const fl=candidats.filter(c=>{if(!se)return true;const q=se.toLowerCase();return c.nom.toLowerCase().includes(q)||c.prenom.toLowerCase().includes(q)||c.matricule.toLowerCase().includes(q)});
+  const save=async(d)=>{try{if(ed)await api.update("candidats",ed.id,d);else await api.insert("candidats",d);setSf(false);setEd(null);reload()}catch(e){alert(e.message)}};
+  const rm=async()=>{if(del){try{await api.remove("candidats",del.id)}catch(e){alert(e.message)}setDel(null);reload()}};
+  return(<div><div className="filters"><input className="input" value={se} onChange={e=>setSe(e.target.value)} placeholder="Rechercher..." style={{width:220,maxWidth:'100%'}}/><div className="spacer"/><button className="btn btn-teal" onClick={()=>{setEd(null);setSf(true)}}>+ Candidat</button></div>
+    <div className="table-container desktop-only">{fl.map(c=>(<div key={c.id} className="table-row" style={{gridTemplateColumns:'100px 1fr 100px 120px 36px'}} onClick={()=>{setEd(c);setSf(true)}}><span className="mono" style={{fontSize:10,color:'var(--dim)'}}>{c.matricule}</span><div><div style={{fontSize:13,fontWeight:600}}>{c.prenom} {c.nom}</div><div style={{fontSize:11,color:'var(--dim)'}}>CIN: {c.cin||"—"} • {c.date_naissance||"—"}</div></div><span style={{fontSize:11,color:'var(--dim)'}}>{c.telephone||"—"}</span><span style={{fontSize:11,color:'var(--dim)'}}>{c.organisme_formation||"—"}</span><button className="btn-icon" onClick={e=>{e.stopPropagation();setDel(c)}}>🗑</button></div>))}{fl.length===0&&<Empty text="Aucun candidat"/>}</div>
+    <div className="mobile-only">{fl.map(c=>(<div key={c.id} className="mobile-card" onClick={()=>{setEd(c);setSf(true)}}><div className="mobile-card-header"><div><div className="mobile-card-title">{c.prenom} {c.nom}</div><div className="mobile-card-id mono">{c.matricule}</div></div><button className="btn-icon" onClick={e=>{e.stopPropagation();setDel(c)}}>🗑</button></div><div className="mobile-card-footer"><span style={{fontSize:11,color:'var(--dim)'}}>CIN: {c.cin||"—"}</span><span style={{fontSize:11,color:'var(--dim)'}}>{c.organisme_formation||"—"}</span></div></div>))}{fl.length===0&&<Empty text="Aucun candidat"/>}</div>
+    <FAB onClick={()=>{setEd(null);setSf(true)}} color="var(--teal)"/>{sf&&<CandidatForm candidat={ed} onClose={()=>{setSf(false);setEd(null)}} onSave={save}/>}{del&&<ConfirmDelete item={`${del.prenom} ${del.nom}`} onConfirm={rm} onCancel={()=>setDel(null)}/>}
+  </div>)
+}
+
+function NotesView({api,sessions,candidats,inscriptions,notes,matieres,reload}){
+  const[selSession,setSelSession]=useState("");const[sf,setSf]=useState(false);const[ed,setEd]=useState(null);const[del,setDel]=useState(null);const[notesModal,setNotesModal]=useState(null);
+  const curSession=selSession||sessions[0]?.id||"";const sessionInscr=inscriptions.filter(i=>i.session_uuid===curSession);
+  const save=async(d)=>{try{if(ed)await api.update("inscriptions",ed.id,d);else await api.insert("inscriptions",d);setSf(false);setEd(null);reload()}catch(e){alert(e.message)}};
+  const rm=async()=>{if(del){try{await api.remove("inscriptions",del.id)}catch(e){alert(e.message)}setDel(null);reload()}};
+  return(<div>
+    <div className="filters"><select className="select" value={curSession} onChange={e=>setSelSession(e.target.value)} style={{width:240,maxWidth:'100%'}}><option value="">— Choisir une session —</option>{sessions.map(s=><option key={s.id} value={s.id}>{s.intitule}</option>)}</select><div className="spacer"/><button className="btn btn-orange" onClick={()=>{setEd(null);setSf(true)}}>+ Inscrire</button></div>
+    {curSession&&<>
+    <div className="table-container desktop-only">{sessionInscr.map(i=>{const c=candidats.find(x=>x.id===i.candidat_uuid);const nbNotes=notes.filter(n=>n.inscription_uuid===i.id&&n.note!==null).length;return(<div key={i.id} className="table-row" style={{gridTemplateColumns:'90px 1fr 80px 80px 80px 70px 36px'}}>
+      <span className="mono" style={{fontSize:10,color:'var(--dim)'}}>{c?.matricule||"—"}</span>
+      <div style={{fontSize:13,fontWeight:600}}>{c?.prenom} {c?.nom}</div>
+      <Tag label={i.statut}/>
+      <span style={{fontSize:11,color:'var(--dim)'}}>{nbNotes}/{matieres.length}</span>
+      <span className="mono" style={{fontSize:14,fontWeight:700,color:i.moyenne_ponderee!==null?(Number(i.moyenne_ponderee)>=PASS_MARK?'var(--green)':'var(--red)'):'var(--dim)'}}>{i.moyenne_ponderee!==null?Number(i.moyenne_ponderee).toFixed(2):"—"}</span>
+      <button className="btn btn-accent btn-sm" onClick={e=>{e.stopPropagation();setNotesModal(i)}}>📝</button>
+      <button className="btn-icon" onClick={e=>{e.stopPropagation();setDel(i)}}>🗑</button>
+    </div>)})}{sessionInscr.length===0&&<Empty text="Aucun candidat inscrit"/>}</div>
+    <div className="mobile-only">{sessionInscr.map(i=>{const c=candidats.find(x=>x.id===i.candidat_uuid);const nbNotes=notes.filter(n=>n.inscription_uuid===i.id&&n.note!==null).length;return(<div key={i.id} className="mobile-card"><div className="mobile-card-header"><div><div className="mobile-card-title">{c?.prenom} {c?.nom}</div><div className="mobile-card-id mono">{c?.matricule}</div></div><button className="btn btn-accent btn-sm" onClick={()=>setNotesModal(i)}>📝 Notes</button></div><div className="mobile-card-meta"><Tag label={i.statut}/><Badge color="#22D3EE">{nbNotes}/{matieres.length}</Badge>{i.resultat!=="En attente"&&<ResultBadge r={i.resultat}/>}</div><div className="mobile-card-footer"><span className="mono" style={{fontSize:16,fontWeight:700,color:i.moyenne_ponderee!==null?(Number(i.moyenne_ponderee)>=PASS_MARK?'var(--green)':'var(--red)'):'var(--dim)'}}>{i.moyenne_ponderee!==null?Number(i.moyenne_ponderee).toFixed(2):"—"}/20</span><button className="btn-icon" onClick={()=>setDel(i)}>🗑</button></div></div>))}{sessionInscr.length===0&&<Empty text="Aucun candidat inscrit"/>}</div>
+    </>}
+    <FAB onClick={()=>{setEd(null);setSf(true)}} color="var(--orange)"/>
+    {sf&&<InscriptionForm sessions={sessions} candidats={candidats} inscription={ed} onClose={()=>{setSf(false);setEd(null)}} onSave={save}/>}
+    {del&&<ConfirmDelete item="cette inscription" onConfirm={rm} onCancel={()=>setDel(null)}/>}
+    {notesModal&&<NotesEntry api={api} inscription={notesModal} matieres={matieres} existingNotes={notes.filter(n=>n.inscription_uuid===notesModal.id)} onClose={()=>setNotesModal(null)} onSaved={()=>{setNotesModal(null);reload()}}/>}
+  </div>)
+}
+
+function DeliberationsView({api,sessions,inscriptions,candidats,deliberations,reload}){
+  const[sf,setSf]=useState(false);const[ed,setEd]=useState(null);const[del,setDel]=useState(null);
+  const save=async(d)=>{try{if(ed)await api.update("deliberations",ed.id,d);else await api.insert("deliberations",d);setSf(false);setEd(null);reload()}catch(e){alert(e.message)}};
+  const rm=async()=>{if(del){try{await api.remove("deliberations",del.id)}catch(e){alert(e.message)}setDel(null);reload()}};
+  return(<div>
+    <div className="filters"><div className="spacer"/><button className="btn btn-purple" onClick={()=>{setEd(null);setSf(true)}}>+ Délibération</button></div>
+    <div className="table-container desktop-only">{deliberations.map(d=>{const s=sessions.find(x=>x.id===d.session_uuid);const inscrS=inscriptions.filter(i=>i.session_uuid===d.session_uuid);const admis=inscrS.filter(i=>i.resultat==="Admis").length;return(<div key={d.id} className="table-row" style={{gridTemplateColumns:'1fr 100px 80px 80px 60px 36px'}} onClick={()=>{setEd(d);setSf(true)}}><div><div style={{fontSize:13,fontWeight:600}}>{s?.intitule||"—"}</div><div style={{fontSize:11,color:'var(--dim)'}}>{d.date_deliberation} • {d.membres_presents?.slice(0,40)||"—"}</div></div><span style={{fontSize:11,color:'var(--dim)'}}>{inscrS.length} cand.</span><Badge color="#10B981">{admis} admis</Badge><Badge color="#EF4444">{inscrS.length-admis} aj.</Badge><span style={{fontSize:14}}>{d.pv_valide?"✅":"⏳"}</span><button className="btn-icon" onClick={e=>{e.stopPropagation();setDel(d)}}>🗑</button></div>)})}{deliberations.length===0&&<Empty text="Aucune délibération"/>}</div>
+    <div className="mobile-only">{deliberations.map(d=>{const s=sessions.find(x=>x.id===d.session_uuid);const inscrS=inscriptions.filter(i=>i.session_uuid===d.session_uuid);const admis=inscrS.filter(i=>i.resultat==="Admis").length;return(<div key={d.id} className="mobile-card" onClick={()=>{setEd(d);setSf(true)}}><div className="mobile-card-header"><div><div className="mobile-card-title">{s?.intitule||"—"}</div><div className="mobile-card-id">{d.date_deliberation}</div></div><span style={{fontSize:18}}>{d.pv_valide?"✅":"⏳"}</span></div><div className="mobile-card-meta"><Badge color="#10B981">{admis} admis</Badge><Badge color="#EF4444">{inscrS.length-admis} ajourné{inscrS.length-admis>1?"s":""}</Badge></div><div className="mobile-card-footer"><span style={{fontSize:11,color:'var(--dim)'}}>{d.decision_jury?.slice(0,40)||"—"}</span><button className="btn-icon" onClick={e=>{e.stopPropagation();setDel(d)}}>🗑</button></div></div>))}{deliberations.length===0&&<Empty text="Aucune délibération"/>}</div>
+    <FAB onClick={()=>{setEd(null);setSf(true)}} color="var(--purple)"/>{sf&&<DeliberationForm delib={ed} sessions={sessions} onClose={()=>{setSf(false);setEd(null)}} onSave={save}/>}{del&&<ConfirmDelete item="cette délibération" onConfirm={rm} onCancel={()=>setDel(null)}/>}
+  </div>)
+}
+
+function ResultatsView({sessions,candidats,inscriptions,notes,matieres}){
+  const[selSession,setSelSession]=useState("");
+  const curSession=selSession||sessions[0]?.id||"";
+  const sessionInscr=inscriptions.filter(i=>i.session_uuid===curSession).sort((a,b)=>{const ma=a.moyenne_ponderee||0;const mb=b.moyenne_ponderee||0;return mb-ma});
+  const session=sessions.find(s=>s.id===curSession);
+  const admis=sessionInscr.filter(i=>i.resultat==="Admis").length;
+  const ajournes=sessionInscr.filter(i=>i.resultat==="Ajourné").length;
+  return(<div>
+    <div className="filters"><select className="select" value={curSession} onChange={e=>setSelSession(e.target.value)} style={{width:240,maxWidth:'100%'}}>{sessions.map(s=><option key={s.id} value={s.id}>{s.intitule}</option>)}</select></div>
+    {curSession&&session&&<>
+    <div className="kpi-grid" style={{marginBottom:16}}>
+      <KPI label="Candidats" value={sessionInscr.length} color="#22D3EE"/>
+      <KPI label="Admis" value={admis} color="#10B981"/>
+      <KPI label="Ajournés" value={ajournes} color="#EF4444"/>
+      <KPI label="Taux réussite" value={sessionInscr.length>0?`${Math.round((admis/sessionInscr.length)*100)}%`:"—"} color="#10B981"/>
+    </div>
+    <div className="table-container">
+      <div className="table-row" style={{gridTemplateColumns:'40px 90px 1fr 80px 80px',background:'rgba(255,255,255,0.02)',fontWeight:700,fontSize:11,color:'var(--muted)',textTransform:'uppercase',letterSpacing:1,cursor:'default'}}><span>#</span><span>Matricule</span><span>Candidat</span><span>Moyenne</span><span>Résultat</span></div>
+      {sessionInscr.map((i,idx)=>{const c=candidats.find(x=>x.id===i.candidat_uuid);return(<div key={i.id} className="table-row" style={{gridTemplateColumns:'40px 90px 1fr 80px 80px',cursor:'default'}}><span className="mono" style={{fontSize:12,color:'var(--dim)'}}>{idx+1}</span><span className="mono" style={{fontSize:10,color:'var(--dim)'}}>{c?.matricule}</span><span style={{fontSize:13,fontWeight:500}}>{c?.prenom} {c?.nom}</span><span className="mono" style={{fontSize:14,fontWeight:700,color:i.moyenne_ponderee!==null?(Number(i.moyenne_ponderee)>=PASS_MARK?'var(--green)':'var(--red)'):'var(--dim)'}}>{i.moyenne_ponderee!==null?Number(i.moyenne_ponderee).toFixed(2):"—"}</span><ResultBadge r={i.resultat}/></div>)})}
+      {sessionInscr.length===0&&<Empty text="Aucun résultat"/>}
+    </div></>}
+  </div>)
+}
+
+// ============================================================
+// MAIN APP
+// ============================================================
+function App(){
+  const[user,setUser]=useState(null);const[token,setToken]=useState(null);const[api,setApi]=useState(null);const[tab,setTab]=useState("dashboard");
+  const[sessions,setSessions]=useState([]);const[candidats,setCandidats]=useState([]);const[inscriptions,setInscriptions]=useState([]);const[notes,setNotes]=useState([]);const[matieres,setMatieres]=useState([]);const[deliberations,setDeliberations]=useState([]);
+  const[loading,setLoading]=useState(false);const[error,setError]=useState("");const[cs,setCs]=useState(true);
+
+  const loadAll=useCallback(async(ar)=>{const a=ar||api;if(!a)return;setLoading(true);setError("");try{const[se,ca,ins,no,ma,de]=await Promise.all([a.select("sessions","order=created_at.desc"),a.select("candidats","order=nom.asc"),a.select("inscriptions","order=created_at.desc"),a.select("notes",""),a.select("matieres","order=ordre.asc"),a.select("deliberations","order=date_deliberation.desc")]);setSessions(se);setCandidats(ca);setInscriptions(ins);setNotes(no);setMatieres(ma);setDeliberations(de)}catch(e){setError("Erreur: "+e.message)}setLoading(false)},[api]);
+
+  const handleLogin=(t,u)=>{const a=createApi(t);setToken(t);setUser(u);setApi(a);loadAll(a)};
+  const handleLogout=async()=>{try{if(token)await authApi.logout(token)}catch(e){}localStorage.removeItem("ate_token");localStorage.removeItem("ate_email");setUser(null);setToken(null);setApi(null)};
+
+  useEffect(()=>{const t=localStorage.getItem("ate_token");if(t){authApi.getUser(t).then(u=>{const a=createApi(t);setToken(t);setUser(u);setApi(a);loadAll(a);setCs(false)}).catch(()=>{localStorage.removeItem("ate_token");setCs(false)})}else setCs(false)},[]);
+
+  if(cs)return(<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)'}}><div style={{textAlign:'center'}}><div style={{fontSize:48,marginBottom:12}}>🎓</div><div style={{color:'var(--muted)',fontSize:14}}>Chargement...</div></div></div>);
+  if(!user)return <LoginScreen onLogin={handleLogin}/>;
+
+  const tabs=[
+    {id:"dashboard",label:"Accueil",icon:"🏠",ml:"Accueil"},
+    {id:"sessions",label:"Sessions",icon:"📅",ml:"Sessions",count:sessions.filter(s=>s.statut!=="Archivée").length},
+    {id:"candidats",label:"Candidats",icon:"👤",ml:"Candidats",count:candidats.length},
+    {id:"notes",label:"Notes",icon:"📝",ml:"Notes"},
+    {id:"resultats",label:"Résultats",icon:"📊",ml:"Résultats"},
+    {id:"deliberations",label:"Délibérations",icon:"⚖️",ml:"Délib.",count:deliberations.filter(d=>!d.pv_valide).length},
+  ];
+
+  return(<div>
+    <header className="header">
+      <div className="header-left"><div className="logo">🎓</div><div><div className="header-title">Examens ATE — DGAC</div><div className="header-sub">Agent Technique d'Exploitation</div></div></div>
+      <div className="desktop-tabs">{tabs.map(t=>(<button key={t.id} className={`tab-btn ${tab===t.id?'active':''}`} onClick={()=>setTab(t.id)}><span>{t.icon}</span> {t.label}{t.count>0&&<span className="tab-count">{t.count}</span>}</button>))}</div>
+      <div className="header-right"><div className="user-badge"><div className="user-dot"/>{user.email}</div><button className="btn-outline btn-sm" onClick={()=>loadAll()}>{loading?"⏳":"🔄"}</button><button className="btn-outline btn-outline-red btn-sm" onClick={handleLogout}>Déconnexion</button></div>
+    </header>
+    <nav className="mobile-nav">{tabs.map(t=>(<button key={t.id} className={`mobile-nav-btn ${tab===t.id?'active':''}`} onClick={()=>setTab(t.id)}><span className="nav-icon">{t.icon}</span>{t.ml}{t.count>0&&tab!==t.id&&<span className="nav-badge">{t.count}</span>}</button>))}<button className="mobile-nav-btn" onClick={handleLogout}><span className="nav-icon">🚪</span>Sortir</button></nav>
+    {error&&<div className="error-box" style={{margin:'12px 16px 0'}}>{error}</div>}
+    <main style={{padding:'24px 28px',maxWidth:1360,margin:'0 auto'}}>
+      {tab==="dashboard"&&<Dashboard sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} onNav={setTab}/>}
+      {tab==="sessions"&&<SessionsView api={api} sessions={sessions} inscriptions={inscriptions} reload={()=>loadAll()}/>}
+      {tab==="candidats"&&<CandidatsView api={api} candidats={candidats} reload={()=>loadAll()}/>}
+      {tab==="notes"&&<NotesView api={api} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} reload={()=>loadAll()}/>}
+      {tab==="resultats"&&<ResultatsView sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres}/>}
+      {tab==="deliberations"&&<DeliberationsView api={api} sessions={sessions} inscriptions={inscriptions} candidats={candidats} deliberations={deliberations} reload={()=>loadAll()}/>}
+    </main>
+  </div>)
+}
+ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+</script>
+</body>
+</html>
