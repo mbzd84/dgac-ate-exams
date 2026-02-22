@@ -627,6 +627,125 @@ function SessionsView({ api, sessions, inscriptions, reload }) {
   );
 }
 
+/* ===== BULK INSCRIPTION MODAL ===== */
+function BulkInscriptionModal({ api, selectedCandidats, sessions, inscriptions, onClose, onDone }) {
+  const [targetSession, setTargetSession] = useState("");
+  const [processing, setProcessing] = useState(false);
+  const [result, setResult] = useState(null);
+
+  // Pre-check: which candidates are already inscribed to the target session
+  const alreadyInscribed = useMemo(() => {
+    if (!targetSession) return new Set();
+    const set = new Set();
+    (inscriptions || []).forEach(i => {
+      if (i.session_uuid === targetSession) set.add(i.candidat_uuid);
+    });
+    return set;
+  }, [targetSession, inscriptions]);
+
+  const toInscribe = selectedCandidats.filter(c => !alreadyInscribed.has(c.id));
+  const alreadyCount = selectedCandidats.length - toInscribe.length;
+
+  const doInscribe = async () => {
+    if (!targetSession) { alert("Selectionnez une session cible"); return; }
+    if (toInscribe.length === 0) { alert("Tous les candidats selectionnes sont deja inscrits a cette session"); return; }
+    setProcessing(true);
+    let ok = 0, errors = 0;
+    const errorDetails = [];
+    for (const c of toInscribe) {
+      try {
+        await api.insert("inscriptions", { candidat_uuid: c.id, session_uuid: targetSession, statut: "Inscrit" });
+        ok++;
+      } catch (err) {
+        errors++;
+        errorDetails.push((c.prenom + " " + c.nom) + ": " + err.message);
+      }
+    }
+    setResult({ ok, errors, errorDetails, alreadySkipped: alreadyCount });
+    setProcessing(false);
+  };
+
+  const sess = sessions.find(s => s.id === targetSession);
+
+  return (
+    <Modal onClose={onClose} title="Affecter a une session" width={560}>
+      <div style={{ marginBottom: 18, padding: 16, background: "rgba(36,99,235,0.04)", borderRadius: 12, border: "1px solid var(--border)" }}>
+        <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 4 }}>Candidats selectionnes</div>
+        <div style={{ fontSize: 28, fontWeight: 800, color: "var(--gold)", fontFamily: "'Playfair Display',serif" }}>{selectedCandidats.length}</div>
+        <div style={{ marginTop: 8, maxHeight: 120, overflowY: "auto", fontSize: 12, color: "var(--dim)" }}>
+          {selectedCandidats.map((c, i) => (
+            <span key={c.id}>{c.prenom} {c.nom}{i < selectedCandidats.length - 1 ? " · " : ""}</span>
+          ))}
+        </div>
+      </div>
+
+      {!result ? (
+        <div>
+          <Field label="Session cible *">
+            <select className="select" value={targetSession} onChange={e => setTargetSession(e.target.value)}>
+              <option value="">— Choisir une session —</option>
+              {sessions
+                .filter(s => s.statut !== "Archivee")
+                .sort((a,b) => String(b.date_debut||"").localeCompare(String(a.date_debut||"")))
+                .map(s => <option key={s.id} value={s.id}>{s.intitule} ({s.session_id})</option>)
+              }
+            </select>
+          </Field>
+
+          {targetSession && (
+            <div style={{ marginTop: 14, padding: 14, borderRadius: 10, background: alreadyCount > 0 ? "rgba(245,158,11,0.08)" : "rgba(34,197,94,0.08)", border: alreadyCount > 0 ? "1px solid rgba(245,158,11,0.2)" : "1px solid rgba(34,197,94,0.2)", fontSize: 13 }}>
+              {toInscribe.length > 0 && (
+                <div style={{ color: "var(--green)", fontWeight: 700 }}>
+                  ✓ {toInscribe.length} candidat{toInscribe.length > 1 ? "s" : ""} seront inscrits a "{sess?.intitule}"
+                </div>
+              )}
+              {alreadyCount > 0 && (
+                <div style={{ color: "var(--orange)", marginTop: 4 }}>
+                  ⚠ {alreadyCount} candidat{alreadyCount > 1 ? "s" : ""} deja inscrit{alreadyCount > 1 ? "s" : ""} a cette session (seront ignores)
+                </div>
+              )}
+              {toInscribe.length === 0 && (
+                <div style={{ color: "var(--orange)", fontWeight: 700 }}>
+                  Tous les candidats selectionnes sont deja inscrits a cette session.
+                </div>
+              )}
+            </div>
+          )}
+
+          <button
+            className="btn btn-gold btn-full"
+            style={{ marginTop: 18 }}
+            onClick={doInscribe}
+            disabled={processing || !targetSession || toInscribe.length === 0}
+          >
+            {processing ? "Inscription en cours..." : "Inscrire " + toInscribe.length + " candidat" + (toInscribe.length > 1 ? "s" : "")}
+          </button>
+        </div>
+      ) : (
+        <div>
+          <div style={{ padding: 16, borderRadius: 10, background: result.errors > 0 ? "rgba(200,16,46,0.08)" : "rgba(34,197,94,0.08)", border: result.errors > 0 ? "1px solid rgba(200,16,46,0.2)" : "1px solid rgba(34,197,94,0.2)", fontSize: 13 }}>
+            <div style={{ color: "var(--green)", fontWeight: 700, fontSize: 16 }}>
+              ✓ {result.ok} candidat{result.ok > 1 ? "s" : ""} inscrit{result.ok > 1 ? "s" : ""} avec succes
+            </div>
+            {result.alreadySkipped > 0 && (
+              <div style={{ color: "var(--orange)", marginTop: 6 }}>{result.alreadySkipped} ignore{result.alreadySkipped > 1 ? "s" : ""} (deja inscrits)</div>
+            )}
+            {result.errors > 0 && (
+              <div style={{ marginTop: 8 }}>
+                <div style={{ color: "var(--red-tn)" }}>{result.errors} erreur{result.errors > 1 ? "s" : ""}</div>
+                <div style={{ marginTop: 4, fontSize: 11, color: "var(--red-tn)", maxHeight: 80, overflowY: "auto" }}>
+                  {result.errorDetails.map((e, i) => <div key={i}>• {e}</div>)}
+                </div>
+              </div>
+            )}
+          </div>
+          <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={onDone}>Fermer et actualiser</button>
+        </div>
+      )}
+    </Modal>
+  );
+}
+
 /* ===== CANDIDATS VIEW ===== */
 function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
   const [step, setStep] = useState("org"); // org | list
@@ -637,6 +756,9 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
   const [del, setDel] = useState(null);
   const [importModal, setImportModal] = useState(false);
   const [se, setSe] = useState("");
+  // Bulk selection
+  const [selected, setSelected] = useState(new Set());
+  const [bulkModal, setBulkModal] = useState(false);
 
   const candById = useMemo(() => {
     const m = new Map();
@@ -644,7 +766,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
     return m;
   }, [candidats]);
 
-  const goOrg = () => { setStep("org"); setSelectedOrg(""); setSelectedSessionId("all"); setSe(""); };
+  const goOrg = () => { setStep("org"); setSelectedOrg(""); setSelectedSessionId("all"); setSe(""); setSelected(new Set()); };
 
   // Sessions qui ont au moins un candidat de cet organisme (pour le filtre dropdown)
   const sessionsForOrg = useMemo(() => {
@@ -661,21 +783,12 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
   const candidatsForOrg = useMemo(() => {
     if (!selectedOrg) return [];
 
-    // Build inscription lookup: candidat_uuid -> inscription (for session filter)
-    const inscByCandidat = new Map();
-    (inscriptions || []).forEach(i => {
-      // If filtering by session, only keep inscriptions for that session
-      if (selectedSessionId !== "all" && i.session_uuid !== selectedSessionId) return;
-      inscByCandidat.set(i.candidat_uuid, i);
-    });
-
     let rows = [];
 
     if (selectedSessionId === "all") {
       // Show ALL candidates of this org (even without inscription)
       (candidats || []).forEach(c => {
         if ((c.organisme_formation || "") !== selectedOrg) return;
-        // Find latest inscription for moyenne display
         const latestInsc = (inscriptions || []).filter(i => i.candidat_uuid === c.id).sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")))[0] || null;
         rows.push({ candidat: c, inscription: latestInsc });
       });
@@ -729,6 +842,25 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
     }
   };
 
+  // Selection helpers
+  const toggleSelect = (id) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+  const toggleSelectAll = () => {
+    if (selected.size === candidatsForOrg.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(candidatsForOrg.map(r => r.candidat.id)));
+    }
+  };
+  const allSelected = candidatsForOrg.length > 0 && selected.size === candidatsForOrg.length;
+  const someSelected = selected.size > 0;
+  const selectedCandidatObjects = candidatsForOrg.filter(r => selected.has(r.candidat.id)).map(r => r.candidat);
+
   const totalOrgCandidats = (candidats || []).filter(c => (c.organisme_formation || "") === selectedOrg).length;
 
   // STEP 1 — Organismes
@@ -751,7 +883,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
                 key={org}
                 className="card card-padded"
                 style={{ cursor:"pointer" }}
-                onClick={() => { setSelectedOrg(org); setSelectedSessionId("all"); setStep("list"); }}
+                onClick={() => { setSelectedOrg(org); setSelectedSessionId("all"); setStep("list"); setSelected(new Set()); }}
               >
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div>
@@ -783,7 +915,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
     );
   }
 
-  // STEP 2 — Liste des candidats de l'organisme (avec filtre session optionnel)
+  // STEP 2 — Liste des candidats de l'organisme (avec filtre session optionnel + selection en masse)
   return (
     <div>
       <div className="filters">
@@ -792,7 +924,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
           <b style={{ color:"var(--gold)" }}>{selectedOrg}</b> — {totalOrgCandidats} candidats
         </div>
         <div className="spacer" />
-        <select className="select" value={selectedSessionId} onChange={e => setSelectedSessionId(e.target.value)} style={{ maxWidth: 280 }}>
+        <select className="select" value={selectedSessionId} onChange={e => { setSelectedSessionId(e.target.value); setSelected(new Set()); }} style={{ maxWidth: 280 }}>
           <option value="all">Toutes les sessions</option>
           {sessionsForOrg
             .slice()
@@ -802,6 +934,26 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
         </select>
         <input className="input" style={{ maxWidth: 280 }} placeholder="Rechercher matricule/nom/CIN…" value={se} onChange={e => setSe(e.target.value)} />
       </div>
+
+      {/* Bulk action bar */}
+      {someSelected && (
+        <div style={{
+          marginBottom: 14, padding: "12px 18px", borderRadius: 12,
+          background: "linear-gradient(135deg, rgba(36,99,235,0.08), rgba(36,99,235,0.04))",
+          border: "1px solid rgba(36,99,235,0.25)",
+          display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap",
+          animation: "fadeIn 0.2s"
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--gold)" }}>
+            {selected.size} candidat{selected.size > 1 ? "s" : ""} selectionne{selected.size > 1 ? "s" : ""}
+          </div>
+          <div className="spacer" />
+          <button className="btn btn-gold" onClick={() => setBulkModal(true)} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            📋 Affecter a une session
+          </button>
+          <button className="btn-outline btn-sm" onClick={() => setSelected(new Set())}>Deselectionner tout</button>
+        </div>
+      )}
 
       <div style={{ marginBottom: 12, fontSize: 12, color: "var(--dim)" }}>
         {candidatsForOrg.length} candidat{candidatsForOrg.length !== 1 ? "s" : ""} affiche{candidatsForOrg.length !== 1 ? "s" : ""}
@@ -813,7 +965,11 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
 
       {/* Desktop table */}
       <div className="table-container desktop-only">
-        <div className="table-head" style={{ gridTemplateColumns: "120px 1fr 130px 100px 100px 100px" }}>
+        <div className="table-head" style={{ gridTemplateColumns: "40px 110px 1fr 120px 90px 90px 90px" }}>
+          <div style={{ textAlign: "center" }}>
+            <input type="checkbox" checked={allSelected} onChange={toggleSelectAll}
+              style={{ width: 16, height: 16, cursor: "pointer", accentColor: "var(--gold)" }} />
+          </div>
           <div>Matricule</div><div>Nom & Prenom</div><div>CIN</div><div>Session</div><div>Moyenne</div><div>Action</div>
         </div>
 
@@ -822,12 +978,21 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
         ) : (
           candidatsForOrg.map(({ candidat, inscription }) => {
             const sessLabel = inscription ? ((sessions || []).find(s => s.id === inscription.session_uuid)?.session_id || "—") : "—";
+            const isChecked = selected.has(candidat.id);
             return (
               <div
                 key={candidat.id + (inscription ? inscription.id : "")}
                 className="table-row"
-                style={{ gridTemplateColumns: "120px 1fr 130px 100px 100px 100px" }}
+                style={{
+                  gridTemplateColumns: "40px 110px 1fr 120px 90px 90px 90px",
+                  background: isChecked ? "rgba(36,99,235,0.06)" : undefined
+                }}
+                onClick={() => toggleSelect(candidat.id)}
               >
+                <div style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                  <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(candidat.id)}
+                    style={{ width: 16, height: 16, cursor: "pointer", accentColor: "var(--gold)" }} />
+                </div>
                 <div className="mono" style={{ fontWeight: 900, fontSize: 11 }}>{candidat.matricule || "—"}</div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 13 }}>{candidat.prenom} {candidat.nom}</div>
@@ -838,7 +1003,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
                 <div className="mono" style={{ fontWeight: 900, fontSize: 13, color: (inscription?.moyenne_ponderee ?? null) === null ? "var(--muted)" : (Number(inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") }}>
                   {(inscription?.moyenne_ponderee ?? null) === null ? "—" : Number(inscription.moyenne_ponderee).toFixed(2)}
                 </div>
-                <div style={{ display:"flex", justifyContent:"flex-end", gap:6 }}>
+                <div style={{ display:"flex", justifyContent:"flex-end", gap:6 }} onClick={e => e.stopPropagation()}>
                   <button className="btn-outline btn-sm" onClick={() => { setEd(candidat); setSf(true); }}>Ouvrir</button>
                   <button className="btn-outline btn-sm" onClick={() => setDel(candidat)} title="Supprimer">&#128465;</button>
                 </div>
@@ -853,23 +1018,34 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
         {candidatsForOrg.length === 0 ? (
           <Empty text="Aucun candidat trouve." />
         ) : (
-          candidatsForOrg.map(({ candidat, inscription }) => (
-            <div key={candidat.id + (inscription ? inscription.id : "")} className="mobile-card">
-              <div className="mobile-card-header">
-                <div>
-                  <div className="mobile-card-title">{candidat.prenom} {candidat.nom}</div>
-                  <div className="mobile-card-id">{candidat.matricule} · CIN: {candidat.cin || "—"}</div>
+          candidatsForOrg.map(({ candidat, inscription }) => {
+            const isChecked = selected.has(candidat.id);
+            return (
+              <div key={candidat.id + (inscription ? inscription.id : "")} className="mobile-card"
+                style={{ border: isChecked ? "2px solid var(--gold)" : undefined }}
+                onClick={() => toggleSelect(candidat.id)}
+              >
+                <div className="mobile-card-header">
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(candidat.id)}
+                      onClick={e => e.stopPropagation()}
+                      style={{ width: 18, height: 18, cursor: "pointer", accentColor: "var(--gold)", flexShrink: 0 }} />
+                    <div>
+                      <div className="mobile-card-title">{candidat.prenom} {candidat.nom}</div>
+                      <div className="mobile-card-id">{candidat.matricule} · CIN: {candidat.cin || "—"}</div>
+                    </div>
+                  </div>
+                  <button className="btn-outline btn-sm" onClick={e => { e.stopPropagation(); setEd(candidat); setSf(true); }}>Ouvrir</button>
                 </div>
-                <button className="btn-outline btn-sm" onClick={() => { setEd(candidat); setSf(true); }}>Ouvrir</button>
+                <div className="mobile-card-footer">
+                  <span className="mono" style={{ fontSize: 15, fontWeight: 700, color: (inscription?.moyenne_ponderee ?? null) === null ? "var(--muted)" : (Number(inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") }}>
+                    {(inscription?.moyenne_ponderee ?? null) === null ? "—" : Number(inscription.moyenne_ponderee).toFixed(2) + "/20"}
+                  </span>
+                  <button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(candidat); }}>&#128465;</button>
+                </div>
               </div>
-              <div className="mobile-card-footer">
-                <span className="mono" style={{ fontSize: 15, fontWeight: 700, color: (inscription?.moyenne_ponderee ?? null) === null ? "var(--muted)" : (Number(inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") }}>
-                  {(inscription?.moyenne_ponderee ?? null) === null ? "—" : Number(inscription.moyenne_ponderee).toFixed(2) + "/20"}
-                </span>
-                <button className="btn-icon" onClick={() => setDel(candidat)}>&#128465;</button>
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -877,6 +1053,16 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
       {sf && <CandidatForm candidat={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
       {del && <ConfirmDelete item={del.prenom + " " + del.nom} onConfirm={rm} onCancel={() => setDel(null)} />}
       {importModal && <ImportExcelModal api={api} sessions={sessions} onClose={() => setImportModal(false)} onDone={() => { setImportModal(false); reload(); }} />}
+      {bulkModal && (
+        <BulkInscriptionModal
+          api={api}
+          selectedCandidats={selectedCandidatObjects}
+          sessions={sessions}
+          inscriptions={inscriptions}
+          onClose={() => setBulkModal(false)}
+          onDone={() => { setBulkModal(false); setSelected(new Set()); reload(); }}
+        />
+      )}
     </div>
   );
 }
