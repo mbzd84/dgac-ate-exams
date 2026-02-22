@@ -1073,6 +1073,8 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
 /* ===== MAIN APP ===== */
 function normalizeTab(tabValue) {
   const raw = String(tabValue || "").trim().toLowerCase();
+  const validTabs = new Set(["dashboard", "sessions", "candidats", "notes", "resultats", "deliberations"]);
+  if (validTabs.has(raw)) return raw;
   const aliases = {
     accueil: "dashboard",
     home: "dashboard",
