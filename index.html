@@ -12,16 +12,34 @@
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    :root{
-      --bg:#0B1528;--card:#12203D;--card-hover:#162847;
-      --border:rgba(189,165,107,0.08);--border-light:rgba(189,165,107,0.15);
-      --text:#E8E4DD;--muted:rgba(232,228,221,0.55);--dim:rgba(232,228,221,0.35);
-      --gold:#BDA56B;--gold-light:#D4C088;--gold-dark:#96833F;
-      --red-tn:#C8102E;--green:#2ECC71;--orange:#F39C12;--cyan:#5DADE2;--purple:#9B59B6;
-      --safe-bottom:env(safe-area-inset-bottom,0px);
-      --tr:all .25s cubic-bezier(.4,0,.2,1);
-    }
+:root{
+  /* Surfaces */
+  --bg:#F6F8FC;              /* fond général */
+  --card:#FFFFFF;            /* cartes */
+  --card-hover:#F2F6FF;      /* hover */
+  --border:rgba(36,99,235,0.12);
+  --border-light:rgba(36,99,235,0.20);
 
+  /* Texte */
+  --text:#0B1220;
+  --muted:rgba(11,18,32,0.62);
+  --dim:rgba(11,18,32,0.42);
+
+  /* Accent moderne (bleu) — on réutilise --gold pour éviter de toucher le JS */
+  --gold:#2463EB;            /* bleu vif moderne */
+  --gold-light:#3B82F6;      /* bleu clair */
+  --gold-dark:#1E40AF;       /* bleu profond */
+
+  /* Statuts */
+  --red-tn:#C8102E;
+  --green:#22C55E;
+  --orange:#F59E0B;
+  --cyan:#06B6D4;
+  --purple:#8B5CF6;
+
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --tr:all .25s cubic-bezier(.4,0,.2,1);
+}
     body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.55}
     h1,h2,h3,.serif{font-family:'Playfair Display',serif}
     .mono{font-family:'JetBrains Mono',monospace}
