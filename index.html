@@ -43,15 +43,16 @@
     body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.55}
     h1,h2,h3,.serif{font-family:'Playfair Display',serif}
     .mono{font-family:'JetBrains Mono',monospace}
-    ::selection{background:rgba(189,165,107,.30)}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(189,165,107,0.20);border-radius:6px}
+    ::selection{background:rgba(36,99,235,.30)}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(36,99,235,0.20);border-radius:6px}
 
     .tn-stripe{height:3px;background:linear-gradient(90deg,var(--red-tn),var(--gold),var(--red-tn));opacity:.65}
 
     .header{
       padding:0 26px;height:64px;border-bottom:1px solid var(--border);
       display:flex;justify-content:space-between;align-items:center;
-      background:rgba(11,21,40,0.97);backdrop-filter:blur(16px);
+      background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);
+      box-shadow:0 10px 30px rgba(2,6,23,0.06);
       position:sticky;top:0;z-index:100;
     }
     .header-left{display:flex;align-items:center;gap:14px}
@@ -59,14 +60,14 @@
       width:38px;height:38px;border-radius:10px;
       background:linear-gradient(135deg,var(--gold),var(--gold-dark));
       display:flex;align-items:center;justify-content:center;
-      box-shadow:0 2px 12px rgba(189,165,107,0.2);
+      box-shadow:0 2px 12px rgba(36,99,235,0.2);
       font-size:18px;flex-shrink:0;color:#0B1528;
     }
     .header-title{font-size:15px;font-weight:800;color:var(--gold-light);letter-spacing:.2px}
     .header-sub{font-size:10px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;font-weight:600;margin-top:2px}
     .header-right{display:flex;align-items:center;gap:10px}
 
-    .desktop-tabs{display:flex;gap:2px;padding:3px;border-radius:10px;background:rgba(189,165,107,0.04);border:1px solid var(--border)}
+    .desktop-tabs{display:flex;gap:2px;padding:3px;border-radius:10px;background:rgba(36,99,235,0.04);border:1px solid var(--border)}
     .tab-btn{
       padding:8px 14px;border-radius:8px;border:none;background:transparent;
       font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);
@@ -74,10 +75,10 @@
       display:flex;align-items:center;gap:6px;
     }
     .tab-btn:hover{color:var(--text)}
-    .tab-btn.active{background:rgba(189,165,107,0.12);color:var(--gold)}
+    .tab-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
     .tab-count{
       font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;
-      background:rgba(189,165,107,0.15);color:var(--gold)
+      background:rgba(36,99,235,0.15);color:var(--gold)
     }
 
     main{padding:22px 26px 26px}
@@ -87,15 +88,15 @@
       cursor:pointer;font-family:inherit;transition:var(--tr);
       letter-spacing:.5px;text-transform:uppercase;
     }
-    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,0,0,.22)}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(2,6,23,0.12)}
     .btn:active{transform:scale(.98)}
     .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 
-    .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0B1528}
+    var(--gold){background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0B1528}
     .btn-red{background:var(--red-tn);color:#fff}
     .btn-green{background:var(--green);color:#0B1528}
     .btn-outline{
-      background:transparent;border:1px solid rgba(189,165,107,0.28);color:var(--gold);
+      background:transparent;border:1px solid rgba(36,99,235,0.28);color:var(--gold);
       padding:9px 14px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;transition:var(--tr);
       text-transform:uppercase;letter-spacing:.5px
     }
@@ -105,20 +106,20 @@
     .btn-full{width:100%;padding:14px 0}
 
     .btn-icon{background:none;border:none;color:var(--dim);cursor:pointer;padding:8px;border-radius:8px;transition:var(--tr)}
-    .btn-icon:hover{color:var(--gold);background:rgba(189,165,107,0.06)}
+    .btn-icon:hover{color:var(--gold);background:rgba(36,99,235,0.06)}
 
     .input,.select,.textarea{
-      width:100%;padding:12px 14px;background:rgba(189,165,107,0.04);
+      width:100%;padding:12px 14px;background:rgba(36,99,235,0.04);
       border:1px solid var(--border-light);border-radius:10px;color:var(--text);
       font-size:14px;outline:none;font-family:inherit;transition:var(--tr)
     }
-    .input:focus,.select:focus,.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(189,165,107,0.09)}
+    .input:focus,.select:focus,.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(36,99,235,0.09)}
     .select{cursor:pointer}
     .textarea{min-height:88px;resize:vertical}
 
     .label{font-size:10px;color:var(--gold);margin-bottom:6px;display:block;font-weight:900;letter-spacing:1.4px;text-transform:uppercase}
 
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;transition:var(--tr)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;transition:var(--tr)}
     .card-padded{padding:22px}
     .card:hover{border-color:var(--border-light)}
 
@@ -141,7 +142,7 @@
 
     .table-container{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
     .table-head,.table-row{display:grid;gap:12px;padding:12px 18px;align-items:center}
-    .table-head{background:rgba(189,165,107,0.06);border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);font-weight:900}
+    .table-head{background:rgba(36,99,235,0.06);border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);font-weight:900}
     .table-row{border-bottom:1px solid var(--border);cursor:pointer;transition:var(--tr)}
     .table-row:hover{background:var(--card-hover)}
     .table-row:last-child{border-bottom:none}
@@ -149,13 +150,13 @@
     .filters{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
     .spacer{flex:1}
     .pill{
-      display:flex;gap:3px;background:rgba(189,165,107,0.04);border-radius:10px;padding:3px;border:1px solid var(--border)
+      display:flex;gap:3px;background:rgba(36,99,235,0.04);border-radius:10px;padding:3px;border:1px solid var(--border)
     }
     .pill-btn{
       padding:7px 12px;border-radius:8px;border:none;font-size:11px;font-weight:900;
       cursor:pointer;background:transparent;color:var(--muted);transition:var(--tr);white-space:nowrap
     }
-    .pill-btn.active{background:rgba(189,165,107,0.12);color:var(--gold)}
+    .pill-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
 
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -167,7 +168,7 @@
       z-index:1000;padding:12px;animation:fadeIn .18s;
     }
     .modal{
-      background:linear-gradient(180deg,#152240,#0F1C33);
+      background:linear-gradient(180deg,#FFFFFF,#F3F6FF);
       border:1px solid var(--border-light);border-radius:18px;padding:22px;
       width:min(720px,94vw);max-height:90vh;overflow:auto;
       animation:slideUp .25s cubic-bezier(.4,0,.2,1);
@@ -177,18 +178,18 @@
     .hint{color:var(--muted);font-size:13px}
     .error-box{padding:12px 14px;background:rgba(200,16,46,0.10);border:1px solid rgba(200,16,46,0.25);border-radius:12px;color:var(--red-tn);font-size:12px;margin:10px 0}
     .success-box{padding:12px 14px;background:rgba(46,204,113,0.10);border:1px solid rgba(46,204,113,0.22);border-radius:12px;color:var(--green);font-size:12px;margin:10px 0}
-    .user-badge{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(189,165,107,0.06);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted)}
+    .user-badge{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(36,99,235,0.06);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted)}
     .user-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
 
     .note-grid{display:grid;gap:8px;margin-top:12px}
     .note-row{
       display:grid;grid-template-columns:1fr 90px 100px;gap:10px;align-items:center;
-      padding:10px 12px;background:rgba(189,165,107,0.03);border:1px solid var(--border);border-radius:12px
+      padding:10px 12px;background:rgba(36,99,235,0.03);border:1px solid var(--border);border-radius:12px
     }
     .note-row .matiere-name{font-size:13px;font-weight:700}
     .note-row .coef{font-size:10px;color:var(--gold);font-weight:900}
     .note-input{
-      width:100%;padding:9px;background:rgba(189,165,107,0.06);
+      width:100%;padding:9px;background:rgba(36,99,235,0.06);
       border:1px solid var(--border-light);border-radius:10px;
       color:var(--text);font-size:14px;font-family:'JetBrains Mono',monospace;text-align:center;outline:none;
       transition:var(--tr)
@@ -215,7 +216,7 @@
 
     .login-page{
       min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
-      background:linear-gradient(160deg,#0B1528,#132240,#0B1528);
+      background:linear-gradient(180deg,#FFFFFF,#F3F6FF);
     }
     .login-box{width:460px;max-width:100%}
     .login-header{text-align:center;margin-bottom:26px}
@@ -494,7 +495,7 @@
         <div className="login-page">
           <div className="login-box">
             <div className="login-header">
-              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28, color:"#0B1528", boxShadow: "0 6px 26px rgba(189,165,107,0.28)" }}>✈</div>
+              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28, color:"#0B1528", boxShadow: "0 6px 26px rgba(36,99,235,0.28)" }}>✈</div>
               <h1 className="login-title">{APP.BRAND_TITLE}</h1>
               <p className="login-sub">{APP.BRAND_SUBTITLE}</p>
             </div>
@@ -565,7 +566,7 @@
         <div className="login-page">
           <div className="login-box" style={{ width: 560 }}>
             <div className="login-header">
-              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28, color:"#0B1528", boxShadow: "0 6px 26px rgba(189,165,107,0.28)" }}>✈</div>
+              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28, color:"#0B1528", boxShadow: "0 6px 26px rgba(36,99,235,0.28)" }}>✈</div>
               <h1 className="login-title">Espace Candidat</h1>
               <p className="login-sub">Consultation des résultats — {APP.BRAND_TITLE}</p>
             </div>
