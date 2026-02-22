@@ -23,7 +23,7 @@
   --muted:rgba(11,18,32,0.62);
   --dim:rgba(11,18,32,0.42);
 
-  /* Accent moderne (bleu) — on réutilise --gold pour éviter de toucher le JS */
+  /* Accent moderne (bleu) */
   --gold:#2463EB;
   --gold-light:#3B82F6;
   --gold-dark:#1E40AF;
@@ -77,6 +77,8 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
 .kpi-value{font-size:28px;font-weight:700;margin-top:6px;font-family:'Playfair Display',serif}.kpi-sub{font-size:12px;color:var(--dim);margin-top:4px}
 .badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
 .table-container{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+/* FIX #2: Added missing .table-head CSS */
+.table-head{display:grid;padding:12px 22px;border-bottom:2px solid var(--border);background:rgba(36,99,235,0.04);font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;align-items:center}
 .table-row{display:grid;padding:14px 22px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:var(--tr)}.table-row:hover{background:var(--card-hover)}.table-row:last-child{border-bottom:none}
 .mobile-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;cursor:pointer;transition:var(--tr)}.mobile-card:hover{border-color:var(--border-light)}
 .mobile-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
@@ -93,6 +95,8 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
 .filter-group{display:flex;gap:3px;background:rgba(36,99,235,0.04);border-radius:10px;padding:3px;border:1px solid var(--border)}
 .filter-btn{padding:7px 14px;border-radius:7px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:var(--muted);white-space:nowrap;transition:var(--tr)}.filter-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
 .spacer{flex:1}.empty{padding:48px 24px;text-align:center;color:var(--dim);font-size:14px;font-style:italic}
+/* FIX #3: Added missing .hint CSS */
+.hint{font-size:12px;color:var(--muted);font-weight:400}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#F6F8FC,#EAF1FF,#F6F8FC)}
 .login-box{width:440px;max-width:100%}.login-header{text-align:center;margin-bottom:36px}
@@ -127,6 +131,8 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
   .desktop-only{display:none!important}.mobile-only{display:block!important}
   .input,.select,.textarea{font-size:16px;padding:14px}.btn{padding:12px 20px;font-size:13px}.btn-full{padding:16px 0}
   .note-row{grid-template-columns:1fr 60px 45px}
+  /* FIX #2 responsive: table-head on mobile */
+  .table-head{padding:10px 16px;font-size:9px}
 }
 @media(min-width:769px){.mobile-only{display:none!important}.mobile-nav{display:none!important}.btn-fab{display:none!important}}
 </style>
@@ -141,11 +147,21 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script type="text/babel">
-const { useState, useEffect, useCallback, useMemo } = React;
+const { useState, useEffect, useCallback, useMemo, useRef } = React;
 const SB_URL = "https://rvsldfentjjuukgozrzv.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2c2xkZmVudGpqdXVrZ296cnp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NzA0MDEsImV4cCI6MjA4NzI0NjQwMX0.PAFfUgH1-cmrd7HULo0H46Bzs9q3fwX3qoxjBgnvCdQ";
 const PASS_MARK = 13;
 const ORGANISMES = ["CIFAC", "AFA", "OSC"];
+
+/* FIX #1: Added missing fmtDate utility function */
+function fmtDate(d) {
+  if (!d) return "—";
+  try {
+    const parts = String(d).split("-");
+    if (parts.length === 3) return parts[2] + "/" + parts[1] + "/" + parts[0];
+    return d;
+  } catch (e) { return d; }
+}
 
 const authApi = {
   async login(e, p) {
@@ -222,6 +238,10 @@ function LoginScreen({ onLogin, onLookup }) {
 }
 
 /* ===== CANDIDATE LOOKUP ===== */
+/* FIX #7 (note): This uses anonymous Supabase access (anon key only).
+   Ensure your Supabase RLS policies allow anonymous SELECT on:
+   candidats, inscriptions, notes, matieres
+   Otherwise the lookup will silently fail or return empty results. */
 function CandidatLookup({ onBack }) {
   const [cin, setCin] = useState("");
   const [loading, setLoading] = useState(false);
@@ -237,17 +257,19 @@ function CandidatLookup({ onBack }) {
     const b = SB_URL + "/rest/v1";
     try {
       const cr = await fetch(b + "/candidats?cin=eq." + encodeURIComponent(cin.trim()), { headers: h });
+      if (!cr.ok) throw new Error("Acces refuse. Veuillez contacter l'administration.");
       const cands = await cr.json();
       if (!cands || cands.length === 0) { setErr("Aucun candidat trouve avec ce CIN"); setLoading(false); return; }
       const cand = cands[0];
       const ir = await fetch(b + "/inscriptions?candidat_uuid=eq." + cand.id + "&order=created_at.desc&limit=1", { headers: h });
+      if (!ir.ok) throw new Error("Acces refuse aux inscriptions.");
       const inscs = await ir.json();
       if (!inscs || inscs.length === 0) { setErr("Aucune inscription trouvee"); setLoading(false); return; }
       const insc = inscs[0];
       const nr = await fetch(b + "/notes?inscription_uuid=eq." + insc.id, { headers: h });
-      const nts = await nr.json();
+      const nts = nr.ok ? await nr.json() : [];
       const mr = await fetch(b + "/matieres?order=ordre.asc", { headers: h });
-      const mats = await mr.json();
+      const mats = mr.ok ? await mr.json() : [];
       setResult({ candidat: cand, inscription: insc });
       setNotes(nts);
       setMatieres(mats);
@@ -489,6 +511,8 @@ function ImportExcelModal({ api, sessions, onClose, onDone }) {
       if (!colNom && !colPrenom && !colNP) { setResult({ error: "Colonnes nom/prenom non trouvees. Colonnes: " + headers.join(", ") }); setImporting(false); return; }
 
       let imported = 0, skipped = 0, errors = 0;
+      /* FIX #6: Collect error details for better feedback */
+      const errorDetails = [];
       for (const row of rows) {
         let nom = "", prenom = "";
         if (colNP) {
@@ -507,14 +531,19 @@ function ImportExcelModal({ api, sessions, onClose, onDone }) {
           else { const s = String(raw).trim(); const p = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/); if (p) dateN = p[3] + "-" + p[2].padStart(2, "0") + "-" + p[1].padStart(2, "0"); else if (s.match(/^\d{4}-\d{2}-\d{2}$/)) dateN = s; }
         }
         try {
-          const cand = { matricule: colMat ? String(row[colMat] || "").trim() : ("ATE-" + String(imported + 1).padStart(3, "0")), nom: nom, prenom: prenom, cin: colCIN ? String(row[colCIN] || "").trim() : "", date_naissance: dateN, organisme_formation: org, notes: colNat && row[colNat] ? "Nationalite: " + String(row[colNat]).trim() : "" };
+          const mat = colMat ? String(row[colMat] || "").trim() : ("ATE-" + String(imported + 1).padStart(3, "0"));
+          const cand = { matricule: mat, nom: nom, prenom: prenom, cin: colCIN ? String(row[colCIN] || "").trim() : "", date_naissance: dateN, organisme_formation: org, notes: colNat && row[colNat] ? "Nationalite: " + String(row[colNat]).trim() : "" };
           const created = await api.insert("candidats", cand);
           const candId = Array.isArray(created) ? created[0].id : created.id;
           await api.insert("inscriptions", { candidat_uuid: candId, session_uuid: sess, statut: "Inscrit" });
           imported++;
-        } catch (err) { errors++; }
+        } catch (err) {
+          errors++;
+          const rowLabel = (nom + " " + prenom).trim() || ("Ligne " + (imported + skipped + errors));
+          errorDetails.push(rowLabel + ": " + err.message);
+        }
       }
-      setResult({ imported: imported, skipped: skipped, errors: errors, total: rows.length });
+      setResult({ imported, skipped, errors, total: rows.length, errorDetails });
     } catch (err) { setResult({ error: "Erreur: " + err.message }); }
     setImporting(false);
   };
@@ -537,6 +566,13 @@ function ImportExcelModal({ api, sessions, onClose, onDone }) {
             <span style={{ color: "var(--green)", fontWeight: 700 }}>{result.imported} candidats importes et inscrits</span>
             {result.skipped > 0 && <span style={{ color: "var(--orange)", marginLeft: 12 }}>{result.skipped} ignores</span>}
             {result.errors > 0 && <span style={{ color: "var(--red-tn)", marginLeft: 12 }}>{result.errors} erreurs</span>}
+            {/* FIX #6: Show error details */}
+            {result.errorDetails && result.errorDetails.length > 0 && (
+              <div style={{ marginTop: 8, padding: 8, background: "rgba(200,16,46,0.06)", borderRadius: 6, fontSize: 11, color: "var(--red-tn)", maxHeight: 120, overflowY: "auto" }}>
+                {result.errorDetails.slice(0, 10).map((e, i) => <div key={i}>• {e}</div>)}
+                {result.errorDetails.length > 10 && <div style={{ fontStyle: "italic", marginTop: 4 }}>...et {result.errorDetails.length - 10} autres erreurs</div>}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -593,12 +629,9 @@ function SessionsView({ api, sessions, inscriptions, reload }) {
 
 /* ===== CANDIDATS VIEW ===== */
 function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
-  // Parcours: Organisme -> Sessions -> Candidats de la session
-  const [step, setStep] = useState("org"); // org | sessions | candidats
+  const [step, setStep] = useState("org");
   const [selectedOrg, setSelectedOrg] = useState("");
   const [selectedSessionId, setSelectedSessionId] = useState("");
-
-  // Conserver les actions "gestion candidat" (ajout / modification / suppression / import)
   const [sf, setSf] = useState(false);
   const [ed, setEd] = useState(null);
   const [del, setDel] = useState(null);
@@ -762,6 +795,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
                       <div style={{ fontWeight: 900 }}>{s.intitule}</div>
                       <div className="hint">{s.lieu || "—"} · <span style={{ color:"var(--cyan)" }}>{nb} candidats</span></div>
                     </div>
+                    {/* FIX #1: fmtDate is now defined */}
                     <div className="hint">{fmtDate(s.date_debut)} → {fmtDate(s.date_fin)}</div>
                     <div><Tag label={s.statut} /></div>
                   </div>
@@ -1074,7 +1108,6 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
 function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [api, setApi] = useState(null);
   const [tab, setTab] = useState("dashboard");
   const [sessions, setSessions] = useState([]);
   const [candidats, setCandidats] = useState([]);
@@ -1087,8 +1120,13 @@ function App() {
   const [cs, setCs] = useState(true);
   const [lookup, setLookup] = useState(false);
 
-  const loadAll = useCallback(async (ar) => {
-    const a = ar || api; if (!a) return;
+  /* FIX #5: Use a ref to always have the latest api instance available to loadAll,
+     avoiding stale closure issues with useCallback depending on api state */
+  const apiRef = useRef(null);
+
+  const loadAll = useCallback(async (overrideApi) => {
+    const a = overrideApi || apiRef.current;
+    if (!a) return;
     setLoading(true); setError("");
     try {
       const [se, ca, ins, no, ma, de] = await Promise.all([
@@ -1099,15 +1137,36 @@ function App() {
       setSessions(se); setCandidats(ca); setInscriptions(ins); setNotes(no); setMatieres(ma); setDeliberations(de);
     } catch (e) { setError("Erreur: " + e.message); }
     setLoading(false);
-  }, [api]);
+  }, []);
 
-  const handleLogin = (t, u) => { const a = createApi(t); setToken(t); setUser(u); setApi(a); loadAll(a); };
-  const handleLogout = async () => { try { if (token) await authApi.logout(token); } catch (e) {} localStorage.removeItem("ate_token"); setUser(null); setToken(null); setApi(null); };
+  const handleLogin = (t, u) => {
+    const a = createApi(t);
+    setToken(t);
+    setUser(u);
+    apiRef.current = a;
+    loadAll(a);
+  };
+
+  const handleLogout = async () => {
+    try { if (token) await authApi.logout(token); } catch (e) {}
+    localStorage.removeItem("ate_token");
+    setUser(null);
+    setToken(null);
+    apiRef.current = null;
+  };
 
   useEffect(() => {
     const t = localStorage.getItem("ate_token");
-    if (t) { authApi.getUser(t).then(u => { const a = createApi(t); setToken(t); setUser(u); setApi(a); loadAll(a); setCs(false); }).catch(() => { localStorage.removeItem("ate_token"); setCs(false); }); }
-    else setCs(false);
+    if (t) {
+      authApi.getUser(t).then(u => {
+        const a = createApi(t);
+        setToken(t);
+        setUser(u);
+        apiRef.current = a;
+        loadAll(a);
+        setCs(false);
+      }).catch(() => { localStorage.removeItem("ate_token"); setCs(false); });
+    } else setCs(false);
   }, []);
 
   if (cs) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg)" }}><div style={{ textAlign: "center" }}><div style={{ fontSize: 48, marginBottom: 12 }}>&#9992;</div><div style={{ color: "var(--muted)", fontSize: 14 }}>Chargement...</div></div></div>;
@@ -1123,9 +1182,9 @@ function App() {
     { id: "deliberations", label: "Deliberations", ml: "Delib.", icon: "\u2696", count: deliberations.filter(d => !d.pv_valide).length }
   ];
 
+  /* FIX #4: Removed duplicate tn-stripe — the one in static HTML body is sufficient */
   return (
     <div>
-      <div className="tn-stripe"></div>
       <header className="header">
         <div className="header-left">
           <div className="logo-mark">&#9992;</div>
@@ -1145,11 +1204,11 @@ function App() {
       {error && <div className="error-box" style={{ margin: "12px 16px 0" }}>{error}</div>}
       <main style={{ padding: "28px 32px", maxWidth: 1400, margin: "0 auto" }}>
         {tab === "dashboard" && <Dashboard sessions={sessions} candidats={candidats} inscriptions={inscriptions} matieres={matieres} onNav={setTab} />}
-        {tab === "sessions" && <SessionsView api={api} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
-        {tab === "candidats" && <CandidatsView api={api} candidats={candidats} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
-        {tab === "notes" && <NotesView api={api} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} reload={() => loadAll()} />}
+        {tab === "sessions" && <SessionsView api={apiRef.current} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
+        {tab === "candidats" && <CandidatsView api={apiRef.current} candidats={candidats} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
+        {tab === "notes" && <NotesView api={apiRef.current} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} reload={() => loadAll()} />}
         {tab === "resultats" && <ResultatsView sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} />}
-        {tab === "deliberations" && <DeliberationsView api={api} sessions={sessions} inscriptions={inscriptions} deliberations={deliberations} reload={() => loadAll()} />}
+        {tab === "deliberations" && <DeliberationsView api={apiRef.current} sessions={sessions} inscriptions={inscriptions} deliberations={deliberations} reload={() => loadAll()} />}
       </main>
     </div>
   );
