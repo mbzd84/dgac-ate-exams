@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>DGAC — Examens ATE</title>
-  <meta name="theme-color" content="#0B1528" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DGAC — Examens ATE</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2463EB">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   /* Surfaces */
-  --bg:#F6F8FC;              /* fond général */
-  --card:#FFFFFF;            /* cartes */
-  --card-hover:#F2F6FF;      /* hover */
+  --bg:#F6F8FC;
+  --card:#FFFFFF;
+  --card-hover:#F2F6FF;
   --border:rgba(36,99,235,0.12);
   --border-light:rgba(36,99,235,0.20);
 
@@ -26,13 +24,14 @@
   --dim:rgba(11,18,32,0.42);
 
   /* Accent moderne (bleu) — on réutilise --gold pour éviter de toucher le JS */
-  --gold:#2463EB;            /* bleu vif moderne */
-  --gold-light:#3B82F6;      /* bleu clair */
-  --gold-dark:#1E40AF;       /* bleu profond */
+  --gold:#2463EB;
+  --gold-light:#3B82F6;
+  --gold-dark:#1E40AF;
 
   /* Statuts */
   --red-tn:#C8102E;
   --green:#22C55E;
+  --red:#E74C3C;
   --orange:#F59E0B;
   --cyan:#06B6D4;
   --purple:#8B5CF6;
@@ -40,1768 +39,1124 @@
   --safe-bottom:env(safe-area-inset-bottom,0px);
   --tr:all .25s cubic-bezier(.4,0,.2,1);
 }
-    body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.55}
-    h1,h2,h3,.serif{font-family:'Playfair Display',serif}
-    .mono{font-family:'JetBrains Mono',monospace}
-    ::selection{background:rgba(36,99,235,.30)}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(36,99,235,0.20);border-radius:6px}
-
-    .tn-stripe{height:3px;background:linear-gradient(90deg,var(--red-tn),var(--gold),var(--red-tn));opacity:.65}
-
-    .header{
-      padding:0 26px;height:64px;border-bottom:1px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;
-      background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);
-      box-shadow:0 10px 30px rgba(2,6,23,0.06);
-      position:sticky;top:0;z-index:100;
-    }
-    .header-left{display:flex;align-items:center;gap:14px}
-    .logo-mark{
-      width:38px;height:38px;border-radius:10px;
-      background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 2px 12px rgba(36,99,235,0.2);
-      font-size:18px;flex-shrink:0;color:#0B1528;
-    }
-    .header-title{font-size:15px;font-weight:800;color:var(--gold-light);letter-spacing:.2px}
-    .header-sub{font-size:10px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;font-weight:600;margin-top:2px}
-    .header-right{display:flex;align-items:center;gap:10px}
-
-    .desktop-tabs{display:flex;gap:2px;padding:3px;border-radius:10px;background:rgba(36,99,235,0.04);border:1px solid var(--border)}
-    .tab-btn{
-      padding:8px 14px;border-radius:8px;border:none;background:transparent;
-      font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);
-      transition:var(--tr);white-space:nowrap;letter-spacing:.3px;text-transform:uppercase;
-      display:flex;align-items:center;gap:6px;
-    }
-    .tab-btn:hover{color:var(--text)}
-    .tab-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
-    .tab-count{
-      font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;
-      background:rgba(36,99,235,0.15);color:var(--gold)
-    }
-
-    main{padding:22px 26px 26px}
-
-    .btn{
-      padding:10px 18px;border:none;border-radius:8px;font-size:12px;font-weight:800;
-      cursor:pointer;font-family:inherit;transition:var(--tr);
-      letter-spacing:.5px;text-transform:uppercase;
-    }
-    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(2,6,23,0.12)}
-    .btn:active{transform:scale(.98)}
-    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
-
-    var(--gold){background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0B1528}
-    .btn-red{background:var(--red-tn);color:#fff}
-    .btn-green{background:var(--green);color:#0B1528}
-    .btn-outline{
-      background:transparent;border:1px solid rgba(36,99,235,0.28);color:var(--gold);
-      padding:9px 14px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;transition:var(--tr);
-      text-transform:uppercase;letter-spacing:.5px
-    }
-    .btn-outline:hover{border-color:var(--gold)}
-    .btn-outline-red{border-color:rgba(200,16,46,.35);color:var(--red-tn)}
-    .btn-sm{padding:6px 12px;font-size:10px}
-    .btn-full{width:100%;padding:14px 0}
-
-    .btn-icon{background:none;border:none;color:var(--dim);cursor:pointer;padding:8px;border-radius:8px;transition:var(--tr)}
-    .btn-icon:hover{color:var(--gold);background:rgba(36,99,235,0.06)}
-
-    .input,.select,.textarea{
-      width:100%;padding:12px 14px;background:rgba(36,99,235,0.04);
-      border:1px solid var(--border-light);border-radius:10px;color:var(--text);
-      font-size:14px;outline:none;font-family:inherit;transition:var(--tr)
-    }
-    .input:focus,.select:focus,.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(36,99,235,0.09)}
-    .select{cursor:pointer}
-    .textarea{min-height:88px;resize:vertical}
-
-    .label{font-size:10px;color:var(--gold);margin-bottom:6px;display:block;font-weight:900;letter-spacing:1.4px;text-transform:uppercase}
-
-    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;transition:var(--tr)}
-    .card-padded{padding:22px}
-    .card:hover{border-color:var(--border-light)}
-
-    .section-title{
-      font-size:18px;font-weight:800;color:var(--gold-light);
-      margin:26px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--border)
-    }
-    .section-title:first-child{margin-top:0}
-
-    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
-    .kpi{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;position:relative;overflow:hidden;transition:var(--tr)}
-    .kpi:hover{transform:translateY(-2px)}
-    .kpi-bar{position:absolute;top:0;left:0;width:3px;height:100%}
-    .kpi-label{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);font-weight:900}
-    .kpi-value{font-size:28px;font-weight:900;margin-top:6px}
-    .kpi-sub{font-size:12px;color:var(--dim);margin-top:4px}
-
-    .badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
-    .empty{padding:44px 20px;text-align:center;color:var(--dim);font-size:14px;font-style:italic}
-
-    .table-container{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-    .table-head,.table-row{display:grid;gap:12px;padding:12px 18px;align-items:center}
-    .table-head{background:rgba(36,99,235,0.06);border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);font-weight:900}
-    .table-row{border-bottom:1px solid var(--border);cursor:pointer;transition:var(--tr)}
-    .table-row:hover{background:var(--card-hover)}
-    .table-row:last-child{border-bottom:none}
-
-    .filters{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-    .spacer{flex:1}
-    .pill{
-      display:flex;gap:3px;background:rgba(36,99,235,0.04);border-radius:10px;padding:3px;border:1px solid var(--border)
-    }
-    .pill-btn{
-      padding:7px 12px;border-radius:8px;border:none;font-size:11px;font-weight:900;
-      cursor:pointer;background:transparent;color:var(--muted);transition:var(--tr);white-space:nowrap
-    }
-    .pill-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
-
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .form-span{grid-column:1/-1}
-
-    .modal-overlay{
-      position:fixed;inset:0;background:rgba(0,0,0,0.60);
-      backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;
-      z-index:1000;padding:12px;animation:fadeIn .18s;
-    }
-    .modal{
-      background:linear-gradient(180deg,#FFFFFF,#F3F6FF);
-      border:1px solid var(--border-light);border-radius:18px;padding:22px;
-      width:min(720px,94vw);max-height:90vh;overflow:auto;
-      animation:slideUp .25s cubic-bezier(.4,0,.2,1);
-    }
-    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
-    .modal-title{font-size:18px;font-weight:900;color:var(--gold-light)}
-    .hint{color:var(--muted);font-size:13px}
-    .error-box{padding:12px 14px;background:rgba(200,16,46,0.10);border:1px solid rgba(200,16,46,0.25);border-radius:12px;color:var(--red-tn);font-size:12px;margin:10px 0}
-    .success-box{padding:12px 14px;background:rgba(46,204,113,0.10);border:1px solid rgba(46,204,113,0.22);border-radius:12px;color:var(--green);font-size:12px;margin:10px 0}
-    .user-badge{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(36,99,235,0.06);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted)}
-    .user-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
-
-    .note-grid{display:grid;gap:8px;margin-top:12px}
-    .note-row{
-      display:grid;grid-template-columns:1fr 90px 100px;gap:10px;align-items:center;
-      padding:10px 12px;background:rgba(36,99,235,0.03);border:1px solid var(--border);border-radius:12px
-    }
-    .note-row .matiere-name{font-size:13px;font-weight:700}
-    .note-row .coef{font-size:10px;color:var(--gold);font-weight:900}
-    .note-input{
-      width:100%;padding:9px;background:rgba(36,99,235,0.06);
-      border:1px solid var(--border-light);border-radius:10px;
-      color:var(--text);font-size:14px;font-family:'JetBrains Mono',monospace;text-align:center;outline:none;
-      transition:var(--tr)
-    }
-    .note-input:focus{border-color:var(--gold)}
-    .note-input.absent{background:rgba(200,16,46,0.10);border-color:rgba(200,16,46,0.28);color:var(--red-tn)}
-    .chk{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
-    .chk input{width:18px;height:18px}
-
-    .result-admis{color:var(--green);font-weight:900}
-    .result-ajourne{color:var(--red-tn);font-weight:900}
-    .result-attente{color:var(--orange);font-weight:900}
-
-    .toast-wrap{position:fixed;top:14px;right:14px;z-index:2000;display:grid;gap:10px}
-    .toast{
-      width:min(360px,92vw);padding:12px 14px;border-radius:14px;
-      background:rgba(18,32,61,0.94);backdrop-filter:blur(10px);
-      border:1px solid var(--border-light);box-shadow:0 12px 30px rgba(0,0,0,0.35);
-      display:flex;gap:10px;align-items:flex-start
-    }
-    .toast .dot{width:10px;height:10px;border-radius:50%;margin-top:4px}
-    .toast .t-title{font-weight:900;font-size:12px;color:var(--gold-light);text-transform:uppercase;letter-spacing:.8px}
-    .toast .t-msg{font-size:12px;color:var(--text);opacity:.95;margin-top:2px}
-
-    .login-page{
-      min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
-      background:linear-gradient(180deg,#FFFFFF,#F3F6FF);
-    }
-    .login-box{width:460px;max-width:100%}
-    .login-header{text-align:center;margin-bottom:26px}
-    .login-title{font-size:26px;font-weight:900;color:var(--gold-light)}
-    .login-sub{color:var(--muted);font-size:14px;margin-top:10px}
-
-    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-    @keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-    @media(max-width:768px){
-      .header{padding:0 14px;height:56px}
-      main{padding:16px 14px 18px}
-      .desktop-tabs{display:none!important}
-      .grid-2{grid-template-columns:1fr}
-      .form-grid{grid-template-columns:1fr}
-      .note-row{grid-template-columns:1fr 80px 110px}
-    }
-  </style>
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;min-height:100vh;overflow-x:hidden;line-height:1.6}
+h1,h2,h3,.serif{font-family:'Playfair Display',serif}
+.mono{font-family:'JetBrains Mono',monospace}
+::selection{background:rgba(36,99,235,0.3)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(36,99,235,0.2);border-radius:4px}
+.header{padding:0 32px;height:64px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.92);box-shadow:0 10px 30px rgba(2,6,23,0.06);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 12px rgba(36,99,235,0.2);font-size:18px}
+.header-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold-light)}
+.header-sub{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+.desktop-tabs{display:flex;gap:2px;padding:3px;border-radius:10px;background:rgba(36,99,235,0.04);border:1px solid var(--border)}
+.tab-btn{padding:8px 16px;border-radius:8px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;background:transparent;color:var(--muted);transition:var(--tr);white-space:nowrap;letter-spacing:0.3px;text-transform:uppercase}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
+.tab-count{font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:6px;background:rgba(36,99,235,0.15);color:var(--gold)}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(11,21,40,0.98);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:6px 4px;padding-bottom:calc(6px + var(--safe-bottom));z-index:100;justify-content:space-around}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-size:9px;font-family:inherit;font-weight:600;cursor:pointer;padding:5px 4px;border-radius:8px;min-width:44px;position:relative;transition:var(--tr)}
+.mobile-nav-btn.active{color:var(--gold)}.mobile-nav-btn .nav-icon{font-size:18px}
+.mobile-nav-btn .nav-badge{position:absolute;top:0;right:2px;font-size:8px;font-weight:700;background:var(--red-tn);color:#fff;padding:1px 4px;border-radius:6px}
+.btn{padding:10px 22px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:var(--tr);letter-spacing:0.5px;text-transform:uppercase}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.2)}.btn:active{transform:scale(0.97)}.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0B1528}
+.btn-red{background:var(--red-tn);color:#fff}.btn-green{background:var(--green);color:#fff}.btn-purple{background:var(--purple);color:#fff}.btn-orange{background:var(--orange);color:#fff}
+.btn-outline{padding:9px 18px;background:transparent;border:1px solid rgba(36,99,235,0.25);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--gold);transition:var(--tr)}
+.btn-outline:hover{border-color:var(--gold)}.btn-outline-red{border-color:rgba(200,16,46,0.3);color:var(--red-tn)}
+.btn-sm{padding:6px 14px;font-size:10px}.btn-full{width:100%;padding:14px 0}
+.btn-icon{background:none;border:none;color:var(--dim);cursor:pointer;padding:8px;transition:var(--tr);border-radius:6px}.btn-icon:hover{color:var(--gold)}
+.btn-fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;border-radius:50%;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 24px rgba(36,99,235,0.25);z-index:90;display:none;align-items:center;justify-content:center;color:#0B1528;background:linear-gradient(135deg,var(--gold),var(--gold-dark))}
+.input,.select,.textarea{width:100%;padding:12px 16px;background:rgba(36,99,235,0.04);border:1px solid var(--border-light);border-radius:8px;color:var(--text);font-size:14px;outline:none;font-family:inherit;transition:var(--tr)}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(36,99,235,0.08)}.select{cursor:pointer}.textarea{min-height:80px;resize:vertical}
+.label{font-size:10px;color:var(--gold);margin-bottom:6px;display:block;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;transition:var(--tr)}.card-padded{padding:24px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:28px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:var(--tr)}.kpi:hover{border-color:var(--border-light);transform:translateY(-2px)}
+.kpi-bar{position:absolute;top:0;left:0;width:3px;height:100%;border-radius:16px 0 0 16px}
+.kpi-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700}
+.kpi-value{font-size:28px;font-weight:700;margin-top:6px;font-family:'Playfair Display',serif}.kpi-sub{font-size:12px;color:var(--dim);margin-top:4px}
+.badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.table-container{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.table-row{display:grid;padding:14px 22px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:var(--tr)}.table-row:hover{background:var(--card-hover)}.table-row:last-child{border-bottom:none}
+.mobile-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;cursor:pointer;transition:var(--tr)}.mobile-card:hover{border-color:var(--border-light)}
+.mobile-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.mobile-card-title{font-size:15px;font-weight:600}.mobile-card-id{font-size:11px;color:var(--dim);margin-top:3px}
+.mobile-card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mobile-card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:12px;animation:fadeIn 0.2s}
+.modal{background:linear-gradient(180deg,#FFFFFF,#F3F6FF);border:1px solid var(--border-light);border-radius:20px;padding:28px;max-width:94vw;max-height:90vh;overflow-y:auto;width:560px;animation:slideUp 0.3s cubic-bezier(0.4,0,0.2,1)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--gold-light)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-span{grid-column:1/-1}
+.filters{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;align-items:center}
+.filter-group{display:flex;gap:3px;background:rgba(36,99,235,0.04);border-radius:10px;padding:3px;border:1px solid var(--border)}
+.filter-btn{padding:7px 14px;border-radius:7px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:var(--muted);white-space:nowrap;transition:var(--tr)}.filter-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
+.spacer{flex:1}.empty{padding:48px 24px;text-align:center;color:var(--dim);font-size:14px;font-style:italic}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#F6F8FC,#EAF1FF,#F6F8FC)}
+.login-box{width:440px;max-width:100%}.login-header{text-align:center;margin-bottom:36px}
+.login-title{font-size:26px;font-weight:800;font-family:'Playfair Display',serif;color:var(--gold-light)}
+.login-sub{color:var(--muted);font-size:14px;margin-top:10px}
+.error-box{padding:12px 16px;background:rgba(200,16,46,0.08);border:1px solid rgba(200,16,46,0.2);border-radius:10px;color:var(--red-tn);font-size:12px;margin-bottom:16px}
+.user-badge{display:flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(36,99,235,0.06);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--muted)}
+.user-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.section-title{font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:18px;margin-top:32px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-title:first-child{margin-top:0}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}.stat-row:last-child{border:none}
+.note-grid{display:grid;gap:6px;margin:16px 0}
+.note-row{display:grid;grid-template-columns:1fr 80px 50px;gap:10px;align-items:center;padding:10px 14px;background:rgba(36,99,235,0.02);border:1px solid var(--border);border-radius:10px}
+.note-row .matiere-name{font-size:12px;font-weight:500}.note-row .coef{font-size:10px;color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:600}
+.note-input{width:100%;padding:8px;background:rgba(36,99,235,0.06);border:1px solid var(--border-light);border-radius:6px;color:var(--text);font-size:14px;font-family:'JetBrains Mono',monospace;text-align:center;outline:none;transition:var(--tr)}
+.note-input:focus{border-color:var(--gold)}.note-input.absent{background:rgba(200,16,46,0.08);border-color:rgba(200,16,46,0.25);color:var(--red-tn)}
+.result-admis{color:var(--green);font-weight:700}.result-ajourne{color:var(--red-tn);font-weight:700}.result-attente{color:var(--orange);font-weight:700}
+.moyenne-display{font-size:32px;font-weight:800;text-align:center;padding:20px;border-radius:14px;margin-bottom:18px;font-family:'Playfair Display',serif}
+.stats-table{width:100%;border-collapse:collapse;font-size:12px}
+.stats-table th{text-align:left;padding:10px 12px;background:rgba(36,99,235,0.06);color:var(--gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;border-bottom:1px solid var(--border)}
+.stats-table td{padding:10px 12px;border-bottom:1px solid var(--border)}.stats-table tr:hover td{background:rgba(36,99,235,0.02)}
+.tn-stripe{height:3px;background:linear-gradient(90deg,var(--red-tn),var(--gold),var(--red-tn));opacity:0.6}
+@media(max-width:768px){
+  .header{padding:0 16px;height:56px}.header-title{font-size:14px}.header-sub{display:none}
+  .desktop-tabs{display:none!important}.header-right .user-badge{display:none}.header-right .btn-outline:not(.btn-outline-red){display:none}
+  .mobile-nav{display:flex!important}.btn-fab{display:flex!important}
+  main{padding:16px 14px 96px 14px!important}
+  .form-grid{grid-template-columns:1fr}.form-span{grid-column:1}.grid-2{grid-template-columns:1fr}
+  .modal{padding:22px 18px;width:100%;max-width:100%;border-radius:18px 18px 0 0;position:fixed;bottom:0;left:0;right:0;max-height:92vh}
+  .modal-overlay{align-items:flex-end;padding:0}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px}.kpi{padding:14px}.kpi-value{font-size:24px}
+  .desktop-only{display:none!important}.mobile-only{display:block!important}
+  .input,.select,.textarea{font-size:16px;padding:14px}.btn{padding:12px 20px;font-size:13px}.btn-full{padding:16px 0}
+  .note-row{grid-template-columns:1fr 60px 45px}
+}
+@media(min-width:769px){.mobile-only{display:none!important}.mobile-nav{display:none!important}.btn-fab{display:none!important}}
+</style>
 </head>
-
 <body>
-  <div class="tn-stripe"></div>
-  <div id="app"></div>
+<div class="tn-stripe"></div>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+const SB_URL = "https://rvsldfentjjuukgozrzv.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2c2xkZmVudGpqdXVrZ296cnp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NzA0MDEsImV4cCI6MjA4NzI0NjQwMX0.PAFfUgH1-cmrd7HULo0H46Bzs9q3fwX3qoxjBgnvCdQ";
+const PASS_MARK = 13;
+const ORGANISMES = ["CIFAC", "AFA", "OSC"];
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+const authApi = {
+  async login(e, p) {
+    const r = await fetch(SB_URL + "/auth/v1/token?grant_type=password", { method: "POST", headers: { apikey: SB_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email: e, password: p }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error_description || d.msg || "Echec"); return d;
+  },
+  async logout(t) { await fetch(SB_URL + "/auth/v1/logout", { method: "POST", headers: { apikey: SB_KEY, Authorization: "Bearer " + t, "Content-Type": "application/json" } }); },
+  async getUser(t) { const r = await fetch(SB_URL + "/auth/v1/user", { headers: { apikey: SB_KEY, Authorization: "Bearer " + t } }); if (!r.ok) throw new Error("Expire"); return r.json(); }
+};
+const createApi = (t) => {
+  const h = { apikey: SB_KEY, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=representation" };
+  const b = SB_URL + "/rest/v1";
+  return {
+    async select(tb, q) { const r = await fetch(b + "/" + tb + "?" + (q || ""), { headers: h }); if (!r.ok) throw new Error(r.statusText); return r.json(); },
+    async insert(tb, d) { const r = await fetch(b + "/" + tb, { method: "POST", headers: h, body: JSON.stringify(d) }); if (!r.ok) { const e = await r.json(); throw new Error(e.message || r.statusText); } return r.json(); },
+    async update(tb, id, d) { const r = await fetch(b + "/" + tb + "?id=eq." + id, { method: "PATCH", headers: h, body: JSON.stringify(d) }); if (!r.ok) throw new Error(r.statusText); return r.json(); },
+    async remove(tb, id) { const r = await fetch(b + "/" + tb + "?id=eq." + id, { method: "DELETE", headers: h }); if (!r.ok) throw new Error(r.statusText); return true; }
+  };
+};
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+const STATUTS_SESSION = ["Planifiee", "En cours", "Terminee", "Deliberee", "Archivee"];
+const SC = { "Planifiee": "#BDA56B", "En cours": "#F39C12", "Terminee": "#5DADE2", "Deliberee": "#2ECC71", "Archivee": "rgba(232,228,221,0.3)", "Inscrit": "#BDA56B", "Absent": "#C8102E", "Retire": "rgba(232,228,221,0.3)", "En attente": "#F39C12", "Admis": "#2ECC71", "Ajourne": "#C8102E" };
 
-  <script type="text/babel">
-    const { useEffect, useMemo, useState, useCallback } = React;
+function moyColor(m) { if (m === null || m === undefined) return "var(--dim)"; return Number(m) >= PASS_MARK ? "var(--green)" : "var(--red-tn)"; }
 
-    /* =========================================================
-      ✅ PRÉFÉRENCES (tu modifies ici, puis tu push sur GitHub)
-    ========================================================== */
-    const APP = {
-      BRAND_TITLE: "Examens ATE",
-      BRAND_SUBTITLE: "Direction Générale de l'Aviation Civile — Tunisie",
+function Badge({ children, color }) { return <span className="badge" style={{ background: (color || "#888") + "18", color: color || "#888" }}>{children}</span>; }
+function Tag({ label }) { return <Badge color={SC[label]}>{label}</Badge>; }
+function Empty({ text }) { return <div className="empty">{text}</div>; }
+function KPI({ label, value, sub, color }) {
+  return (<div className="kpi"><div className="kpi-bar" style={{ background: color }} /><div className="kpi-label">{label}</div><div className="kpi-value mono" style={{ color: color }}>{value}</div>{sub && <div className="kpi-sub">{sub}</div>}</div>);
+}
+function Modal({ onClose, title, width, children }) {
+  return (<div className="modal-overlay" onClick={onClose}><div className="modal" style={{ width: width || 560 }} onClick={e => e.stopPropagation()}><div className="modal-header"><h3 className="modal-title">{title}</h3><button className="btn-icon" onClick={onClose} style={{ fontSize: 20 }}>&#10005;</button></div>{children}</div></div>);
+}
+function Field({ label, span, children }) { return <div className={span ? "form-span" : ""}><label className="label">{label}</label>{children}</div>; }
+function Sel({ value, onChange, options }) { return <select className="select" value={value} onChange={e => onChange(e.target.value)}>{options.map(o => <option key={o} value={o}>{o}</option>)}</select>; }
+function ConfirmDelete({ item, onConfirm, onCancel }) {
+  return (<Modal onClose={onCancel} title="Confirmer la suppression" width={420}><p style={{ color: "var(--muted)", fontSize: 14, marginBottom: 20 }}>Supprimer <strong style={{ color: "var(--red-tn)" }}>{item}</strong> ?</p><div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}><button className="btn btn-outline" onClick={onCancel}>Annuler</button><button className="btn btn-red" onClick={onConfirm}>Supprimer</button></div></Modal>);
+}
+function FAB({ onClick, color }) { return <button className="btn-fab" style={{ background: color || "linear-gradient(135deg,var(--gold),var(--gold-dark))" }} onClick={onClick}>+</button>; }
+function ResultBadge({ r }) { return <span className={r === "Admis" ? "result-admis" : r === "Ajourne" ? "result-ajourne" : "result-attente"}>{r}</span>; }
 
-      // Supabase (identique à ton fichier)
-      SB_URL: "https://rvsldfentjjuukgozrzv.supabase.co",
-      SB_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2c2xkZmVudGpqdXVrZ296cnp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NzA0MDEsImV4cCI6MjA4NzI0NjQwMX0.PAFfUgH1-cmrd7HULo0H46Bzs9q3fwX3qoxjBgnvCdQ",
+/* ===== LOGIN ===== */
+function LoginScreen({ onLogin, onLookup }) {
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [ld, setLd] = useState(false);
+  const [err, setErr] = useState("");
+  const go = async () => {
+    if (!email || !pw) { setErr("Remplissez les deux champs"); return; }
+    setLd(true); setErr("");
+    try { const d = await authApi.login(email, pw); localStorage.setItem("ate_token", d.access_token); onLogin(d.access_token, d.user); }
+    catch (e) { setErr(e.message === "Invalid login credentials" ? "Email ou mot de passe incorrect" : e.message); }
+    setLd(false);
+  };
+  return (
+    <div className="login-page"><div className="login-box">
+      <div className="login-header">
+        <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", fontSize: 28, boxShadow: "0 4px 24px rgba(36,99,235,0.3)" }}>&#9992;</div>
+        <h1 className="login-title">Examens ATE</h1>
+        <p className="login-sub">Direction Generale de l'Aviation Civile — Tunisie</p>
+      </div>
+      <div className="card card-padded">
+        <div style={{ marginBottom: 18 }}><label className="label">Email</label><input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="votre.email@dgac.tn" onKeyDown={e => e.key === "Enter" && go()} /></div>
+        <div style={{ marginBottom: 18 }}><label className="label">Mot de passe</label><input className="input" type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="••••••••" onKeyDown={e => e.key === "Enter" && go()} /></div>
+        {err && <div className="error-box">{err}</div>}
+        <button className="btn btn-gold btn-full" onClick={go} disabled={ld}>{ld ? "Connexion..." : "Se connecter"}</button>
+      </div>
+      <div style={{ textAlign: "center", marginTop: 20 }}>
+        <button onClick={onLookup} style={{ background: "none", border: "none", color: "var(--gold)", cursor: "pointer", fontFamily: "inherit", fontSize: 13, textDecoration: "underline" }}>Espace candidat — Consulter mes resultats</button>
+      </div>
+    </div></div>
+  );
+}
 
-      PASS_MARK: 13,
-      ORGANISMES: ["CIFAC", "AFA", "OSC"],
+/* ===== CANDIDATE LOOKUP ===== */
+function CandidatLookup({ onBack }) {
+  const [cin, setCin] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const [result, setResult] = useState(null);
+  const [notes, setNotes] = useState([]);
+  const [matieres, setMatieres] = useState([]);
 
-      // ⚠️ Sécurité : si tu n’as pas mis une RLS/Edge Function,
-      // laisse FALSE pour éviter la consultation par CIN en public.
-      ENABLE_CANDIDAT_PORTAL: false,
+  const search = async () => {
+    if (!cin.trim()) { setErr("Entrez votre numero CIN"); return; }
+    setLoading(true); setErr(""); setResult(null);
+    const h = { apikey: SB_KEY, "Content-Type": "application/json" };
+    const b = SB_URL + "/rest/v1";
+    try {
+      const cr = await fetch(b + "/candidats?cin=eq." + encodeURIComponent(cin.trim()), { headers: h });
+      const cands = await cr.json();
+      if (!cands || cands.length === 0) { setErr("Aucun candidat trouve avec ce CIN"); setLoading(false); return; }
+      const cand = cands[0];
+      const ir = await fetch(b + "/inscriptions?candidat_uuid=eq." + cand.id + "&order=created_at.desc&limit=1", { headers: h });
+      const inscs = await ir.json();
+      if (!inscs || inscs.length === 0) { setErr("Aucune inscription trouvee"); setLoading(false); return; }
+      const insc = inscs[0];
+      const nr = await fetch(b + "/notes?inscription_uuid=eq." + insc.id, { headers: h });
+      const nts = await nr.json();
+      const mr = await fetch(b + "/matieres?order=ordre.asc", { headers: h });
+      const mats = await mr.json();
+      setResult({ candidat: cand, inscription: insc });
+      setNotes(nts);
+      setMatieres(mats);
+    } catch (e) { setErr("Erreur: " + e.message); }
+    setLoading(false);
+  };
 
-      DEFAULT_TAB: "dashboard", // dashboard | sessions | candidats | matieres
-    };
-
-    const STATUTS_SESSION = ["Planifiee", "En cours", "Terminee", "Deliberee", "Archivee"];
-    const SC = {
-      "Planifiee": "#BDA56B",
-      "En cours": "#F39C12",
-      "Terminee": "#5DADE2",
-      "Deliberee": "#2ECC71",
-      "Archivee": "rgba(232,228,221,0.30)",
-      "Inscrit": "#BDA56B",
-      "Absent": "#C8102E",
-      "Retire": "rgba(232,228,221,0.30)",
-      "En attente": "#F39C12",
-      "Admis": "#2ECC71",
-      "Ajourne": "#C8102E"
-    };
-
-    function moyColor(m) {
-      if (m === null || m === undefined || m === "") return "var(--dim)";
-      return Number(m) >= APP.PASS_MARK ? "var(--green)" : "var(--red-tn)";
-    }
-
-    function fmtDate(d) { return d || "—"; }
-
-    function safeNum(v) {
-      if (v === null || v === undefined || v === "") return null;
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    }
-
-    function computeMoyenne(matieres, notesByMatiere) {
-      // Règle simple :
-      // - si une matière est ABS => note = 0 et coef compté
-      // - si une matière est vide => "incomplet" => moyenne null
-      let sumCoef = 0;
-      let sum = 0;
-      for (const m of matieres) {
-        const n = notesByMatiere[m.id];
-        if (!n) return null; // pas de ligne => incomplet
-        if (n.absent) {
-          sumCoef += Number(m.coefficient || 1);
-          sum += 0;
-          continue;
-        }
-        const val = safeNum(n.note);
-        if (val === null) return null; // incomplet
-        sumCoef += Number(m.coefficient || 1);
-        sum += val * Number(m.coefficient || 1);
-      }
-      if (sumCoef <= 0) return null;
-      return Number((sum / sumCoef).toFixed(2));
-    }
-
-    function computeResult(moy) {
-      if (moy === null || moy === undefined) return "En attente";
-      return Number(moy) >= APP.PASS_MARK ? "Admis" : "Ajourne";
-    }
-
-    async function fetchJson(url, opts = {}, timeoutMs = 25000) {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), timeoutMs);
-      try {
-        const r = await fetch(url, { ...opts, signal: ctrl.signal });
-        const txt = await r.text();
-        let data = null;
-        try { data = txt ? JSON.parse(txt) : null; } catch { data = txt; }
-        if (!r.ok) {
-          const msg = (data && (data.message || data.error_description || data.error)) || r.statusText || "Erreur";
-          throw new Error(msg);
-        }
-        return data;
-      } finally {
-        clearTimeout(t);
-      }
-    }
-
-    const authApi = {
-      async login(email, password) {
-        const url = APP.SB_URL + "/auth/v1/token?grant_type=password";
-        const d = await fetchJson(url, {
-          method: "POST",
-          headers: { apikey: APP.SB_KEY, "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-        return d;
-      },
-      async logout(token) {
-        const url = APP.SB_URL + "/auth/v1/logout";
-        await fetchJson(url, {
-          method: "POST",
-          headers: { apikey: APP.SB_KEY, Authorization: "Bearer " + token, "Content-Type": "application/json" }
-        });
-      },
-      async getUser(token) {
-        const url = APP.SB_URL + "/auth/v1/user";
-        return fetchJson(url, { headers: { apikey: APP.SB_KEY, Authorization: "Bearer " + token } });
-      }
-    };
-
-    const createApi = (token) => {
-      const base = APP.SB_URL + "/rest/v1";
-      const headers = {
-        apikey: APP.SB_KEY,
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-        Prefer: "return=representation"
-      };
-
-      return {
-        async select(table, query) {
-          const url = base + "/" + table + (query ? "?" + query : "");
-          return fetchJson(url, { headers });
-        },
-        async insert(table, payload) {
-          const url = base + "/" + table;
-          return fetchJson(url, { method: "POST", headers, body: JSON.stringify(payload) });
-        },
-        async patch(table, where, payload) {
-          const url = base + "/" + table + "?" + where;
-          return fetchJson(url, { method: "PATCH", headers, body: JSON.stringify(payload) });
-        },
-        async remove(table, where) {
-          const url = base + "/" + table + "?" + where;
-          await fetchJson(url, { method: "DELETE", headers });
-          return true;
-        }
-      };
-    };
-
-    function Badge({ children, color }) {
-      return <span className="badge" style={{ background: (color || "#888") + "18", color: color || "#888" }}>{children}</span>;
-    }
-    function Tag({ label }) { return <Badge color={SC[label] || "var(--dim)"}>{label}</Badge>; }
-    function Empty({ text }) { return <div className="empty">{text}</div>; }
-
-    function KPI({ label, value, sub, color }) {
-      return (
-        <div className="kpi">
-          <div className="kpi-bar" style={{ background: color }} />
-          <div className="kpi-label">{label}</div>
-          <div className="kpi-value mono" style={{ color }}>{value}</div>
-          {sub && <div className="kpi-sub">{sub}</div>}
+  return (
+    <div className="login-page"><div className="login-box" style={{ width: 520 }}>
+      <div className="login-header">
+        <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", fontSize: 28, boxShadow: "0 4px 24px rgba(36,99,235,0.3)" }}>&#9992;</div>
+        <h1 className="login-title">Espace Candidat</h1>
+        <p className="login-sub">Consultation des resultats — Examens ATE</p>
+      </div>
+      {!result ? (
+        <div className="card card-padded">
+          <div style={{ marginBottom: 18 }}><label className="label">Numero CIN</label><input className="input" value={cin} onChange={e => setCin(e.target.value)} placeholder="Entrez votre numero CIN" onKeyDown={e => e.key === "Enter" && search()} /></div>
+          {err && <div className="error-box">{err}</div>}
+          <button className="btn btn-gold btn-full" onClick={search} disabled={loading}>{loading ? "Recherche..." : "Consulter mes resultats"}</button>
+          <div style={{ textAlign: "center", marginTop: 16 }}><button onClick={onBack} style={{ background: "none", border: "none", color: "var(--gold)", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>&#8592; Retour</button></div>
         </div>
-      );
-    }
-
-    function Modal({ title, onClose, children, width }) {
-      return (
-        <div className="modal-overlay" onClick={onClose}>
-          <div className="modal" style={{ width: width || "min(720px,94vw)" }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div>
-                <div className="modal-title">{title}</div>
+      ) : (
+        <div>
+          <div className="card card-padded" style={{ marginBottom: 16 }}>
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <div style={{ fontSize: 14, color: "var(--muted)" }}>{result.candidat.prenom} {result.candidat.nom}</div>
+              <div className="moyenne-display" style={{ background: result.inscription.moyenne_ponderee !== null ? (Number(result.inscription.moyenne_ponderee) >= PASS_MARK ? "rgba(46,204,113,0.1)" : "rgba(200,16,46,0.1)") : "rgba(36,99,235,0.04)", color: result.inscription.moyenne_ponderee !== null ? (Number(result.inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") : "var(--dim)", margin: "12px 0" }}>
+                {result.inscription.moyenne_ponderee !== null ? Number(result.inscription.moyenne_ponderee).toFixed(2) : "—"}
+                <span style={{ fontSize: 16, fontWeight: 400, marginLeft: 8 }}>/20</span>
               </div>
-              <button className="btn-icon" onClick={onClose} title="Fermer">✕</button>
+              <div style={{ fontSize: 20, fontWeight: 700 }}><ResultBadge r={result.inscription.resultat} /></div>
             </div>
-            {children}
           </div>
+          <div className="card card-padded">
+            <div className="section-title" style={{ marginTop: 0 }}>Detail des notes</div>
+            {matieres.map(m => {
+              const n = notes.find(x => x.matiere_uuid === m.id);
+              return (
+                <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", fontSize: 13 }}>
+                  <span>{m.nom} <span className="mono" style={{ color: "var(--gold)", fontSize: 10 }}>x{m.coefficient}</span></span>
+                  <span className="mono" style={{ fontWeight: 700, color: n && n.absent ? "var(--red-tn)" : n && n.note !== null ? moyColor(n.note) : "var(--dim)" }}>{n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "—"}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ textAlign: "center", marginTop: 20 }}><button onClick={() => { setResult(null); setCin(""); }} className="btn btn-outline">Nouvelle recherche</button></div>
         </div>
-      );
-    }
+      )}
+    </div></div>
+  );
+}
 
-    function Field({ label, span, children }) {
-      return (
-        <div className={span ? "form-span" : ""}>
-          <label className="label">{label}</label>
-          {children}
+/* ===== DASHBOARD ===== */
+function Dashboard({ sessions, candidats, inscriptions, matieres, onNav }) {
+  const actives = sessions.filter(s => s.statut === "Planifiee" || s.statut === "En cours");
+  const admis = inscriptions.filter(i => i.resultat === "Admis").length;
+  const ajournes = inscriptions.filter(i => i.resultat === "Ajourne").length;
+  const total = admis + ajournes;
+  const taux = total > 0 ? Math.round((admis / total) * 100) : 0;
+  const avecMoy = inscriptions.filter(i => i.moyenne_ponderee !== null);
+  const moyG = avecMoy.length > 0 ? (avecMoy.reduce((s, i) => s + Number(i.moyenne_ponderee), 0) / avecMoy.length).toFixed(2) : "—";
+  return (
+    <div>
+      <div className="kpi-grid">
+        <KPI label="Sessions" value={sessions.length} sub={actives.length + " actives"} color="var(--gold)" />
+        <KPI label="Candidats" value={candidats.length} sub="inscrits" color="var(--cyan)" />
+        <KPI label="Taux reussite" value={taux + "%"} sub={admis + " admis / " + total} color="var(--green)" />
+        <KPI label="Moyenne gen." value={moyG} sub="/20" color={Number(moyG) >= PASS_MARK ? "var(--green)" : "var(--orange)"} />
+      </div>
+      <div className="grid-2">
+        <div className="card card-padded">
+          <div className="section-title" style={{ marginTop: 0 }}>Sessions actives</div>
+          {actives.length === 0 && <div style={{ color: "var(--dim)", fontSize: 13 }}>Aucune session active</div>}
+          {actives.slice(0, 5).map(s => {
+            const nb = inscriptions.filter(i => i.session_uuid === s.id).length;
+            return (<div key={s.id} className="stat-row"><div><div style={{ fontSize: 13, fontWeight: 600 }}>{s.intitule}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{s.date_debut || "—"} — {s.lieu || "—"}</div></div><div style={{ display: "flex", gap: 6, alignItems: "center" }}><Tag label={s.statut} /><Badge color="var(--cyan)">{nb}</Badge></div></div>);
+          })}
+          <button className="btn-outline btn-sm" onClick={() => onNav("sessions")} style={{ marginTop: 14 }}>Voir toutes &#8594;</button>
         </div>
-      );
-    }
-
-    function ResultBadge({ r }) {
-      return <span className={r === "Admis" ? "result-admis" : r === "Ajourne" ? "result-ajourne" : "result-attente"}>{r}</span>;
-    }
-
-    function useToasts() {
-      const [toasts, setToasts] = useState([]);
-      const push = useCallback((type, title, msg, ms = 3200) => {
-        const id = Math.random().toString(36).slice(2);
-        const dot = type === "error" ? "var(--red-tn)" : type === "success" ? "var(--green)" : "var(--orange)";
-        setToasts((t) => [{ id, type, title, msg, dot }, ...t].slice(0, 4));
-        setTimeout(() => setToasts((t) => t.filter(x => x.id !== id)), ms);
-      }, []);
-      const View = () => (
-        <div className="toast-wrap">
-          {toasts.map(t => (
-            <div key={t.id} className="toast">
-              <div className="dot" style={{ background: t.dot }} />
-              <div>
-                <div className="t-title">{t.title}</div>
-                <div className="t-msg">{t.msg}</div>
-              </div>
+        <div className="card card-padded">
+          <div className="section-title" style={{ marginTop: 0 }}>Resultats recents</div>
+          {inscriptions.filter(i => i.resultat !== "En attente").length === 0 && <div style={{ color: "var(--dim)", fontSize: 13 }}>Aucun resultat</div>}
+          {inscriptions.filter(i => i.resultat !== "En attente").slice(0, 8).map(i => {
+            const c = candidats.find(x => x.id === i.candidat_uuid);
+            return (<div key={i.id} className="stat-row"><div><div style={{ fontSize: 13, fontWeight: 500 }}>{c ? c.prenom + " " + c.nom : "—"}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{c ? c.organisme_formation : ""}</div></div><div style={{ display: "flex", gap: 8, alignItems: "center" }}><span className="mono" style={{ fontSize: 13, color: moyColor(i.moyenne_ponderee) }}>{Number(i.moyenne_ponderee).toFixed(2)}</span><ResultBadge r={i.resultat} /></div></div>);
+          })}
+        </div>
+      </div>
+      <div className="card card-padded" style={{ marginTop: 20 }}>
+        <div className="section-title" style={{ marginTop: 0 }}>Programme ATE — {matieres.length} matieres</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))", gap: 8 }}>
+          {matieres.sort((a, b) => a.ordre - b.ordre).map(m => (
+            <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "7px 12px", background: "rgba(36,99,235,0.03)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}>
+              <span>{m.nom}</span><span className="mono" style={{ color: "var(--gold)", fontWeight: 700 }}>x{m.coefficient}</span>
             </div>
           ))}
         </div>
-      );
-      return { push, View };
-    }
+      </div>
+    </div>
+  );
+}
 
-    function LoginScreen({ onLogin, onLookup }) {
-      const [email, setEmail] = useState("");
-      const [pw, setPw] = useState("");
-      const [loading, setLoading] = useState(false);
-      const [err, setErr] = useState("");
+/* ===== FORMS ===== */
+function SessionForm({ session, onClose, onSave }) {
+  const [f, setF] = useState(session || { session_id: "", intitule: "", date_debut: "", date_fin: "", lieu: "", president_jury: "", membres_jury: "", statut: "Planifiee", notes: "" });
+  return (<Modal onClose={onClose} title={session ? "Modifier session" : "Nouvelle Session"}>
+    <div className="form-grid">
+      <Field label="ID Session *"><input className="input" value={f.session_id} onChange={e => setF({ ...f, session_id: e.target.value })} placeholder="S-2026-01" /></Field>
+      <Field label="Statut"><Sel value={f.statut} onChange={v => setF({ ...f, statut: v })} options={STATUTS_SESSION} /></Field>
+      <Field label="Intitule *" span><input className="input" value={f.intitule} onChange={e => setF({ ...f, intitule: e.target.value })} placeholder="Session Juin 2026" /></Field>
+      <Field label="Date debut"><input type="date" className="input" value={f.date_debut || ""} onChange={e => setF({ ...f, date_debut: e.target.value })} /></Field>
+      <Field label="Date fin"><input type="date" className="input" value={f.date_fin || ""} onChange={e => setF({ ...f, date_fin: e.target.value })} /></Field>
+      <Field label="Lieu"><input className="input" value={f.lieu || ""} onChange={e => setF({ ...f, lieu: e.target.value })} /></Field>
+      <Field label="President jury"><input className="input" value={f.president_jury || ""} onChange={e => setF({ ...f, president_jury: e.target.value })} /></Field>
+      <Field label="Membres jury" span><textarea className="textarea" value={f.membres_jury || ""} onChange={e => setF({ ...f, membres_jury: e.target.value })} /></Field>
+      <Field label="Notes" span><textarea className="textarea" value={f.notes || ""} onChange={e => setF({ ...f, notes: e.target.value })} /></Field>
+    </div>
+    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{session ? "Enregistrer" : "Creer"}</button>
+  </Modal>);
+}
+function CandidatForm({ candidat, onClose, onSave }) {
+  const [f, setF] = useState(candidat || { matricule: "", nom: "", prenom: "", cin: "", date_naissance: "", telephone: "", email: "", organisme_formation: ORGANISMES[0], notes: "" });
+  return (<Modal onClose={onClose} title={candidat ? "Modifier candidat" : "Nouveau Candidat"}>
+    <div className="form-grid">
+      <Field label="Matricule *"><input className="input" value={f.matricule} onChange={e => setF({ ...f, matricule: e.target.value })} /></Field>
+      <Field label="Organisme"><Sel value={f.organisme_formation || ORGANISMES[0]} onChange={v => setF({ ...f, organisme_formation: v })} options={ORGANISMES} /></Field>
+      <Field label="Nom *"><input className="input" value={f.nom} onChange={e => setF({ ...f, nom: e.target.value })} /></Field>
+      <Field label="Prenom *"><input className="input" value={f.prenom} onChange={e => setF({ ...f, prenom: e.target.value })} /></Field>
+      <Field label="CIN"><input className="input" value={f.cin || ""} onChange={e => setF({ ...f, cin: e.target.value })} /></Field>
+      <Field label="Date naissance"><input type="date" className="input" value={f.date_naissance || ""} onChange={e => setF({ ...f, date_naissance: e.target.value })} /></Field>
+      <Field label="Telephone"><input className="input" value={f.telephone || ""} onChange={e => setF({ ...f, telephone: e.target.value })} /></Field>
+      <Field label="Email"><input className="input" type="email" value={f.email || ""} onChange={e => setF({ ...f, email: e.target.value })} /></Field>
+      <Field label="Notes" span><textarea className="textarea" value={f.notes || ""} onChange={e => setF({ ...f, notes: e.target.value })} /></Field>
+    </div>
+    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{candidat ? "Enregistrer" : "Creer"}</button>
+  </Modal>);
+}
+function InscriptionForm({ sessions, candidats, inscription, onClose, onSave }) {
+  const [f, setF] = useState(inscription || { candidat_uuid: "", session_uuid: "", statut: "Inscrit", observations: "" });
+  return (<Modal onClose={onClose} title={inscription ? "Modifier" : "Nouvelle Inscription"}>
+    <div className="form-grid">
+      <Field label="Candidat *"><select className="select" value={f.candidat_uuid} onChange={e => setF({ ...f, candidat_uuid: e.target.value })}><option value="">—</option>{candidats.map(c => <option key={c.id} value={c.id}>{c.prenom} {c.nom} ({c.matricule})</option>)}</select></Field>
+      <Field label="Session *"><select className="select" value={f.session_uuid} onChange={e => setF({ ...f, session_uuid: e.target.value })}><option value="">—</option>{sessions.map(s => <option key={s.id} value={s.id}>{s.intitule}</option>)}</select></Field>
+      <Field label="Statut"><Sel value={f.statut} onChange={v => setF({ ...f, statut: v })} options={["Inscrit", "Absent", "Retire"]} /></Field>
+      <Field label="Observations" span><textarea className="textarea" value={f.observations || ""} onChange={e => setF({ ...f, observations: e.target.value })} /></Field>
+    </div>
+    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{inscription ? "Enregistrer" : "Inscrire"}</button>
+  </Modal>);
+}
+function DeliberationForm({ delib, sessions, onClose, onSave }) {
+  const [f, setF] = useState(delib || { session_uuid: "", date_deliberation: new Date().toISOString().slice(0, 10), membres_presents: "", observations_generales: "", decision_jury: "", pv_valide: false });
+  return (<Modal onClose={onClose} title={delib ? "Modifier" : "Nouvelle Deliberation"}>
+    <div className="form-grid">
+      <Field label="Session *"><select className="select" value={f.session_uuid} onChange={e => setF({ ...f, session_uuid: e.target.value })}><option value="">—</option>{sessions.map(s => <option key={s.id} value={s.id}>{s.intitule}</option>)}</select></Field>
+      <Field label="Date"><input type="date" className="input" value={f.date_deliberation} onChange={e => setF({ ...f, date_deliberation: e.target.value })} /></Field>
+      <Field label="Membres presents" span><textarea className="textarea" value={f.membres_presents || ""} onChange={e => setF({ ...f, membres_presents: e.target.value })} /></Field>
+      <Field label="Observations" span><textarea className="textarea" value={f.observations_generales || ""} onChange={e => setF({ ...f, observations_generales: e.target.value })} /></Field>
+      <Field label="Decision jury" span><textarea className="textarea" value={f.decision_jury || ""} onChange={e => setF({ ...f, decision_jury: e.target.value })} /></Field>
+      <Field label="PV valide"><label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}><input type="checkbox" checked={f.pv_valide} onChange={e => setF({ ...f, pv_valide: e.target.checked })} /><span style={{ fontSize: 13 }}>Oui</span></label></Field>
+    </div>
+    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{delib ? "Enregistrer" : "Creer"}</button>
+  </Modal>);
+}
 
-      const go = async () => {
-        if (!email || !pw) { setErr("Remplissez les deux champs."); return; }
-        setLoading(true); setErr("");
-        try {
-          const d = await authApi.login(email, pw);
-          localStorage.setItem("ate_token", d.access_token);
-          onLogin(d.access_token, d.user);
-        } catch (e) {
-          const msg = String(e.message || "");
-          setErr(msg.includes("Invalid login credentials") ? "Email ou mot de passe incorrect." : msg);
-        } finally {
-          setLoading(false);
+/* ===== NOTES ENTRY ===== */
+function NotesEntry({ api, inscription, matieres, existingNotes, onClose, onSaved }) {
+  const [nv, setNv] = useState({});
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    const o = {};
+    matieres.forEach(m => { const ex = existingNotes.find(n => n.matiere_uuid === m.id); o[m.id] = ex ? { note: ex.note !== null ? String(ex.note) : "", absent: ex.absent || false } : { note: "", absent: false }; });
+    setNv(o);
+  }, [matieres, existingNotes]);
+  const setNote = (mid, val) => setNv(p => ({ ...p, [mid]: { ...p[mid], note: val, absent: false } }));
+  const toggleAbs = (mid) => setNv(p => ({ ...p, [mid]: { note: "", absent: !p[mid].absent } }));
+  let tCN = 0, tC = 0;
+  matieres.forEach(m => { const v = nv[m.id]; if (v && !v.absent && v.note !== "") { const n = parseFloat(v.note); if (!isNaN(n)) { tCN += n * m.coefficient; tC += m.coefficient; } } });
+  const moy = tC > 0 ? tCN / tC : null;
+  const moyStr = moy !== null ? moy.toFixed(2) : "—";
+  const passed = moy !== null && moy >= PASS_MARK;
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      for (const m of matieres) { const v = nv[m.id] || {}; const nd = { inscription_uuid: inscription.id, matiere_uuid: m.id, note: v.absent ? null : (v.note !== "" ? parseFloat(v.note) : null), absent: v.absent || false }; const ex = existingNotes.find(x => x.matiere_uuid === m.id); if (ex) await api.update("notes", ex.id, nd); else await api.insert("notes", nd); }
+      const res = moy !== null ? (moy >= PASS_MARK ? "Admis" : "Ajourne") : "En attente";
+      await api.update("inscriptions", inscription.id, { moyenne_ponderee: moy, resultat: res });
+      onSaved();
+    } catch (e) { alert("Erreur: " + e.message); }
+    setSaving(false);
+  };
+  return (<Modal onClose={onClose} title="Saisie des Notes" width={640}>
+    <div className="moyenne-display" style={{ background: moy === null ? "rgba(36,99,235,0.04)" : passed ? "rgba(46,204,113,0.1)" : "rgba(200,16,46,0.1)", color: moy === null ? "var(--dim)" : passed ? "var(--green)" : "var(--red-tn)" }}>
+      {moyStr}<span style={{ fontSize: 16, fontWeight: 400, marginLeft: 8 }}>/20 {moy !== null && (passed ? "— ADMIS" : "— AJOURNE")}</span>
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 60px 45px", gap: 8, padding: "6px 14px", fontSize: 10, color: "var(--gold)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>
+      <span>Matiere (coef)</span><span style={{ textAlign: "center" }}>Note</span><span style={{ textAlign: "center" }}>Abs.</span>
+    </div>
+    <div className="note-grid">
+      {matieres.sort((a, b) => a.ordre - b.ordre).map(m => { const v = nv[m.id] || {}; return (
+        <div key={m.id} className="note-row">
+          <div><div className="matiere-name">{m.nom}</div><div className="coef">x{m.coefficient}</div></div>
+          <input className={"note-input" + (v.absent ? " absent" : "")} type="number" min="0" max="20" step="0.25" value={v.absent ? "" : (v.note || "")} disabled={v.absent} onChange={e => setNote(m.id, e.target.value)} placeholder="—" />
+          <div style={{ textAlign: "center" }}><input type="checkbox" checked={v.absent || false} onChange={() => toggleAbs(m.id)} style={{ cursor: "pointer", width: 18, height: 18 }} /></div>
+        </div>); })}
+    </div>
+    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={handleSave} disabled={saving}>{saving ? "Enregistrement..." : "Enregistrer les notes"}</button>
+  </Modal>);
+}
+
+/* ===== IMPORT EXCEL MODAL ===== */
+function ImportExcelModal({ api, sessions, onClose, onDone }) {
+  const [org, setOrg] = useState(ORGANISMES[0]);
+  const [sess, setSess] = useState(sessions.length > 0 ? sessions[0].id : "");
+  const [file, setFile] = useState(null);
+  const [importing, setImporting] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const normalize = (s) => (s || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+  const findCol = (headers, poss) => { for (const h of headers) { const hn = normalize(h); for (const p of poss) { if (hn.includes(normalize(p))) return h; } } return null; };
+
+  const doImport = async () => {
+    if (!file || !sess) { alert("Selectionnez un fichier et une session"); return; }
+    setImporting(true);
+    try {
+      const data = await file.arrayBuffer();
+      const wb = XLSX.read(data);
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+      if (rows.length === 0) { setResult({ error: "Fichier vide" }); setImporting(false); return; }
+      const headers = Object.keys(rows[0]);
+      const colMat = findCol(headers, ["matricule", "mat", "code"]);
+      const colNom = findCol(headers, ["nom", "family"]);
+      const colPrenom = findCol(headers, ["prenom", "first"]);
+      const colNP = findCol(headers, ["noms et prenom", "nom et prenom", "nomsetprenom", "nom prenom", "nom complet"]);
+      const colCIN = findCol(headers, ["cin", "cin_pass", "cinpass", "carte", "passeport"]);
+      const colDate = findCol(headers, ["date", "naissance", "birth"]);
+      const colNat = findCol(headers, ["nationalite", "nationalité", "nation"]);
+
+      if (!colNom && !colPrenom && !colNP) { setResult({ error: "Colonnes nom/prenom non trouvees. Colonnes: " + headers.join(", ") }); setImporting(false); return; }
+
+      let imported = 0, skipped = 0, errors = 0;
+      for (const row of rows) {
+        let nom = "", prenom = "";
+        if (colNP) {
+          const full = String(row[colNP] || "").trim();
+          if (!full) { skipped++; continue; }
+          const words = full.split(/\s+/);
+          if (words.length <= 2) { nom = words[0] || ""; prenom = words[1] || ""; }
+          else { const up = words.filter(w => w === w.toUpperCase() && w.length > 1); const ot = words.filter(w => w !== w.toUpperCase() || w.length <= 1); if (up.length > 0 && ot.length > 0) { nom = up.join(" "); prenom = ot.join(" "); } else { prenom = words[words.length - 1]; nom = words.slice(0, -1).join(" "); } }
+        } else { nom = colNom ? String(row[colNom] || "").trim() : ""; prenom = colPrenom ? String(row[colPrenom] || "").trim() : ""; }
+        if (!nom && !prenom) { skipped++; continue; }
+
+        let dateN = null;
+        if (colDate && row[colDate]) {
+          const raw = row[colDate];
+          if (typeof raw === "number") { const d = new Date((raw - 25569) * 86400 * 1000); dateN = d.toISOString().slice(0, 10); }
+          else { const s = String(raw).trim(); const p = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/); if (p) dateN = p[3] + "-" + p[2].padStart(2, "0") + "-" + p[1].padStart(2, "0"); else if (s.match(/^\d{4}-\d{2}-\d{2}$/)) dateN = s; }
         }
-      };
+        try {
+          const cand = { matricule: colMat ? String(row[colMat] || "").trim() : ("ATE-" + String(imported + 1).padStart(3, "0")), nom: nom, prenom: prenom, cin: colCIN ? String(row[colCIN] || "").trim() : "", date_naissance: dateN, organisme_formation: org, notes: colNat && row[colNat] ? "Nationalite: " + String(row[colNat]).trim() : "" };
+          const created = await api.insert("candidats", cand);
+          const candId = Array.isArray(created) ? created[0].id : created.id;
+          await api.insert("inscriptions", { candidat_uuid: candId, session_uuid: sess, statut: "Inscrit" });
+          imported++;
+        } catch (err) { errors++; }
+      }
+      setResult({ imported: imported, skipped: skipped, errors: errors, total: rows.length });
+    } catch (err) { setResult({ error: "Erreur: " + err.message }); }
+    setImporting(false);
+  };
 
-      return (
-        <div className="login-page">
-          <div className="login-box">
-            <div className="login-header">
-              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28, color:"#0B1528", boxShadow: "0 6px 26px rgba(36,99,235,0.28)" }}>✈</div>
-              <h1 className="login-title">{APP.BRAND_TITLE}</h1>
-              <p className="login-sub">{APP.BRAND_SUBTITLE}</p>
-            </div>
-
-            <div className="card card-padded">
-              <div style={{ marginBottom: 14 }}>
-                <label className="label">Email</label>
-                <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="votre.email@dgac.tn" onKeyDown={e => e.key === "Enter" && go()} />
-              </div>
-              <div style={{ marginBottom: 14 }}>
-                <label className="label">Mot de passe</label>
-                <input className="input" type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="••••••••" onKeyDown={e => e.key === "Enter" && go()} />
-              </div>
-              {err && <div className="error-box">{err}</div>}
-              <button className="btn btn-gold btn-full" onClick={go} disabled={loading}>
-                {loading ? "Connexion..." : "Se connecter"}
-              </button>
-            </div>
-
-            {APP.ENABLE_CANDIDAT_PORTAL && (
-              <div style={{ textAlign: "center", marginTop: 18 }}>
-                <button onClick={onLookup} style={{ background: "none", border: "none", color: "var(--gold)", cursor: "pointer", fontFamily: "inherit", fontSize: 13, textDecoration: "underline" }}>
-                  Espace candidat — Consulter mes résultats
-                </button>
-              </div>
-            )}
+  return (<Modal onClose={onClose} title="Importer depuis Excel" width={520}>
+    <div className="form-grid">
+      <Field label="Organisme *"><Sel value={org} onChange={setOrg} options={ORGANISMES} /></Field>
+      <Field label="Session *"><select className="select" value={sess} onChange={e => setSess(e.target.value)}><option value="">—</option>{sessions.map(s => <option key={s.id} value={s.id}>{s.intitule}</option>)}</select></Field>
+      <Field label="Fichier Excel" span>
+        <input type="file" accept=".xlsx,.xls,.csv" onChange={e => setFile(e.target.files[0])} style={{ padding: 12, background: "rgba(36,99,235,0.04)", border: "1px dashed var(--border-light)", borderRadius: 8, width: "100%", color: "var(--text)", cursor: "pointer" }} />
+      </Field>
+    </div>
+    <div style={{ marginTop: 12, padding: 14, background: "rgba(36,99,235,0.04)", borderRadius: 10, border: "1px solid var(--border)", fontSize: 12, color: "var(--muted)" }}>
+      <strong style={{ color: "var(--gold)" }}>Colonnes attendues:</strong> Matricule | NOMS ET PRENOM | DATE DE NAISSANCE | CIN_PASS | Nationalite
+    </div>
+    {result && (
+      <div style={{ marginTop: 14, padding: 14, borderRadius: 10, background: result.error ? "rgba(200,16,46,0.08)" : "rgba(46,204,113,0.08)", border: result.error ? "1px solid rgba(200,16,46,0.2)" : "1px solid rgba(46,204,113,0.2)" }}>
+        {result.error ? <div style={{ color: "var(--red-tn)", fontSize: 13 }}>{result.error}</div> : (
+          <div style={{ fontSize: 13 }}>
+            <span style={{ color: "var(--green)", fontWeight: 700 }}>{result.imported} candidats importes et inscrits</span>
+            {result.skipped > 0 && <span style={{ color: "var(--orange)", marginLeft: 12 }}>{result.skipped} ignores</span>}
+            {result.errors > 0 && <span style={{ color: "var(--red-tn)", marginLeft: 12 }}>{result.errors} erreurs</span>}
           </div>
-        </div>
-      );
+        )}
+      </div>
+    )}
+    {!result ? (
+      <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={doImport} disabled={importing || !file || !sess}>{importing ? "Import en cours..." : "Importer et inscrire"}</button>
+    ) : (
+      <button className="btn btn-outline btn-full" style={{ marginTop: 18 }} onClick={onDone}>Fermer</button>
+    )}
+  </Modal>);
+}
+
+/* ===== SESSIONS VIEW ===== */
+function SessionsView({ api, sessions, inscriptions, reload }) {
+  const [sf, setSf] = useState(false);
+  const [ed, setEd] = useState(null);
+  const [del, setDel] = useState(null);
+  const [fil, setFil] = useState("Tous");
+  const fl = sessions.filter(s => fil === "Tous" || s.statut === fil);
+  const save = async (d) => { try { if (ed) await api.update("sessions", ed.id, d); else await api.insert("sessions", d); setSf(false); setEd(null); reload(); } catch (e) { alert(e.message); } };
+  const rm = async () => { if (del) { try { await api.remove("sessions", del.id); } catch (e) { alert(e.message); } setDel(null); reload(); } };
+  return (
+    <div>
+      <div className="filters">
+        <div className="filter-group">{["Tous", ...STATUTS_SESSION].map(s => <button key={s} className={"filter-btn " + (fil === s ? "active" : "")} onClick={() => setFil(s)}>{s}</button>)}</div>
+        <div className="spacer" /><button className="btn btn-gold" onClick={() => { setEd(null); setSf(true); }}>+ Session</button>
+      </div>
+      <div className="table-container desktop-only">
+        {fl.map(s => { const nb = inscriptions.filter(i => i.session_uuid === s.id).length; return (
+          <div key={s.id} className="table-row" style={{ gridTemplateColumns: "90px 1fr 100px 90px 70px 36px" }} onClick={() => { setEd(s); setSf(true); }}>
+            <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{s.session_id}</span>
+            <div><div style={{ fontSize: 13, fontWeight: 600 }}>{s.intitule}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{s.lieu || "—"} — {s.president_jury || "—"}</div></div>
+            <span style={{ fontSize: 11, color: "var(--dim)" }}>{s.date_debut || "—"}</span>
+            <Tag label={s.statut} /><Badge color="var(--cyan)">{nb} cand.</Badge>
+            <button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(s); }}>&#128465;</button>
+          </div>); })}
+        {fl.length === 0 && <Empty text="Aucune session" />}
+      </div>
+      <div className="mobile-only">
+        {fl.map(s => { const nb = inscriptions.filter(i => i.session_uuid === s.id).length; return (
+          <div key={s.id} className="mobile-card" onClick={() => { setEd(s); setSf(true); }}>
+            <div className="mobile-card-header"><div><div className="mobile-card-title">{s.intitule}</div><div className="mobile-card-id">{s.session_id}</div></div><button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(s); }}>&#128465;</button></div>
+            <div className="mobile-card-meta"><Tag label={s.statut} /><Badge color="var(--cyan)">{nb} cand.</Badge></div>
+            <div className="mobile-card-footer"><span style={{ fontSize: 11, color: "var(--dim)" }}>{s.lieu || "—"} — {s.date_debut || "—"}</span></div>
+          </div>); })}
+        {fl.length === 0 && <Empty text="Aucune session" />}
+      </div>
+      <FAB onClick={() => { setEd(null); setSf(true); }} />
+      {sf && <SessionForm session={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
+      {del && <ConfirmDelete item={del.session_id} onConfirm={rm} onCancel={() => setDel(null)} />}
+    </div>
+  );
+}
+
+/* ===== CANDIDATS VIEW ===== */
+function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
+  // Parcours: Organisme -> Sessions -> Candidats de la session
+  const [step, setStep] = useState("org"); // org | sessions | candidats
+  const [selectedOrg, setSelectedOrg] = useState("");
+  const [selectedSessionId, setSelectedSessionId] = useState("");
+
+  // Conserver les actions "gestion candidat" (ajout / modification / suppression / import)
+  const [sf, setSf] = useState(false);
+  const [ed, setEd] = useState(null);
+  const [del, setDel] = useState(null);
+  const [importModal, setImportModal] = useState(false);
+  const [se, setSe] = useState("");
+
+  const candById = useMemo(() => {
+    const m = new Map();
+    (candidats || []).forEach(c => m.set(c.id, c));
+    return m;
+  }, [candidats]);
+
+  const goOrg = () => { setStep("org"); setSelectedOrg(""); setSelectedSessionId(""); setSe(""); };
+  const goSessions = () => { setStep("sessions"); setSelectedSessionId(""); setSe(""); };
+
+  const sessionsForOrg = useMemo(() => {
+    if (!selectedOrg) return [];
+    const sset = new Set();
+    (inscriptions || []).forEach(i => {
+      const c = candById.get(i.candidat_uuid);
+      if (c && (c.organisme_formation || "") === selectedOrg) sset.add(i.session_uuid);
+    });
+    return (sessions || []).filter(s => sset.has(s.id));
+  }, [selectedOrg, inscriptions, sessions, candById]);
+
+  const candidatsForOrgSession = useMemo(() => {
+    if (!selectedOrg || !selectedSessionId) return [];
+    const rows = [];
+    (inscriptions || [])
+      .filter(i => i.session_uuid === selectedSessionId)
+      .forEach(i => {
+        const c = candById.get(i.candidat_uuid);
+        if (c && (c.organisme_formation || "") === selectedOrg) rows.push({ inscription: i, candidat: c });
+      });
+
+    const q = (se || "").trim().toLowerCase();
+    const filtered = !q ? rows : rows.filter(({ candidat }) => {
+      return (candidat.nom || "").toLowerCase().includes(q) ||
+             (candidat.prenom || "").toLowerCase().includes(q) ||
+             (candidat.matricule || "").toLowerCase().includes(q) ||
+             (candidat.cin || "").toLowerCase().includes(q);
+    });
+
+    filtered.sort((a, b) => {
+      const an = `${a.candidat.nom || ""} ${a.candidat.prenom || ""}`.toLowerCase();
+      const bn = `${b.candidat.nom || ""} ${b.candidat.prenom || ""}`.toLowerCase();
+      return an.localeCompare(bn);
+    });
+
+    return filtered;
+  }, [selectedOrg, selectedSessionId, inscriptions, candById, se]);
+
+  const save = async (d) => {
+    try {
+      if (ed) await api.update("candidats", ed.id, d);
+      else await api.insert("candidats", d);
+      setSf(false); setEd(null);
+      reload();
+    } catch (e) { alert(e.message); }
+  };
+
+  const rm = async () => {
+    if (del) {
+      try { await api.remove("candidats", del.id); }
+      catch (e) { alert(e.message); }
+      setDel(null);
+      reload();
     }
+  };
 
-    function CandidatLookup({ onBack }) {
-      const [cin, setCin] = useState("");
-      const [loading, setLoading] = useState(false);
-      const [err, setErr] = useState("");
-      const [result, setResult] = useState(null);
-      const [notes, setNotes] = useState([]);
-      const [matieres, setMatieres] = useState([]);
+  const session = (sessions || []).find(s => s.id === selectedSessionId);
 
-      const search = async () => {
-        if (!cin.trim()) { setErr("Entrez votre numéro CIN."); return; }
-        setLoading(true); setErr(""); setResult(null);
-        const h = { apikey: APP.SB_KEY, "Content-Type": "application/json" };
-        const b = APP.SB_URL + "/rest/v1";
-        try {
-          const cands = await fetchJson(b + "/candidats?cin=eq." + encodeURIComponent(cin.trim()), { headers: h });
-          if (!cands || cands.length === 0) { setErr("Aucun candidat trouvé avec ce CIN."); return; }
+  // STEP 1 — Organismes
+  if (step === "org") {
+    return (
+      <div>
+        <div className="filters">
+          <div className="hint">Choisis un organisme de formation.</div>
+          <div className="spacer" />
+          <button className="btn-outline" onClick={() => setImportModal(true)}>Importer Excel</button>
+          <button className="btn btn-gold" onClick={() => { setEd(null); setSf(true); }}>+ Nouveau candidat</button>
+        </div>
 
-          const cand = cands[0];
-          const inscs = await fetchJson(b + "/inscriptions?candidat_uuid=eq." + cand.id + "&order=created_at.desc&limit=1", { headers: h });
-          if (!inscs || inscs.length === 0) { setErr("Aucune inscription trouvée."); return; }
-
-          const insc = inscs[0];
-          const nts = await fetchJson(b + "/notes?inscription_uuid=eq." + insc.id, { headers: h });
-          const mats = await fetchJson(b + "/matieres?order=ordre.asc", { headers: h });
-
-          setResult({ candidat: cand, inscription: insc });
-          setNotes(nts || []);
-          setMatieres(mats || []);
-        } catch (e) {
-          setErr("Erreur : " + (e.message || "inconnue"));
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      return (
-        <div className="login-page">
-          <div className="login-box" style={{ width: 560 }}>
-            <div className="login-header">
-              <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28, color:"#0B1528", boxShadow: "0 6px 26px rgba(36,99,235,0.28)" }}>✈</div>
-              <h1 className="login-title">Espace Candidat</h1>
-              <p className="login-sub">Consultation des résultats — {APP.BRAND_TITLE}</p>
-            </div>
-
-            {!result ? (
-              <div className="card card-padded">
-                <Field label="Numéro CIN" span>
-                  <input className="input" value={cin} onChange={e => setCin(e.target.value)} placeholder="Entrez votre numéro CIN" onKeyDown={e => e.key === "Enter" && search()} />
-                </Field>
-                {err && <div className="error-box">{err}</div>}
-                <button className="btn btn-gold btn-full" onClick={search} disabled={loading}>
-                  {loading ? "Recherche..." : "Consulter mes résultats"}
-                </button>
-                <div style={{ textAlign: "center", marginTop: 14 }}>
-                  <button className="btn-outline" onClick={onBack}>← Retour</button>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <div className="card card-padded" style={{ marginBottom: 12, textAlign: "center" }}>
-                  <div className="hint">{result.candidat.prenom} {result.candidat.nom}</div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))", gap:16 }}>
+          {ORGANISMES.map(org => {
+            const nb = (candidats || []).filter(c => (c.organisme_formation || "") === org).length;
+            return (
+              <div
+                key={org}
+                className="card card-padded"
+                style={{ cursor:"pointer" }}
+                onClick={() => { setSelectedOrg(org); setStep("sessions"); }}
+              >
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <div>
+                    <div className="label">Organisme</div>
+                    <div style={{ fontSize: 24, fontWeight: 900, color:"var(--gold)" }}>{org}</div>
+                    <div className="hint" style={{ marginTop: 6 }}>{nb} candidats (base)</div>
+                  </div>
                   <div style={{
-                    fontSize: 36, fontWeight: 900, marginTop: 10,
-                    color: result.inscription.moyenne_ponderee !== null ? (Number(result.inscription.moyenne_ponderee) >= APP.PASS_MARK ? "var(--green)" : "var(--red-tn)") : "var(--dim)"
+                    width:56, height:56, borderRadius:18,
+                    display:"grid", placeItems:"center",
+                    background:"rgba(36,99,235,0.10)",
+                    border:"1px solid var(--border)"
                   }}>
-                    {result.inscription.moyenne_ponderee !== null ? Number(result.inscription.moyenne_ponderee).toFixed(2) : "—"} <span style={{ fontSize: 14, color: "var(--muted)" }}>/20</span>
-                  </div>
-                  <div style={{ marginTop: 8, fontSize: 18 }}><ResultBadge r={result.inscription.resultat} /></div>
-                </div>
-
-                <div className="card card-padded">
-                  <div className="section-title" style={{ marginTop: 0 }}>Détail des notes</div>
-                  {matieres.map(m => {
-                    const n = (notes || []).find(x => x.matiere_uuid === m.id);
-                    const txt = n?.absent ? "ABS" : (n?.note ?? null) !== null ? (n.note + "/20") : "—";
-                    const col = n?.absent ? "var(--red-tn)" : (n?.note ?? null) !== null ? moyColor(n.note) : "var(--dim)";
-                    return (
-                      <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--border)" }}>
-                        <div>
-                          <div style={{ fontWeight: 800 }}>{m.nom} <span className="mono" style={{ color: "var(--gold)", fontSize: 10 }}>x{m.coefficient}</span></div>
-                        </div>
-                        <div className="mono" style={{ fontWeight: 900, color: col }}>{txt}</div>
-                      </div>
-                    );
-                  })}
-                  <div style={{ textAlign: "center", marginTop: 14 }}>
-                    <button className="btn-outline" onClick={() => { setResult(null); setCin(""); }}>Nouvelle recherche</button>
-                    <span style={{ display: "inline-block", width: 10 }} />
-                    <button className="btn-outline" onClick={onBack}>← Retour</button>
+                    <span style={{ fontSize: 26 }}>🏫</span>
                   </div>
                 </div>
+                <div style={{ marginTop: 14 }}>
+                  <button className="btn-outline btn-sm">Voir les sessions →</button>
+                </div>
               </div>
-            )}
-          </div>
+            );
+          })}
         </div>
-      );
-    }
 
-    function Dashboard({ sessions, candidats, inscriptions, matieres, onNav }) {
-      const actives = sessions.filter(s => s.statut === "Planifiee" || s.statut === "En cours");
-      const admis = inscriptions.filter(i => i.resultat === "Admis").length;
-      const ajournes = inscriptions.filter(i => i.resultat === "Ajourne").length;
-      const total = admis + ajournes;
-      const taux = total > 0 ? Math.round((admis / total) * 100) : 0;
+        {sf && <CandidatForm candidat={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
+        {del && <ConfirmDelete item={del.prenom + " " + del.nom} onConfirm={rm} onCancel={() => setDel(null)} />}
+        {importModal && <ImportExcelModal api={api} sessions={sessions} onClose={() => setImportModal(false)} onDone={() => { setImportModal(false); reload(); }} />}
+      </div>
+    );
+  }
 
-      const avecMoy = inscriptions.filter(i => i.moyenne_ponderee !== null && i.moyenne_ponderee !== undefined);
-      const moyG = avecMoy.length > 0 ? (avecMoy.reduce((s, i) => s + Number(i.moyenne_ponderee), 0) / avecMoy.length).toFixed(2) : "—";
-
-      return (
-        <div>
-          <div className="kpi-grid">
-            <KPI label="Sessions" value={sessions.length} sub={actives.length + " actives"} color="var(--gold)" />
-            <KPI label="Candidats" value={candidats.length} sub="en base" color="var(--cyan)" />
-            <KPI label="Taux réussite" value={taux + "%"} sub={`${admis} admis / ${total}`} color="var(--green)" />
-            <KPI label="Moyenne (glob.)" value={moyG} sub="/20" color={moyG === "—" ? "var(--orange)" : (Number(moyG) >= APP.PASS_MARK ? "var(--green)" : "var(--orange)")} />
-          </div>
-
-          <div className="grid-2">
-            <div className="card card-padded">
-              <div className="section-title" style={{ marginTop: 0 }}>Sessions actives</div>
-              {actives.length === 0 && <div className="hint">Aucune session active.</div>}
-              {actives.slice(0, 6).map(s => {
-                const nb = inscriptions.filter(i => i.session_uuid === s.id).length;
-                return (
-                  <div key={s.id} style={{ display: "flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:"1px solid var(--border)" }}>
-                    <div>
-                      <div style={{ fontWeight: 900 }}>{s.intitule}</div>
-                      <div className="hint">{fmtDate(s.date_debut)} — {s.lieu || "—"}</div>
-                    </div>
-                    <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-                      <Tag label={s.statut} />
-                      <Badge color="var(--cyan)">{nb}</Badge>
-                    </div>
-                  </div>
-                );
-              })}
-              <div style={{ marginTop: 14 }}>
-                <button className="btn-outline btn-sm" onClick={() => onNav("sessions")}>Voir toutes →</button>
-              </div>
-            </div>
-
-            <div className="card card-padded">
-              <div className="section-title" style={{ marginTop: 0 }}>Matières</div>
-              {matieres.length === 0 ? (
-                <div className="hint">Aucune matière. Ajoute les matières (et coefficients) avant la saisie des notes.</div>
-              ) : (
-                matieres.slice(0, 8).map(m => (
-                  <div key={m.id} style={{ display: "flex", justifyContent:"space-between", padding:"10px 0", borderBottom:"1px solid var(--border)" }}>
-                    <div style={{ fontWeight: 900 }}>{m.nom}</div>
-                    <div className="mono" style={{ color:"var(--gold)", fontWeight: 900 }}>x{m.coefficient}</div>
-                  </div>
-                ))
-              )}
-              <div style={{ marginTop: 14 }}>
-                <button className="btn-outline btn-sm" onClick={() => onNav("matieres")}>Gérer matières →</button>
-              </div>
-            </div>
-          </div>
+  // STEP 2 — Sessions pour organisme
+  if (step === "sessions") {
+    return (
+      <div>
+        <div className="filters">
+          <button className="btn-outline" onClick={goOrg}>← Organismes</button>
+          <div className="hint">Organisme: <b style={{ color:"var(--gold)" }}>{selectedOrg}</b></div>
+          <div className="spacer" />
         </div>
-      );
-    }
 
-    function SessionsPage({ sessions, inscriptions, onOpen, onAdd }) {
-      const [q, setQ] = useState("");
-      const [st, setSt] = useState("Toutes");
-
-      const filtered = useMemo(() => {
-        const qq = q.trim().toLowerCase();
-        return sessions
-          .filter(s => st === "Toutes" ? true : s.statut === st)
-          .filter(s => {
-            if (!qq) return true;
-            const hay = `${s.session_id||""} ${s.intitule||""} ${s.lieu||""}`.toLowerCase();
-            return hay.includes(qq);
-          });
-      }, [sessions, q, st]);
-
-      return (
-        <div>
-          <div className="filters">
-            <input className="input" style={{ maxWidth: 380 }} placeholder="Rechercher (ID, intitulé, lieu…)" value={q} onChange={e => setQ(e.target.value)} />
-            <div className="pill">
-              <button className={"pill-btn " + (st === "Toutes" ? "active" : "")} onClick={() => setSt("Toutes")}>Toutes</button>
-              {STATUTS_SESSION.map(x => (
-                <button key={x} className={"pill-btn " + (st === x ? "active" : "")} onClick={() => setSt(x)}>{x}</button>
-              ))}
-            </div>
-            <div className="spacer" />
-            <button className="btn btn-gold" onClick={onAdd}>+ Nouvelle session</button>
+        <div className="table-container">
+          <div className="table-head" style={{ gridTemplateColumns: "140px 1fr 180px 140px" }}>
+            <div>ID</div><div>Intitule</div><div>Dates / Lieu</div><div>Statut</div>
           </div>
 
-          <div className="table-container">
-            <div className="table-head" style={{ gridTemplateColumns: "140px 1fr 160px 140px" }}>
-              <div>ID</div><div>Intitulé</div><div>Dates / Lieu</div><div>Statut</div>
-            </div>
-            {filtered.length === 0 ? (
-              <Empty text="Aucune session." />
-            ) : (
-              filtered.map(s => {
-                const nb = inscriptions.filter(i => i.session_uuid === s.id).length;
+          {sessionsForOrg.length === 0 ? (
+            <Empty text="Aucune session trouvee pour cet organisme." />
+          ) : (
+            sessionsForOrg
+              .slice()
+              .sort((a,b)=> (String(b.created_at||"")).localeCompare(String(a.created_at||"")) || String(b.date_debut||"").localeCompare(String(a.date_debut||"")))
+              .map(s => {
+                const nb = (inscriptions || []).filter(i => {
+                  if (i.session_uuid !== s.id) return false;
+                  const c = candById.get(i.candidat_uuid);
+                  return c && (c.organisme_formation || "") === selectedOrg;
+                }).length;
+
                 return (
-                  <div key={s.id} className="table-row" style={{ gridTemplateColumns: "140px 1fr 160px 140px" }} onClick={() => onOpen(s)}>
+                  <div
+                    key={s.id}
+                    className="table-row"
+                    style={{ gridTemplateColumns: "140px 1fr 180px 140px" }}
+                    onClick={() => { setSelectedSessionId(s.id); setStep("candidats"); }}
+                  >
                     <div className="mono" style={{ fontWeight: 900 }}>{s.session_id || "—"}</div>
                     <div>
                       <div style={{ fontWeight: 900 }}>{s.intitule}</div>
-                      <div className="hint">{s.lieu || "—"} · <span style={{ color: "var(--cyan)" }}>{nb} inscrits</span></div>
+                      <div className="hint">{s.lieu || "—"} · <span style={{ color:"var(--cyan)" }}>{nb} candidats</span></div>
                     </div>
                     <div className="hint">{fmtDate(s.date_debut)} → {fmtDate(s.date_fin)}</div>
                     <div><Tag label={s.statut} /></div>
                   </div>
                 );
               })
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    function CandidatsPage({ candidats, onOpen, onAdd }) {
-      const [q, setQ] = useState("");
-      const [org, setOrg] = useState("Tous");
-
-      const filtered = useMemo(() => {
-        const qq = q.trim().toLowerCase();
-        return candidats
-          .filter(c => org === "Tous" ? true : (c.organisme_formation || "") === org)
-          .filter(c => {
-            if (!qq) return true;
-            const hay = `${c.matricule||""} ${c.nom||""} ${c.prenom||""} ${c.cin||""} ${c.email||""}`.toLowerCase();
-            return hay.includes(qq);
-          });
-      }, [candidats, q, org]);
-
-      return (
-        <div>
-          <div className="filters">
-            <input className="input" style={{ maxWidth: 380 }} placeholder="Rechercher (matricule, nom, CIN…)" value={q} onChange={e => setQ(e.target.value)} />
-            <select className="select" style={{ maxWidth: 220 }} value={org} onChange={e => setOrg(e.target.value)}>
-              <option value="Tous">Tous organismes</option>
-              {APP.ORGANISMES.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
-            <div className="spacer" />
-            <button className="btn btn-gold" onClick={onAdd}>+ Nouveau candidat</button>
-          </div>
-
-          <div className="table-container">
-            <div className="table-head" style={{ gridTemplateColumns: "140px 1fr 160px 160px" }}>
-              <div>Matricule</div><div>Nom & Prénom</div><div>CIN</div><div>Organisme</div>
-            </div>
-            {filtered.length === 0 ? (
-              <Empty text="Aucun candidat." />
-            ) : (
-              filtered.map(c => (
-                <div key={c.id} className="table-row" style={{ gridTemplateColumns: "140px 1fr 160px 160px" }} onClick={() => onOpen(c)}>
-                  <div className="mono" style={{ fontWeight: 900 }}>{c.matricule || "—"}</div>
-                  <div>
-                    <div style={{ fontWeight: 900 }}>{c.prenom} {c.nom}</div>
-                    <div className="hint">{c.email || "—"} · {c.telephone || "—"}</div>
-                  </div>
-                  <div className="mono" style={{ color: "var(--muted)" }}>{c.cin || "—"}</div>
-                  <div><Badge color="var(--cyan)">{c.organisme_formation || "—"}</Badge></div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    function MatieresPage({ matieres, onAdd, onOpen }) {
-      return (
-        <div>
-          <div className="filters">
-            <div className="hint">Ordre + coefficient servent au calcul de la moyenne pondérée.</div>
-            <div className="spacer" />
-            <button className="btn btn-gold" onClick={onAdd}>+ Nouvelle matière</button>
-          </div>
-
-          <div className="table-container">
-            <div className="table-head" style={{ gridTemplateColumns: "90px 1fr 140px 140px" }}>
-              <div>Ordre</div><div>Nom</div><div>Coef</div><div></div>
-            </div>
-            {matieres.length === 0 ? (
-              <Empty text="Aucune matière." />
-            ) : (
-              [...matieres].sort((a,b)=>Number(a.ordre||0)-Number(b.ordre||0)).map(m => (
-                <div key={m.id} className="table-row" style={{ gridTemplateColumns: "90px 1fr 140px 140px" }} onClick={() => onOpen(m)}>
-                  <div className="mono" style={{ fontWeight: 900 }}>{m.ordre ?? "—"}</div>
-                  <div style={{ fontWeight: 900 }}>{m.nom}</div>
-                  <div className="mono" style={{ color: "var(--gold)", fontWeight: 900 }}>x{m.coefficient}</div>
-                  <div className="hint" style={{ textAlign:"right" }}>Clique pour modifier →</div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    function SessionModal({ api, session, onClose, candidats, inscriptions, matieres, notes, deliberations, refresh, toast }) {
-      const [tab, setTab] = useState("inscriptions"); // inscriptions | notes | deliberation | export | edit
-      const [busy, setBusy] = useState(false);
-
-      const inscs = useMemo(() => inscriptions.filter(i => i.session_uuid === session.id), [inscriptions, session.id]);
-      const delib = useMemo(() => deliberations.find(d => d.session_uuid === session.id) || null, [deliberations, session.id]);
-
-      const [edit, setEdit] = useState({ ...session });
-      const [del, setDel] = useState(delib ? { ...delib } : {
-        session_uuid: session.id,
-        date_deliberation: new Date().toISOString().slice(0,10),
-        membres_presents: "",
-        observations_generales: "",
-        decision_jury: "",
-        pv_valide: false
-      });
-
-      const [addCandId, setAddCandId] = useState("");
-      const [inscStatut, setInscStatut] = useState("Inscrit");
-
-      const addInscription = async () => {
-        if (!addCandId) { toast("error","Action","Choisis un candidat."); return; }
-        setBusy(true);
-        try {
-          // éviter doublons
-          const exists = inscs.some(i => i.candidat_uuid === addCandId);
-          if (exists) { toast("error","Action","Ce candidat est déjà inscrit."); return; }
-
-          await api.insert("inscriptions", [{
-            candidat_uuid: addCandId,
-            session_uuid: session.id,
-            statut: inscStatut,
-            observations: "",
-            moyenne_ponderee: null,
-            resultat: "En attente"
-          }]);
-          toast("success","OK","Inscription ajoutée.");
-          setAddCandId("");
-          await refresh();
-        } catch (e) {
-          toast("error","Erreur", e.message || "Impossible d'ajouter.");
-        } finally {
-          setBusy(false);
-        }
-      };
-
-      const removeInscription = async (inscId) => {
-        if (!confirm("Supprimer l'inscription ?")) return;
-        setBusy(true);
-        try {
-          await api.remove("inscriptions", "id=eq." + inscId);
-          toast("success","OK","Inscription supprimée.");
-          await refresh();
-        } catch (e) {
-          toast("error","Erreur", e.message || "Suppression impossible.");
-        } finally {
-          setBusy(false);
-        }
-      };
-
-      const saveSession = async () => {
-        setBusy(true);
-        try {
-          await api.patch("sessions", "id=eq." + session.id, {
-            session_id: edit.session_id || null,
-            intitule: edit.intitule || "",
-            date_debut: edit.date_debut || null,
-            date_fin: edit.date_fin || null,
-            lieu: edit.lieu || null,
-            president_jury: edit.president_jury || null,
-            membres_jury: edit.membres_jury || null,
-            statut: edit.statut || "Planifiee",
-            notes: edit.notes || null
-          });
-          toast("success","OK","Session mise à jour.");
-          await refresh();
-        } catch (e) {
-          toast("error","Erreur", e.message || "Enregistrement impossible.");
-        } finally {
-          setBusy(false);
-        }
-      };
-
-      const saveDelib = async () => {
-        setBusy(true);
-        try {
-          const exists = delib && delib.id;
-          if (exists) {
-            await api.patch("deliberations", "id=eq." + delib.id, {
-              date_deliberation: del.date_deliberation,
-              membres_presents: del.membres_presents || null,
-              observations_generales: del.observations_generales || null,
-              decision_jury: del.decision_jury || null,
-              pv_valide: !!del.pv_valide
-            });
-          } else {
-            await api.insert("deliberations", [{
-              session_uuid: session.id,
-              date_deliberation: del.date_deliberation,
-              membres_presents: del.membres_presents || null,
-              observations_generales: del.observations_generales || null,
-              decision_jury: del.decision_jury || null,
-              pv_valide: !!del.pv_valide
-            }]);
-          }
-          toast("success","OK","Délibération enregistrée.");
-          await refresh();
-        } catch (e) {
-          toast("error","Erreur", e.message || "Enregistrement impossible.");
-        } finally {
-          setBusy(false);
-        }
-      };
-
-      const openNotes = () => {
-        if (matieres.length === 0) {
-          toast("error","Notes","Ajoute d'abord les matières.");
-          return;
-        }
-        setTab("notes");
-      };
-
-      const exportXlsx = () => {
-        const rows = inscs.map(i => {
-          const c = candidats.find(x => x.id === i.candidat_uuid);
-          return {
-            Session: session.session_id || "",
-            Intitule: session.intitule || "",
-            Matricule: c?.matricule || "",
-            Nom: c ? (c.nom + " " + c.prenom) : "",
-            CIN: c?.cin || "",
-            Organisme: c?.organisme_formation || "",
-            Statut: i.statut || "",
-            Moyenne: i.moyenne_ponderee ?? "",
-            Resultat: i.resultat || ""
-          };
-        });
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(rows);
-        XLSX.utils.book_append_sheet(wb, ws, "Inscriptions");
-        XLSX.writeFile(wb, `session_${session.session_id || session.id}_inscriptions.xlsx`);
-      };
-
-      const exportPV = () => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("PV de Délibération — Examens ATE", 40, 50);
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text(`Session: ${session.session_id || "—"} — ${session.intitule || ""}`, 40, 72);
-        doc.text(`Dates: ${fmtDate(session.date_debut)} → ${fmtDate(session.date_fin)}    Lieu: ${session.lieu || "—"}`, 40, 88);
-        doc.text(`Président: ${session.president_jury || "—"}`, 40, 104);
-
-        const d = deliberations.find(x => x.session_uuid === session.id);
-        const dd = d?.date_deliberation || del.date_deliberation || new Date().toISOString().slice(0,10);
-
-        doc.setFont("helvetica","bold"); doc.text("Délibération", 40, 132);
-        doc.setFont("helvetica","normal");
-        doc.text(`Date: ${dd}`, 40, 148);
-        doc.text(`Membres présents: ${(d?.membres_presents || del.membres_presents || "—")}`, 40, 164);
-
-        const tableRows = inscs.map(i => {
-          const c = candidats.find(x => x.id === i.candidat_uuid);
-          return [
-            c?.matricule || "—",
-            c ? (c.prenom + " " + c.nom) : "—",
-            String(i.moyenne_ponderee ?? "—"),
-            i.resultat || "—"
-          ];
-        });
-
-        doc.autoTable({
-          startY: 190,
-          head: [["Matricule", "Candidat", "Moyenne", "Résultat"]],
-          body: tableRows,
-          styles: { fontSize: 9 },
-          headStyles: { fillColor: [20, 32, 61] }
-        });
-
-        const y = doc.lastAutoTable.finalY + 18;
-        doc.setFont("helvetica","bold");
-        doc.text("Observations / Décision", 40, y);
-        doc.setFont("helvetica","normal");
-        const obs = d?.observations_generales || del.observations_generales || "—";
-        const dec = d?.decision_jury || del.decision_jury || "—";
-        doc.text("Observations: " + obs, 40, y + 16, { maxWidth: 520 });
-        doc.text("Décision: " + dec, 40, y + 40, { maxWidth: 520 });
-
-        doc.save(`PV_session_${session.session_id || session.id}.pdf`);
-      };
-
-      return (
-        <Modal title={`Session — ${session.session_id || "—"} | ${session.intitule || ""}`} onClose={onClose}>
-          <div className="filters">
-            <div className="pill">
-              <button className={"pill-btn " + (tab==="inscriptions"?"active":"")} onClick={()=>setTab("inscriptions")}>Inscriptions</button>
-              <button className={"pill-btn " + (tab==="notes"?"active":"")} onClick={openNotes}>Notes</button>
-              <button className={"pill-btn " + (tab==="deliberation"?"active":"")} onClick={()=>setTab("deliberation")}>Délibération</button>
-              <button className={"pill-btn " + (tab==="export"?"active":"")} onClick={()=>setTab("export")}>Exports</button>
-              <button className={"pill-btn " + (tab==="edit"?"active":"")} onClick={()=>setTab("edit")}>Éditer</button>
-            </div>
-            <div className="spacer" />
-            <Tag label={session.statut} />
-          </div>
-
-          {tab === "inscriptions" && (
-            <div>
-              <div className="section-title" style={{ marginTop: 0 }}>Inscriptions ({inscs.length})</div>
-
-              <div className="card card-padded" style={{ marginBottom: 12 }}>
-                <div className="form-grid">
-                  <Field label="Ajouter un candidat" span>
-                    <select className="select" value={addCandId} onChange={e=>setAddCandId(e.target.value)}>
-                      <option value="">— Choisir —</option>
-                      {candidats
-                        .slice()
-                        .sort((a,b)=> (a.nom||"").localeCompare(b.nom||""))
-                        .map(c => (
-                          <option key={c.id} value={c.id}>{c.matricule} — {c.prenom} {c.nom} ({c.organisme_formation || "—"})</option>
-                        ))}
-                    </select>
-                  </Field>
-
-                  <Field label="Statut" >
-                    <select className="select" value={inscStatut} onChange={e=>setInscStatut(e.target.value)}>
-                      <option value="Inscrit">Inscrit</option>
-                      <option value="Absent">Absent</option>
-                      <option value="Retire">Retiré</option>
-                    </select>
-                  </Field>
-
-                  <Field label="Action">
-                    <button className="btn btn-gold" onClick={addInscription} disabled={busy}>Ajouter</button>
-                  </Field>
-                </div>
-                <div className="hint" style={{ marginTop: 10 }}>
-                  Astuce : clique sur un inscrit pour saisir les notes et calculer la moyenne.
-                </div>
-              </div>
-
-              <div className="table-container">
-                <div className="table-head" style={{ gridTemplateColumns: "160px 1fr 120px 120px 60px" }}>
-                  <div>Matricule</div><div>Candidat</div><div>Moyenne</div><div>Résultat</div><div></div>
-                </div>
-                {inscs.length === 0 ? (
-                  <Empty text="Aucune inscription." />
-                ) : inscs.map(i => {
-                  const c = candidats.find(x => x.id === i.candidat_uuid);
-                  return (
-                    <div key={i.id} className="table-row" style={{ gridTemplateColumns: "160px 1fr 120px 120px 60px" }}>
-                      <div className="mono" style={{ fontWeight: 900 }}>{c?.matricule || "—"}</div>
-                      <div>
-                        <div style={{ fontWeight: 900 }}>{c ? `${c.prenom} ${c.nom}` : "—"}</div>
-                        <div className="hint">{c?.organisme_formation || "—"} · <Tag label={i.statut || "Inscrit"} /></div>
-                      </div>
-                      <div className="mono" style={{ fontWeight: 900, color: moyColor(i.moyenne_ponderee) }}>
-                        {i.moyenne_ponderee ?? "—"}
-                      </div>
-                      <div style={{ fontSize: 13 }}><ResultBadge r={i.resultat || "En attente"} /></div>
-                      <div style={{ textAlign:"right" }}>
-                        <button className="btn-icon" onClick={() => removeInscription(i.id)} title="Supprimer">🗑</button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <NotesQuickModalTrigger
-                api={api}
-                session={session}
-                inscs={inscs}
-                candidats={candidats}
-                matieres={matieres}
-                notes={notes}
-                refresh={refresh}
-                toast={toast}
-              />
-            </div>
-          )}
-
-          {tab === "notes" && (
-            <NotesTab
-              api={api}
-              session={session}
-              inscs={inscs}
-              candidats={candidats}
-              matieres={matieres}
-              notes={notes}
-              refresh={refresh}
-              toast={toast}
-            />
-          )}
-
-          {tab === "deliberation" && (
-            <div>
-              <div className="section-title" style={{ marginTop: 0 }}>Délibération</div>
-              <div className="form-grid">
-                <Field label="Date de délibération">
-                  <input className="input" type="date" value={del.date_deliberation} onChange={e=>setDel(v=>({...v,date_deliberation:e.target.value}))} />
-                </Field>
-                <Field label="PV validé ?">
-                  <label className="chk" style={{ marginTop: 10 }}>
-                    <input type="checkbox" checked={!!del.pv_valide} onChange={e=>setDel(v=>({...v,pv_valide:e.target.checked}))} />
-                    Oui, PV validé
-                  </label>
-                </Field>
-                <Field label="Membres présents" span>
-                  <textarea className="textarea" value={del.membres_presents} onChange={e=>setDel(v=>({...v,membres_presents:e.target.value}))} placeholder="Nom, fonction…"></textarea>
-                </Field>
-                <Field label="Observations générales" span>
-                  <textarea className="textarea" value={del.observations_generales} onChange={e=>setDel(v=>({...v,observations_generales:e.target.value}))} placeholder="Synthèse…"></textarea>
-                </Field>
-                <Field label="Décision du jury" span>
-                  <textarea className="textarea" value={del.decision_jury} onChange={e=>setDel(v=>({...v,decision_jury:e.target.value}))} placeholder="Décision…"></textarea>
-                </Field>
-              </div>
-              <div style={{ display:"flex", justifyContent:"flex-end", gap:10, marginTop: 12 }}>
-                <button className="btn-outline" onClick={onClose}>Fermer</button>
-                <button className="btn btn-gold" onClick={saveDelib} disabled={busy}>{busy ? "Enregistrement..." : "Enregistrer"}</button>
-              </div>
-            </div>
-          )}
-
-          {tab === "export" && (
-            <div>
-              <div className="section-title" style={{ marginTop: 0 }}>Exports</div>
-              <div className="card card-padded">
-                <div className="hint">Exports rapides (Excel / PDF). Les données exportées viennent des inscriptions de cette session.</div>
-                <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginTop: 12 }}>
-                  <button className="btn btn-gold" onClick={exportXlsx}>Exporter Excel (Inscriptions)</button>
-                  <button className="btn btn-outline" onClick={exportPV}>Exporter PDF (PV)</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {tab === "edit" && (
-            <div>
-              <div className="section-title" style={{ marginTop: 0 }}>Modifier la session</div>
-              <div className="form-grid">
-                <Field label="Session ID (ex: ATE-2026-01)">
-                  <input className="input" value={edit.session_id || ""} onChange={e=>setEdit(v=>({...v,session_id:e.target.value}))} />
-                </Field>
-                <Field label="Statut">
-                  <select className="select" value={edit.statut || "Planifiee"} onChange={e=>setEdit(v=>({...v,statut:e.target.value}))}>
-                    {STATUTS_SESSION.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </Field>
-                <Field label="Intitulé" span>
-                  <input className="input" value={edit.intitule || ""} onChange={e=>setEdit(v=>({...v,intitule:e.target.value}))} />
-                </Field>
-                <Field label="Date début">
-                  <input className="input" type="date" value={edit.date_debut || ""} onChange={e=>setEdit(v=>({...v,date_debut:e.target.value}))} />
-                </Field>
-                <Field label="Date fin">
-                  <input className="input" type="date" value={edit.date_fin || ""} onChange={e=>setEdit(v=>({...v,date_fin:e.target.value}))} />
-                </Field>
-                <Field label="Lieu" span>
-                  <input className="input" value={edit.lieu || ""} onChange={e=>setEdit(v=>({...v,lieu:e.target.value}))} />
-                </Field>
-                <Field label="Président du jury" span>
-                  <input className="input" value={edit.president_jury || ""} onChange={e=>setEdit(v=>({...v,president_jury:e.target.value}))} />
-                </Field>
-                <Field label="Membres du jury" span>
-                  <textarea className="textarea" value={edit.membres_jury || ""} onChange={e=>setEdit(v=>({...v,membres_jury:e.target.value}))} />
-                </Field>
-                <Field label="Notes internes" span>
-                  <textarea className="textarea" value={edit.notes || ""} onChange={e=>setEdit(v=>({...v,notes:e.target.value}))} />
-                </Field>
-              </div>
-
-              <div style={{ display:"flex", justifyContent:"flex-end", gap:10, marginTop: 12 }}>
-                <button className="btn-outline btn-outline-red" onClick={async ()=>{
-                  if (!confirm("Supprimer cette session ? (supprime aussi inscriptions/notes/délibération)")) return;
-                  setBusy(true);
-                  try {
-                    await api.remove("sessions", "id=eq." + session.id);
-                    toast("success","OK","Session supprimée.");
-                    await refresh();
-                    onClose();
-                  } catch(e) {
-                    toast("error","Erreur", e.message || "Suppression impossible.");
-                  } finally { setBusy(false); }
-                }} disabled={busy}>Supprimer</button>
-
-                <button className="btn btn-gold" onClick={saveSession} disabled={busy}>{busy ? "Enregistrement..." : "Enregistrer"}</button>
-              </div>
-            </div>
-          )}
-        </Modal>
-      );
-    }
-
-    function NotesQuickModalTrigger({ api, session, inscs, candidats, matieres, notes, refresh, toast }) {
-      const [open, setOpen] = useState(false);
-      return (
-        <div style={{ marginTop: 12 }}>
-          <button className="btn btn-outline" onClick={()=>setOpen(true)}>Saisie notes (par candidat)</button>
-          {open && (
-            <Modal title="Saisie des notes" onClose={()=>setOpen(false)} width="min(780px,94vw)">
-              <NotesTab api={api} session={session} inscs={inscs} candidats={candidats} matieres={matieres} notes={notes} refresh={refresh} toast={toast} />
-            </Modal>
           )}
         </div>
-      );
-    }
+      </div>
+    );
+  }
 
-    function NotesTab({ api, session, inscs, candidats, matieres, notes, refresh, toast }) {
-      const [inscId, setInscId] = useState(inscs[0]?.id || "");
-      const [busy, setBusy] = useState(false);
-
-      const insc = useMemo(() => inscs.find(x => x.id === inscId) || null, [inscs, inscId]);
-      const cand = useMemo(() => {
-        if (!insc) return null;
-        return candidats.find(x => x.id === insc.candidat_uuid) || null;
-      }, [insc, candidats]);
-
-      const currentNotes = useMemo(() => {
-        if (!insc) return [];
-        return (notes || []).filter(n => n.inscription_uuid === insc.id);
-      }, [notes, insc]);
-
-      const [draft, setDraft] = useState({}); // { matiereId: {note, absent, id?}}
-      useEffect(() => {
-        if (!insc) return;
-        const d = {};
-        for (const m of matieres) {
-          const found = currentNotes.find(n => n.matiere_uuid === m.id);
-          d[m.id] = {
-            id: found?.id || null,
-            note: found?.note ?? "",
-            absent: !!found?.absent
-          };
-        }
-        setDraft(d);
-      }, [inscId, matieres, currentNotes, insc]);
-
-      const save = async () => {
-        if (!insc) { toast("error","Notes","Choisis une inscription."); return; }
-        setBusy(true);
-        try {
-          // upsert manual
-          for (const m of matieres) {
-            const row = draft[m.id] || { note:"", absent:false, id:null };
-            const payload = { inscription_uuid: insc.id, matiere_uuid: m.id, absent: !!row.absent };
-            if (!row.absent) payload.note = safeNum(row.note);
-            else payload.note = null;
-
-            if (row.id) {
-              await api.patch("notes", "id=eq." + row.id, payload);
-            } else {
-              const res = await api.insert("notes", [payload]);
-              const newId = res?.[0]?.id;
-              if (newId) {
-                setDraft(prev => ({ ...prev, [m.id]: { ...prev[m.id], id: newId } }));
-              }
-            }
-          }
-
-          // recalcul moyenne + résultat
-          const moy = computeMoyenne(matieres, draft);
-          const resu = computeResult(moy);
-
-          await api.patch("inscriptions", "id=eq." + insc.id, {
-            moyenne_ponderee: moy,
-            resultat: resu
-          });
-
-          toast("success","OK","Notes enregistrées + moyenne recalculée.");
-          await refresh();
-        } catch (e) {
-          toast("error","Erreur", e.message || "Enregistrement impossible.");
-        } finally {
-          setBusy(false);
-        }
-      };
-
-      return (
-        <div>
-          <div className="filters">
-            <select className="select" style={{ maxWidth: 520 }} value={inscId} onChange={e=>setInscId(e.target.value)}>
-              {inscs.map(i => {
-                const c = candidats.find(x => x.id === i.candidat_uuid);
-                return <option key={i.id} value={i.id}>{c?.matricule || "—"} — {c ? `${c.prenom} ${c.nom}` : "—"} · {i.resultat || "En attente"}</option>;
-              })}
-            </select>
-            <div className="spacer" />
-            <button className="btn btn-gold" onClick={save} disabled={busy || matieres.length===0}>
-              {busy ? "Enregistrement..." : "Enregistrer"}
-            </button>
-          </div>
-
-          {!insc ? (
-            <Empty text="Aucune inscription sélectionnée." />
-          ) : (
-            <div>
-              <div className="card card-padded" style={{ marginBottom: 12 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:12, flexWrap:"wrap" }}>
-                  <div>
-                    <div style={{ fontWeight: 900, fontSize: 16 }}>
-                      {cand ? `${cand.prenom} ${cand.nom}` : "—"}
-                    </div>
-                    <div className="hint">
-                      Matricule: <span className="mono">{cand?.matricule || "—"}</span> · CIN: <span className="mono">{cand?.cin || "—"}</span>
-                    </div>
-                  </div>
-                  <div style={{ textAlign:"right" }}>
-                    <div className="hint">Résultat</div>
-                    <div style={{ fontSize: 18 }}><ResultBadge r={insc.resultat || "En attente"} /></div>
-                    <div className="mono" style={{ fontWeight: 900, color: moyColor(insc.moyenne_ponderee) }}>
-                      {insc.moyenne_ponderee ?? "—"} <span className="hint">/20</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card card-padded">
-                <div className="section-title" style={{ marginTop: 0 }}>Notes</div>
-                {matieres.length === 0 ? (
-                  <Empty text="Ajoute des matières d'abord." />
-                ) : (
-                  <div className="note-grid">
-                    {matieres
-                      .slice()
-                      .sort((a,b)=>Number(a.ordre||0)-Number(b.ordre||0))
-                      .map(m => {
-                        const row = draft[m.id] || { note:"", absent:false };
-                        return (
-                          <div key={m.id} className="note-row">
-                            <div>
-                              <div className="matiere-name">{m.nom}</div>
-                              <div className="coef mono">x{m.coefficient}</div>
-                            </div>
-
-                            <input
-                              className={"note-input " + (row.absent ? "absent" : "")}
-                              value={row.absent ? "" : (row.note ?? "")}
-                              placeholder={row.absent ? "ABS" : "0-20"}
-                              disabled={row.absent}
-                              onChange={e=>{
-                                const v = e.target.value;
-                                setDraft(prev => ({ ...prev, [m.id]: { ...prev[m.id], note: v } }));
-                              }}
-                            />
-
-                            <label className="chk">
-                              <input
-                                type="checkbox"
-                                checked={!!row.absent}
-                                onChange={e=>{
-                                  const checked = e.target.checked;
-                                  setDraft(prev => ({ ...prev, [m.id]: { ...prev[m.id], absent: checked } }));
-                                }}
-                              />
-                              Absent
-                            </label>
-                          </div>
-                        );
-                      })}
-                  </div>
-                )}
-
-                <div style={{ display:"flex", justifyContent:"flex-end", gap:10, marginTop: 14 }}>
-                  <button className="btn-outline" onClick={save} disabled={busy || matieres.length===0}>
-                    {busy ? "..." : "Enregistrer"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+  // STEP 3 — Candidats de la session sélectionnée
+  return (
+    <div>
+      <div className="filters">
+        <button className="btn-outline" onClick={goSessions}>← Sessions</button>
+        <div className="hint">
+          Organisme: <b style={{ color:"var(--gold)" }}>{selectedOrg}</b>
+          {" "}· Session: <b>{session?.session_id || "—"}</b> — {session?.intitule || ""}
         </div>
-      );
-    }
+        <div className="spacer" />
+        <input className="input" style={{ maxWidth: 340 }} placeholder="Rechercher matricule/nom/CIN…" value={se} onChange={e => setSe(e.target.value)} />
+      </div>
 
-    function EntityModal({ title, onClose, children }) {
-      return <Modal title={title} onClose={onClose} width="min(720px,94vw)">{children}</Modal>;
-    }
-
-    function SessionForm({ initial, onCancel, onSave }) {
-      const [v, setV] = useState(initial);
-      return (
-        <div>
-          <div className="form-grid">
-            <Field label="Session ID (unique)"><input className="input" value={v.session_id || ""} onChange={e=>setV(p=>({...p,session_id:e.target.value}))} /></Field>
-            <Field label="Statut">
-              <select className="select" value={v.statut || "Planifiee"} onChange={e=>setV(p=>({...p,statut:e.target.value}))}>
-                {STATUTS_SESSION.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </Field>
-            <Field label="Intitulé" span><input className="input" value={v.intitule || ""} onChange={e=>setV(p=>({...p,intitule:e.target.value}))} /></Field>
-            <Field label="Date début"><input className="input" type="date" value={v.date_debut || ""} onChange={e=>setV(p=>({...p,date_debut:e.target.value}))} /></Field>
-            <Field label="Date fin"><input className="input" type="date" value={v.date_fin || ""} onChange={e=>setV(p=>({...p,date_fin:e.target.value}))} /></Field>
-            <Field label="Lieu" span><input className="input" value={v.lieu || ""} onChange={e=>setV(p=>({...p,lieu:e.target.value}))} /></Field>
-            <Field label="Président du jury" span><input className="input" value={v.president_jury || ""} onChange={e=>setV(p=>({...p,president_jury:e.target.value}))} /></Field>
-            <Field label="Membres du jury" span><textarea className="textarea" value={v.membres_jury || ""} onChange={e=>setV(p=>({...p,membres_jury:e.target.value}))} /></Field>
-            <Field label="Notes internes" span><textarea className="textarea" value={v.notes || ""} onChange={e=>setV(p=>({...p,notes:e.target.value}))} /></Field>
-          </div>
-          <div style={{ display:"flex", justifyContent:"flex-end", gap:10, marginTop: 14 }}>
-            <button className="btn-outline" onClick={onCancel}>Annuler</button>
-            <button className="btn btn-gold" onClick={()=>onSave(v)}>Enregistrer</button>
-          </div>
+      <div className="table-container">
+        <div className="table-head" style={{ gridTemplateColumns: "140px 1fr 160px 120px 120px" }}>
+          <div>Matricule</div><div>Nom & Prenom</div><div>CIN</div><div>Moyenne</div><div>Action</div>
         </div>
-      );
-    }
 
-    function CandidatForm({ initial, onCancel, onSave }) {
-      const [v, setV] = useState(initial);
-      return (
-        <div>
-          <div className="form-grid">
-            <Field label="Matricule (unique)"><input className="input" value={v.matricule || ""} onChange={e=>setV(p=>({...p,matricule:e.target.value}))} /></Field>
-            <Field label="Organisme">
-              <select className="select" value={v.organisme_formation || ""} onChange={e=>setV(p=>({...p,organisme_formation:e.target.value}))}>
-                <option value="">—</option>
-                {APP.ORGANISMES.map(o => <option key={o} value={o}>{o}</option>)}
-              </select>
-            </Field>
-            <Field label="Nom"><input className="input" value={v.nom || ""} onChange={e=>setV(p=>({...p,nom:e.target.value}))} /></Field>
-            <Field label="Prénom"><input className="input" value={v.prenom || ""} onChange={e=>setV(p=>({...p,prenom:e.target.value}))} /></Field>
-            <Field label="CIN"><input className="input" value={v.cin || ""} onChange={e=>setV(p=>({...p,cin:e.target.value}))} /></Field>
-            <Field label="Date de naissance"><input className="input" type="date" value={v.date_naissance || ""} onChange={e=>setV(p=>({...p,date_naissance:e.target.value}))} /></Field>
-            <Field label="Téléphone"><input className="input" value={v.telephone || ""} onChange={e=>setV(p=>({...p,telephone:e.target.value}))} /></Field>
-            <Field label="Email" span><input className="input" value={v.email || ""} onChange={e=>setV(p=>({...p,email:e.target.value}))} /></Field>
-            <Field label="Notes" span><textarea className="textarea" value={v.notes || ""} onChange={e=>setV(p=>({...p,notes:e.target.value}))} /></Field>
-          </div>
-          <div style={{ display:"flex", justifyContent:"flex-end", gap:10, marginTop: 14 }}>
-            <button className="btn-outline" onClick={onCancel}>Annuler</button>
-            <button className="btn btn-gold" onClick={()=>onSave(v)}>Enregistrer</button>
-          </div>
-        </div>
-      );
-    }
-
-    function MatiereForm({ initial, onCancel, onSave }) {
-      const [v, setV] = useState(initial);
-      return (
-        <div>
-          <div className="form-grid">
-            <Field label="Nom" span><input className="input" value={v.nom || ""} onChange={e=>setV(p=>({...p,nom:e.target.value}))} /></Field>
-            <Field label="Coefficient"><input className="input" value={v.coefficient ?? ""} onChange={e=>setV(p=>({...p,coefficient:e.target.value}))} /></Field>
-            <Field label="Ordre"><input className="input" value={v.ordre ?? ""} onChange={e=>setV(p=>({...p,ordre:e.target.value}))} /></Field>
-          </div>
-          <div style={{ display:"flex", justifyContent:"flex-end", gap:10, marginTop: 14 }}>
-            <button className="btn-outline" onClick={onCancel}>Annuler</button>
-            <button className="btn btn-gold" onClick={()=>onSave({
-              ...v,
-              coefficient: safeNum(v.coefficient) ?? 1,
-              ordre: Number(v.ordre ?? 1)
-            })}>Enregistrer</button>
-          </div>
-        </div>
-      );
-    }
-
-    function App() {
-      const { push: toast, View: ToastView } = useToasts();
-
-      const [token, setToken] = useState(localStorage.getItem("ate_token") || "");
-      const [user, setUser] = useState(null);
-      const [nav, setNav] = useState(APP.DEFAULT_TAB);
-      const [mode, setMode] = useState("app"); // app | lookup
-
-      const api = useMemo(() => token ? createApi(token) : null, [token]);
-
-      const [loading, setLoading] = useState(false);
-      const [err, setErr] = useState("");
-
-      const [sessions, setSessions] = useState([]);
-      const [candidats, setCandidats] = useState([]);
-      const [matieres, setMatieres] = useState([]);
-      const [inscriptions, setInscriptions] = useState([]);
-      const [notes, setNotes] = useState([]);
-      const [deliberations, setDeliberations] = useState([]);
-
-      const refresh = useCallback(async () => {
-        if (!api) return;
-        setLoading(true);
-        setErr("");
-        try {
-          const [ss, cc, mm, ii, nn, dd] = await Promise.all([
-            api.select("sessions", "order=created_at.desc"),
-            api.select("candidats", "order=created_at.desc"),
-            api.select("matieres", "order=ordre.asc"),
-            api.select("inscriptions", "order=created_at.desc"),
-            api.select("notes", "order=created_at.desc"),
-            api.select("deliberations", "order=created_at.desc"),
-          ]);
-          setSessions(ss || []);
-          setCandidats(cc || []);
-          setMatieres(mm || []);
-          setInscriptions(ii || []);
-          setNotes(nn || []);
-          setDeliberations(dd || []);
-        } catch (e) {
-          setErr(e.message || "Erreur de chargement");
-        } finally {
-          setLoading(false);
-        }
-      }, [api]);
-
-      const boot = useCallback(async () => {
-        if (!token) return;
-        setLoading(true);
-        setErr("");
-        try {
-          const u = await authApi.getUser(token);
-          setUser(u);
-          await refresh();
-        } catch (e) {
-          // token expiré
-          localStorage.removeItem("ate_token");
-          setToken("");
-          setUser(null);
-        } finally {
-          setLoading(false);
-        }
-      }, [token, refresh]);
-
-      useEffect(() => { boot(); }, [boot]);
-
-      const onLogin = async (t, u) => {
-        setToken(t);
-        setUser(u || null);
-        toast("success", "Connexion", "Bienvenue.");
-      };
-
-      const logout = async () => {
-        try {
-          if (token) await authApi.logout(token);
-        } catch {}
-        localStorage.removeItem("ate_token");
-        setToken("");
-        setUser(null);
-        toast("success","OK","Déconnecté.");
-      };
-
-      // Modals
-      const [openSession, setOpenSession] = useState(null);
-      const [openCandidat, setOpenCandidat] = useState(null);
-      const [openMatiere, setOpenMatiere] = useState(null);
-
-      const [addSession, setAddSession] = useState(false);
-      const [addCand, setAddCand] = useState(false);
-      const [addMat, setAddMat] = useState(false);
-
-      const createSession = async (v) => {
-        try {
-          if (!v.intitule) { toast("error","Validation","Intitulé obligatoire."); return; }
-          await api.insert("sessions", [{
-            session_id: v.session_id || null,
-            intitule: v.intitule,
-            date_debut: v.date_debut || null,
-            date_fin: v.date_fin || null,
-            lieu: v.lieu || null,
-            president_jury: v.president_jury || null,
-            membres_jury: v.membres_jury || null,
-            statut: v.statut || "Planifiee",
-            notes: v.notes || null
-          }]);
-          toast("success","OK","Session créée.");
-          setAddSession(false);
-          await refresh();
-        } catch(e) { toast("error","Erreur", e.message || "Création impossible."); }
-      };
-
-      const saveCandidat = async (v, isNew) => {
-        try {
-          if (!v.matricule || !v.nom || !v.prenom) { toast("error","Validation","Matricule, Nom, Prénom obligatoires."); return; }
-          if (isNew) {
-            await api.insert("candidats", [{
-              matricule: v.matricule,
-              nom: v.nom,
-              prenom: v.prenom,
-              cin: v.cin || null,
-              date_naissance: v.date_naissance || null,
-              telephone: v.telephone || null,
-              email: v.email || null,
-              organisme_formation: v.organisme_formation || null,
-              notes: v.notes || null
-            }]);
-            toast("success","OK","Candidat créé.");
-            setAddCand(false);
-          } else {
-            await api.patch("candidats", "id=eq." + v.id, {
-              matricule: v.matricule,
-              nom: v.nom,
-              prenom: v.prenom,
-              cin: v.cin || null,
-              date_naissance: v.date_naissance || null,
-              telephone: v.telephone || null,
-              email: v.email || null,
-              organisme_formation: v.organisme_formation || null,
-              notes: v.notes || null
-            });
-            toast("success","OK","Candidat mis à jour.");
-            setOpenCandidat(null);
-          }
-          await refresh();
-        } catch(e) { toast("error","Erreur", e.message || "Enregistrement impossible."); }
-      };
-
-      const saveMatiere = async (v, isNew) => {
-        try {
-          if (!v.nom) { toast("error","Validation","Nom obligatoire."); return; }
-          if (isNew) {
-            await api.insert("matieres", [{ nom: v.nom, coefficient: v.coefficient ?? 1, ordre: v.ordre ?? 1 }]);
-            toast("success","OK","Matière créée.");
-            setAddMat(false);
-          } else {
-            await api.patch("matieres", "id=eq." + v.id, { nom: v.nom, coefficient: v.coefficient ?? 1, ordre: v.ordre ?? 1 });
-            toast("success","OK","Matière mise à jour.");
-            setOpenMatiere(null);
-          }
-          await refresh();
-        } catch(e) { toast("error","Erreur", e.message || "Enregistrement impossible."); }
-      };
-
-      const deleteCandidat = async (id) => {
-        if (!confirm("Supprimer le candidat ?")) return;
-        try {
-          await api.remove("candidats", "id=eq." + id);
-          toast("success","OK","Candidat supprimé.");
-          setOpenCandidat(null);
-          await refresh();
-        } catch(e) { toast("error","Erreur", e.message || "Suppression impossible."); }
-      };
-
-      const deleteMatiere = async (id) => {
-        if (!confirm("Supprimer la matière ?")) return;
-        try {
-          await api.remove("matieres", "id=eq." + id);
-          toast("success","OK","Matière supprimée.");
-          setOpenMatiere(null);
-          await refresh();
-        } catch(e) { toast("error","Erreur", e.message || "Suppression impossible."); }
-      };
-
-      if (!token) {
-        if (mode === "lookup") return <CandidatLookup onBack={() => setMode("app")} />;
-        return <LoginScreen onLogin={onLogin} onLookup={() => setMode("lookup")} />;
-      }
-
-      return (
-        <div>
-          <ToastView />
-
-          <div className="header">
-            <div className="header-left">
-              <div className="logo-mark">✈</div>
+        {candidatsForOrgSession.length === 0 ? (
+          <Empty text="Aucun candidat de cet organisme n'est inscrit a cette session." />
+        ) : (
+          candidatsForOrgSession.map(({ candidat, inscription }) => (
+            <div
+              key={candidat.id}
+              className="table-row"
+              style={{ gridTemplateColumns: "140px 1fr 160px 120px 120px" }}
+            >
+              <div className="mono" style={{ fontWeight: 900 }}>{candidat.matricule || "—"}</div>
               <div>
-                <div className="header-title">{APP.BRAND_TITLE}</div>
-                <div className="header-sub">{APP.BRAND_SUBTITLE}</div>
+                <div style={{ fontWeight: 900 }}>{candidat.prenom} {candidat.nom}</div>
+                <div className="hint">{candidat.email || "—"} · {candidat.telephone || "—"}</div>
+              </div>
+              <div className="mono" style={{ color:"var(--muted)" }}>{candidat.cin || "—"}</div>
+              <div style={{ fontWeight: 900, color: (inscription?.moyenne_ponderee ?? null) === null ? "var(--muted)" : (Number(inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") }}>
+                {(inscription?.moyenne_ponderee ?? null) === null ? "—" : Number(inscription.moyenne_ponderee).toFixed(2)}
+              </div>
+              <div style={{ textAlign:"right", display:"flex", justifyContent:"flex-end", gap:8 }}>
+                <button className="btn-outline btn-sm" onClick={() => { setEd(candidat); setSf(true); }}>Ouvrir</button>
+                <button className="btn-outline btn-sm" onClick={() => setDel(candidat)} title="Supprimer">&#128465;</button>
               </div>
             </div>
+          ))
+        )}
+      </div>
 
-            <div className="desktop-tabs">
-              <button className={"tab-btn " + (nav==="dashboard"?"active":"")} onClick={()=>setNav("dashboard")}>Dashboard</button>
-              <button className={"tab-btn " + (nav==="sessions"?"active":"")} onClick={()=>setNav("sessions")}>Sessions <span className="tab-count">{sessions.length}</span></button>
-              <button className={"tab-btn " + (nav==="candidats"?"active":"")} onClick={()=>setNav("candidats")}>Candidats <span className="tab-count">{candidats.length}</span></button>
-              <button className={"tab-btn " + (nav==="matieres"?"active":"")} onClick={()=>setNav("matieres")}>Matières <span className="tab-count">{matieres.length}</span></button>
+      {sf && <CandidatForm candidat={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
+      {del && <ConfirmDelete item={del.prenom + " " + del.nom} onConfirm={rm} onCancel={() => setDel(null)} />}
+    </div>
+  );
+}
+
+
+/* ===== NOTES VIEW ===== */
+function NotesView({ api, sessions, candidats, inscriptions, notes, matieres, reload }) {
+  const [selS, setSelS] = useState("");
+  const [sf, setSf] = useState(false);
+  const [ed, setEd] = useState(null);
+  const [del, setDel] = useState(null);
+  const [nm, setNm] = useState(null);
+  const cur = selS || (sessions.length > 0 ? sessions[0].id : "");
+  const sInscr = inscriptions.filter(i => i.session_uuid === cur);
+  const save = async (d) => { try { if (ed) await api.update("inscriptions", ed.id, d); else await api.insert("inscriptions", d); setSf(false); setEd(null); reload(); } catch (e) { alert(e.message); } };
+  const rm = async () => { if (del) { try { await api.remove("inscriptions", del.id); } catch (e) { alert(e.message); } setDel(null); reload(); } };
+  return (
+    <div>
+      <div className="filters">
+        <select className="select" value={cur} onChange={e => setSelS(e.target.value)} style={{ width: 260, maxWidth: "100%" }}><option value="">— Session —</option>{sessions.map(s => <option key={s.id} value={s.id}>{s.intitule}</option>)}</select>
+        <div className="spacer" /><button className="btn btn-orange" onClick={() => { setEd(null); setSf(true); }}>+ Inscrire</button>
+      </div>
+      {cur && (<div>
+        <div className="table-container desktop-only">
+          {sInscr.map(i => { const c = candidats.find(x => x.id === i.candidat_uuid); const nb = notes.filter(n => n.inscription_uuid === i.id && n.note !== null).length; return (
+            <div key={i.id} className="table-row" style={{ gridTemplateColumns: "80px 1fr 80px 70px 80px 60px 36px" }}>
+              <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{c ? c.matricule : "—"}</span>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{c ? c.prenom + " " + c.nom : "—"}</div>
+              <Tag label={i.statut} />
+              <span style={{ fontSize: 11, color: "var(--dim)" }}>{nb}/{matieres.length}</span>
+              <span className="mono" style={{ fontSize: 14, fontWeight: 700, color: moyColor(i.moyenne_ponderee) }}>{i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—"}</span>
+              <button className="btn btn-gold btn-sm" onClick={() => setNm(i)}>Notes</button>
+              <button className="btn-icon" onClick={() => setDel(i)}>&#128465;</button>
+            </div>); })}
+          {sInscr.length === 0 && <Empty text="Aucun candidat inscrit" />}
+        </div>
+        <div className="mobile-only">
+          {sInscr.map(i => { const c = candidats.find(x => x.id === i.candidat_uuid); const nb = notes.filter(n => n.inscription_uuid === i.id && n.note !== null).length; return (
+            <div key={i.id} className="mobile-card">
+              <div className="mobile-card-header"><div><div className="mobile-card-title">{c ? c.prenom + " " + c.nom : "—"}</div><div className="mobile-card-id">{c ? c.matricule : ""}</div></div><button className="btn btn-gold btn-sm" onClick={() => setNm(i)}>Notes</button></div>
+              <div className="mobile-card-meta"><Tag label={i.statut} /><Badge color="var(--cyan)">{nb}/{matieres.length}</Badge>{i.resultat !== "En attente" && <ResultBadge r={i.resultat} />}</div>
+              <div className="mobile-card-footer"><span className="mono" style={{ fontSize: 16, fontWeight: 700, color: moyColor(i.moyenne_ponderee) }}>{i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—"}/20</span><button className="btn-icon" onClick={() => setDel(i)}>&#128465;</button></div>
+            </div>); })}
+          {sInscr.length === 0 && <Empty text="Aucun candidat inscrit" />}
+        </div>
+      </div>)}
+      <FAB onClick={() => { setEd(null); setSf(true); }} color="linear-gradient(135deg,var(--orange),#e67e22)" />
+      {sf && <InscriptionForm sessions={sessions} candidats={candidats} inscription={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
+      {del && <ConfirmDelete item="cette inscription" onConfirm={rm} onCancel={() => setDel(null)} />}
+      {nm && <NotesEntry api={api} inscription={nm} matieres={matieres} existingNotes={notes.filter(n => n.inscription_uuid === nm.id)} onClose={() => setNm(null)} onSaved={() => { setNm(null); reload(); }} />}
+    </div>
+  );
+}
+
+/* ===== DELIBERATIONS VIEW ===== */
+function DeliberationsView({ api, sessions, inscriptions, deliberations, reload }) {
+  const [sf, setSf] = useState(false);
+  const [ed, setEd] = useState(null);
+  const [del, setDel] = useState(null);
+  const save = async (d) => { try { if (ed) await api.update("deliberations", ed.id, d); else await api.insert("deliberations", d); setSf(false); setEd(null); reload(); } catch (e) { alert(e.message); } };
+  const rm = async () => { if (del) { try { await api.remove("deliberations", del.id); } catch (e) { alert(e.message); } setDel(null); reload(); } };
+  return (
+    <div>
+      <div className="filters"><div className="spacer" /><button className="btn btn-purple" onClick={() => { setEd(null); setSf(true); }}>+ Deliberation</button></div>
+      <div className="table-container desktop-only">
+        {deliberations.map(d => { const s = sessions.find(x => x.id === d.session_uuid); const iS = inscriptions.filter(i => i.session_uuid === d.session_uuid); const ad = iS.filter(i => i.resultat === "Admis").length; return (
+          <div key={d.id} className="table-row" style={{ gridTemplateColumns: "1fr 80px 80px 80px 50px 36px" }} onClick={() => { setEd(d); setSf(true); }}>
+            <div><div style={{ fontSize: 13, fontWeight: 600 }}>{s ? s.intitule : "—"}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{d.date_deliberation}</div></div>
+            <span style={{ fontSize: 11, color: "var(--dim)" }}>{iS.length} cand.</span>
+            <Badge color="var(--green)">{ad} admis</Badge><Badge color="var(--red-tn)">{iS.length - ad} aj.</Badge>
+            <span style={{ fontSize: 16 }}>{d.pv_valide ? "\u2705" : "\u23F3"}</span>
+            <button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(d); }}>&#128465;</button>
+          </div>); })}
+        {deliberations.length === 0 && <Empty text="Aucune deliberation" />}
+      </div>
+      <div className="mobile-only">
+        {deliberations.map(d => { const s = sessions.find(x => x.id === d.session_uuid); const iS = inscriptions.filter(i => i.session_uuid === d.session_uuid); const ad = iS.filter(i => i.resultat === "Admis").length; return (
+          <div key={d.id} className="mobile-card" onClick={() => { setEd(d); setSf(true); }}>
+            <div className="mobile-card-header"><div><div className="mobile-card-title">{s ? s.intitule : "—"}</div><div className="mobile-card-id">{d.date_deliberation}</div></div><span style={{ fontSize: 18 }}>{d.pv_valide ? "\u2705" : "\u23F3"}</span></div>
+            <div className="mobile-card-meta"><Badge color="var(--green)">{ad} admis</Badge><Badge color="var(--red-tn)">{iS.length - ad} aj.</Badge></div>
+          </div>); })}
+        {deliberations.length === 0 && <Empty text="Aucune deliberation" />}
+      </div>
+      <FAB onClick={() => { setEd(null); setSf(true); }} color="linear-gradient(135deg,var(--purple),#7d3c98)" />
+      {sf && <DeliberationForm delib={ed} sessions={sessions} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
+      {del && <ConfirmDelete item="cette deliberation" onConfirm={rm} onCancel={() => setDel(null)} />}
+    </div>
+  );
+}
+
+/* ===== PDF EXPORT ===== */
+function exportReleve(candidat, inscription, notesArr, matieres) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(16); doc.text("DGAC — Direction Generale de l'Aviation Civile", 14, 20);
+  doc.setFontSize(11); doc.text("Republique Tunisienne", 14, 28);
+  doc.setFontSize(14); doc.text("Releve de Notes — Examen ATE", 14, 42);
+  doc.setFontSize(11);
+  doc.text("Candidat: " + candidat.prenom + " " + candidat.nom, 14, 55);
+  doc.text("Matricule: " + candidat.matricule + "    CIN: " + (candidat.cin || "—"), 14, 62);
+  doc.text("Organisme: " + (candidat.organisme_formation || "—"), 14, 69);
+  const rows = matieres.sort((a, b) => a.ordre - b.ordre).map(m => {
+    const n = notesArr.find(x => x.matiere_uuid === m.id);
+    return [m.nom, m.coefficient, n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "—"];
+  });
+  doc.autoTable({ startY: 78, head: [["Matiere", "Coef", "Note"]], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [18, 32, 61] } });
+  const fy = doc.lastAutoTable.finalY + 14;
+  const moy = inscription.moyenne_ponderee !== null ? Number(inscription.moyenne_ponderee).toFixed(2) : "—";
+  doc.setFontSize(13); doc.text("Moyenne Ponderee: " + moy + "/20", 14, fy);
+  doc.setFontSize(14); doc.text("Resultat: " + (inscription.resultat || "En attente"), 14, fy + 10);
+  doc.save("Releve_" + candidat.matricule + ".pdf");
+}
+
+function exportPV(session, inscriptions, candidats, matieres, notes) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("l");
+  doc.setFontSize(14); doc.text("DGAC — Proces-Verbal de Deliberation", 14, 18);
+  doc.setFontSize(11); doc.text("Session: " + session.intitule, 14, 28);
+  doc.text("Date: " + (session.date_debut || "—") + "    Lieu: " + (session.lieu || "—"), 14, 35);
+  const sInscrits = inscriptions.filter(i => i.session_uuid === session.id).sort((a, b) => (b.moyenne_ponderee || 0) - (a.moyenne_ponderee || 0));
+  const rows = sInscrits.map((i, idx) => {
+    const c = candidats.find(x => x.id === i.candidat_uuid);
+    return [idx + 1, c ? c.matricule : "", c ? c.prenom + " " + c.nom : "", c ? c.organisme_formation || "" : "", i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—", i.resultat || ""];
+  });
+  doc.autoTable({ startY: 44, head: [["#", "Matricule", "Candidat", "Organisme", "Moyenne", "Resultat"]], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [18, 32, 61] } });
+  const fy = doc.lastAutoTable.finalY + 14;
+  const admis = sInscrits.filter(i => i.resultat === "Admis").length;
+  doc.setFontSize(11);
+  doc.text("Total: " + sInscrits.length + " candidats    Admis: " + admis + "    Ajournes: " + (sInscrits.length - admis), 14, fy);
+  doc.text("President du Jury: " + (session.president_jury || "________________"), 14, fy + 12);
+  doc.text("Signature:", 14, fy + 24);
+  doc.save("PV_" + session.session_id + ".pdf");
+}
+
+/* ===== RESULTS VIEW ===== */
+function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
+  const [selS, setSelS] = useState("");
+  const [orgF, setOrgF] = useState("Tous");
+  const [detail, setDetail] = useState(null);
+  const [showStats, setShowStats] = useState(false);
+  const cur = selS || (sessions.length > 0 ? sessions[0].id : "");
+  const session = sessions.find(s => s.id === cur);
+  const allSI = inscriptions.filter(i => i.session_uuid === cur);
+  const sI = allSI.filter(i => {
+    if (orgF === "Tous") return true;
+    const c = candidats.find(x => x.id === i.candidat_uuid);
+    return c && c.organisme_formation === orgF;
+  }).sort((a, b) => (b.moyenne_ponderee || 0) - (a.moyenne_ponderee || 0));
+  const admis = sI.filter(i => i.resultat === "Admis").length;
+  const total = sI.length;
+
+  const matStats = matieres.sort((a, b) => a.ordre - b.ordre).map(m => {
+    const matNotes = [];
+    allSI.forEach(i => { const n = notes.find(x => x.inscription_uuid === i.id && x.matiere_uuid === m.id); if (n && n.note !== null && !n.absent) matNotes.push(n.note); });
+    const max = matNotes.length > 0 ? Math.max(...matNotes) : null;
+    const avg = matNotes.length > 0 ? (matNotes.reduce((a, b) => a + b, 0) / matNotes.length) : null;
+    const sup13 = matNotes.filter(n => n >= 13).length;
+    const pct = matNotes.length > 0 ? Math.round((sup13 / matNotes.length) * 100) : 0;
+    return { nom: m.nom, coefficient: m.coefficient, max: max, avg: avg, sup13: sup13, pct: pct, total: matNotes.length };
+  });
+
+  const orgStats = ORGANISMES.map(o => {
+    const oInscrits = allSI.filter(i => { const c = candidats.find(x => x.id === i.candidat_uuid); return c && c.organisme_formation === o; });
+    const oAdmis = oInscrits.filter(i => i.resultat === "Admis").length;
+    const oMoy = oInscrits.filter(i => i.moyenne_ponderee !== null);
+    const avg = oMoy.length > 0 ? (oMoy.reduce((s, i) => s + Number(i.moyenne_ponderee), 0) / oMoy.length) : null;
+    return { org: o, total: oInscrits.length, admis: oAdmis, taux: oInscrits.length > 0 ? Math.round((oAdmis / oInscrits.length) * 100) : 0, avg: avg };
+  });
+
+  return (
+    <div>
+      <div className="filters">
+        <select className="select" value={cur} onChange={e => setSelS(e.target.value)} style={{ width: 260, maxWidth: "100%" }}>{sessions.map(s => <option key={s.id} value={s.id}>{s.intitule}</option>)}</select>
+        <div className="filter-group">{["Tous", ...ORGANISMES].map(o => <button key={o} className={"filter-btn " + (orgF === o ? "active" : "")} onClick={() => setOrgF(o)}>{o}</button>)}</div>
+        <div className="spacer" />
+        <button className="btn btn-outline" onClick={() => setShowStats(!showStats)}>{showStats ? "Tableau" : "Statistiques"}</button>
+        {session && <button className="btn btn-purple" onClick={() => exportPV(session, inscriptions, candidats, matieres, notes)}>PDF PV</button>}
+      </div>
+      {cur && (<div>
+        <div className="kpi-grid">
+          <KPI label="Candidats" value={total} color="var(--cyan)" />
+          <KPI label="Admis" value={admis} color="var(--green)" />
+          <KPI label="Ajournes" value={total - admis} color="var(--red-tn)" />
+          <KPI label="Taux reussite" value={total > 0 ? Math.round((admis / total) * 100) + "%" : "—"} color="var(--green)" />
+        </div>
+
+        {!showStats ? (
+          <div className="table-container">
+            <div className="table-row" style={{ gridTemplateColumns: "40px 80px 1fr 80px 80px 80px 70px", background: "rgba(36,99,235,0.04)", fontWeight: 700, fontSize: 10, color: "var(--gold)", textTransform: "uppercase", letterSpacing: 1, cursor: "default" }}>
+              <span>#</span><span>Matricule</span><span>Candidat</span><span>Organisme</span><span>Moyenne</span><span>Resultat</span><span>PDF</span>
             </div>
-
-            <div className="header-right">
-              <div className="user-badge" title="Utilisateur connecté">
-                <div className="user-dot"></div>
-                <span>{user?.email || "Connecté"}</span>
+            {sI.map((i, idx) => { const c = candidats.find(x => x.id === i.candidat_uuid); return (
+              <div key={i.id} className="table-row" style={{ gridTemplateColumns: "40px 80px 1fr 80px 80px 80px 70px" }} onClick={() => setDetail(i)}>
+                <span className="mono" style={{ fontSize: 12, color: "var(--dim)" }}>{idx + 1}</span>
+                <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{c ? c.matricule : "—"}</span>
+                <span style={{ fontSize: 13, fontWeight: 500 }}>{c ? c.prenom + " " + c.nom : "—"}</span>
+                <Badge color="var(--gold)">{c ? c.organisme_formation : "—"}</Badge>
+                <span className="mono" style={{ fontSize: 14, fontWeight: 700, color: moyColor(i.moyenne_ponderee) }}>{i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—"}</span>
+                <ResultBadge r={i.resultat} />
+                <button className="btn btn-outline btn-sm" onClick={e => { e.stopPropagation(); if (c) exportReleve(c, i, notes.filter(n => n.inscription_uuid === i.id), matieres); }}>PDF</button>
+              </div>); })}
+            {sI.length === 0 && <Empty text="Aucun resultat" />}
+          </div>
+        ) : (
+          <div>
+            <div className="card card-padded">
+              <div className="section-title" style={{ marginTop: 0 }}>Statistiques par module</div>
+              <div style={{ overflowX: "auto" }}>
+                <table className="stats-table">
+                  <thead><tr><th>Matiere</th><th>Coef</th><th>Note Max</th><th>Moyenne</th><th>Nb &ge; 13</th><th>% &ge; 13</th></tr></thead>
+                  <tbody>{matStats.map((m, i) => (
+                    <tr key={i}><td style={{ fontWeight: 500 }}>{m.nom}</td><td className="mono">{m.coefficient}</td><td className="mono" style={{ color: "var(--gold)" }}>{m.max !== null ? m.max.toFixed(2) : "—"}</td><td className="mono" style={{ color: m.avg !== null && m.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{m.avg !== null ? m.avg.toFixed(2) : "—"}</td><td className="mono">{m.sup13}/{m.total}</td><td className="mono" style={{ color: m.pct >= 50 ? "var(--green)" : "var(--red-tn)" }}>{m.pct}%</td></tr>
+                  ))}</tbody>
+                </table>
               </div>
-              <button className="btn-outline btn-outline-red" onClick={logout}>Déconnexion</button>
+            </div>
+            <div className="card card-padded" style={{ marginTop: 20 }}>
+              <div className="section-title" style={{ marginTop: 0 }}>Statistiques par organisme</div>
+              <table className="stats-table">
+                <thead><tr><th>Organisme</th><th>Candidats</th><th>Admis</th><th>Ajournes</th><th>Taux</th><th>Moyenne</th></tr></thead>
+                <tbody>{orgStats.map((o, i) => (
+                  <tr key={i}><td style={{ fontWeight: 700, color: "var(--gold)" }}>{o.org}</td><td className="mono">{o.total}</td><td className="mono" style={{ color: "var(--green)" }}>{o.admis}</td><td className="mono" style={{ color: "var(--red-tn)" }}>{o.total - o.admis}</td><td className="mono" style={{ color: o.taux >= 50 ? "var(--green)" : "var(--red-tn)" }}>{o.taux}%</td><td className="mono" style={{ color: o.avg !== null && o.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{o.avg !== null ? o.avg.toFixed(2) : "—"}</td></tr>
+                ))}</tbody>
+              </table>
             </div>
           </div>
+        )}
+      </div>)}
+      {detail && (<Modal onClose={() => setDetail(null)} title="Detail des notes" width={560}>
+        {(() => { const c = candidats.find(x => x.id === detail.candidat_uuid); const iNotes = notes.filter(n => n.inscription_uuid === detail.id); return (<div>
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
+            <div style={{ fontSize: 15, fontWeight: 600 }}>{c ? c.prenom + " " + c.nom : "—"}</div>
+            <div style={{ fontSize: 12, color: "var(--dim)" }}>{c ? c.matricule : ""} — {c ? c.organisme_formation : ""}</div>
+            <div className="moyenne-display" style={{ background: detail.moyenne_ponderee !== null ? (Number(detail.moyenne_ponderee) >= PASS_MARK ? "rgba(46,204,113,0.1)" : "rgba(200,16,46,0.1)") : "rgba(36,99,235,0.04)", color: moyColor(detail.moyenne_ponderee), margin: "12px 0" }}>
+              {detail.moyenne_ponderee !== null ? Number(detail.moyenne_ponderee).toFixed(2) : "—"}<span style={{ fontSize: 16, fontWeight: 400, marginLeft: 8 }}>/20</span>
+            </div>
+            <ResultBadge r={detail.resultat} />
+          </div>
+          {matieres.sort((a, b) => a.ordre - b.ordre).map(m => { const n = iNotes.find(x => x.matiere_uuid === m.id); return (
+            <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", fontSize: 13 }}>
+              <span>{m.nom} <span className="mono" style={{ color: "var(--gold)", fontSize: 10 }}>x{m.coefficient}</span></span>
+              <span className="mono" style={{ fontWeight: 700, color: n && n.absent ? "var(--red-tn)" : n && n.note !== null ? moyColor(n.note) : "var(--dim)" }}>{n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "—"}</span>
+            </div>); })}
+          <div style={{ textAlign: "center", marginTop: 18 }}><button className="btn btn-purple" onClick={() => { if (c) exportReleve(c, detail, iNotes, matieres); }}>Telecharger PDF</button></div>
+        </div>); })()}
+      </Modal>)}
+    </div>
+  );
+}
 
-          <main>
-            {err && <div className="error-box">{err}</div>}
-            {loading && <div className="hint">Chargement…</div>}
+/* ===== MAIN APP ===== */
+function App() {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [api, setApi] = useState(null);
+  const [tab, setTab] = useState("dashboard");
+  const [sessions, setSessions] = useState([]);
+  const [candidats, setCandidats] = useState([]);
+  const [inscriptions, setInscriptions] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [matieres, setMatieres] = useState([]);
+  const [deliberations, setDeliberations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [cs, setCs] = useState(true);
+  const [lookup, setLookup] = useState(false);
 
-            {nav === "dashboard" && (
-              <Dashboard
-                sessions={sessions}
-                candidats={candidats}
-                inscriptions={inscriptions}
-                matieres={matieres}
-                onNav={setNav}
-              />
-            )}
+  const loadAll = useCallback(async (ar) => {
+    const a = ar || api; if (!a) return;
+    setLoading(true); setError("");
+    try {
+      const [se, ca, ins, no, ma, de] = await Promise.all([
+        a.select("sessions", "order=created_at.desc"), a.select("candidats", "order=nom.asc"),
+        a.select("inscriptions", "order=created_at.desc"), a.select("notes", ""),
+        a.select("matieres", "order=ordre.asc"), a.select("deliberations", "order=date_deliberation.desc")
+      ]);
+      setSessions(se); setCandidats(ca); setInscriptions(ins); setNotes(no); setMatieres(ma); setDeliberations(de);
+    } catch (e) { setError("Erreur: " + e.message); }
+    setLoading(false);
+  }, [api]);
 
-            {nav === "sessions" && (
-              <SessionsPage
-                sessions={sessions}
-                inscriptions={inscriptions}
-                onOpen={(s)=>setOpenSession(s)}
-                onAdd={()=>setAddSession(true)}
-              />
-            )}
+  const handleLogin = (t, u) => { const a = createApi(t); setToken(t); setUser(u); setApi(a); loadAll(a); };
+  const handleLogout = async () => { try { if (token) await authApi.logout(token); } catch (e) {} localStorage.removeItem("ate_token"); setUser(null); setToken(null); setApi(null); };
 
-            {nav === "candidats" && (
-              <CandidatsPage
-                candidats={candidats}
-                onOpen={(c)=>setOpenCandidat(c)}
-                onAdd={()=>setAddCand(true)}
-              />
-            )}
+  useEffect(() => {
+    const t = localStorage.getItem("ate_token");
+    if (t) { authApi.getUser(t).then(u => { const a = createApi(t); setToken(t); setUser(u); setApi(a); loadAll(a); setCs(false); }).catch(() => { localStorage.removeItem("ate_token"); setCs(false); }); }
+    else setCs(false);
+  }, []);
 
-            {nav === "matieres" && (
-              <MatieresPage
-                matieres={matieres}
-                onAdd={()=>setAddMat(true)}
-                onOpen={(m)=>setOpenMatiere(m)}
-              />
-            )}
-          </main>
+  if (cs) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg)" }}><div style={{ textAlign: "center" }}><div style={{ fontSize: 48, marginBottom: 12 }}>&#9992;</div><div style={{ color: "var(--muted)", fontSize: 14 }}>Chargement...</div></div></div>;
+  if (lookup) return <CandidatLookup onBack={() => setLookup(false)} />;
+  if (!user) return <LoginScreen onLogin={handleLogin} onLookup={() => setLookup(true)} />;
 
-          {openSession && (
-            <SessionModal
-              api={api}
-              session={openSession}
-              onClose={()=>setOpenSession(null)}
-              candidats={candidats}
-              inscriptions={inscriptions}
-              matieres={matieres}
-              notes={notes}
-              deliberations={deliberations}
-              refresh={refresh}
-              toast={toast}
-            />
-          )}
+  const tabs = [
+    { id: "dashboard", label: "Accueil", ml: "Accueil", icon: "\u2302" },
+    { id: "sessions", label: "Sessions", ml: "Sessions", icon: "\uD83D\uDCC5", count: sessions.filter(s => s.statut !== "Archivee").length },
+    { id: "candidats", label: "Candidats", ml: "Candidats", icon: "\uD83D\uDC65", count: candidats.length },
+    { id: "notes", label: "Notes", ml: "Notes", icon: "\u270F" },
+    { id: "resultats", label: "Resultats", ml: "Resultats", icon: "\uD83D\uDCCA" },
+    { id: "deliberations", label: "Deliberations", ml: "Delib.", icon: "\u2696", count: deliberations.filter(d => !d.pv_valide).length }
+  ];
 
-          {addSession && (
-            <EntityModal title="Créer une session" onClose={()=>setAddSession(false)}>
-              <SessionForm
-                initial={{ session_id:"", intitule:"", date_debut:"", date_fin:"", lieu:"", president_jury:"", membres_jury:"", statut:"Planifiee", notes:"" }}
-                onCancel={()=>setAddSession(false)}
-                onSave={createSession}
-              />
-            </EntityModal>
-          )}
-
-          {openCandidat && (
-            <EntityModal title="Modifier candidat" onClose={()=>setOpenCandidat(null)}>
-              <CandidatForm initial={openCandidat} onCancel={()=>setOpenCandidat(null)} onSave={(v)=>saveCandidat(v,false)} />
-              <div style={{ display:"flex", justifyContent:"space-between", marginTop: 14 }}>
-                <button className="btn-outline btn-outline-red" onClick={()=>deleteCandidat(openCandidat.id)}>Supprimer</button>
-                <button className="btn-outline" onClick={()=>setOpenCandidat(null)}>Fermer</button>
-              </div>
-            </EntityModal>
-          )}
-
-          {addCand && (
-            <EntityModal title="Créer candidat" onClose={()=>setAddCand(false)}>
-              <CandidatForm initial={{ matricule:"", nom:"", prenom:"", cin:"", date_naissance:"", telephone:"", email:"", organisme_formation:"", notes:"" }} onCancel={()=>setAddCand(false)} onSave={(v)=>saveCandidat(v,true)} />
-            </EntityModal>
-          )}
-
-          {openMatiere && (
-            <EntityModal title="Modifier matière" onClose={()=>setOpenMatiere(null)}>
-              <MatiereForm initial={openMatiere} onCancel={()=>setOpenMatiere(null)} onSave={(v)=>saveMatiere(v,false)} />
-              <div style={{ display:"flex", justifyContent:"space-between", marginTop: 14 }}>
-                <button className="btn-outline btn-outline-red" onClick={()=>deleteMatiere(openMatiere.id)}>Supprimer</button>
-                <button className="btn-outline" onClick={()=>setOpenMatiere(null)}>Fermer</button>
-              </div>
-            </EntityModal>
-          )}
-
-          {addMat && (
-            <EntityModal title="Créer matière" onClose={()=>setAddMat(false)}>
-              <MatiereForm initial={{ nom:"", coefficient:1, ordre:1 }} onCancel={()=>setAddMat(false)} onSave={(v)=>saveMatiere(v,true)} />
-            </EntityModal>
-          )}
+  return (
+    <div>
+      <div className="tn-stripe"></div>
+      <header className="header">
+        <div className="header-left">
+          <div className="logo-mark">&#9992;</div>
+          <div><div className="header-title">Examens ATE — DGAC</div><div className="header-sub">Agent Technique d'Exploitation</div></div>
         </div>
-      );
-    }
+        <div className="desktop-tabs">{tabs.map(t => <button key={t.id} className={"tab-btn " + (tab === t.id ? "active" : "")} onClick={() => setTab(t.id)}><span>{t.icon}</span> {t.label}{t.count > 0 && <span className="tab-count">{t.count}</span>}</button>)}</div>
+        <div className="header-right">
+          <div className="user-badge"><div className="user-dot" />{user.email}</div>
+          <button className="btn-outline btn-sm" onClick={() => loadAll()}>{loading ? "\u23F3" : "\u21BB"}</button>
+          <button className="btn-outline btn-outline-red btn-sm" onClick={handleLogout}>Deconnexion</button>
+        </div>
+      </header>
+      <nav className="mobile-nav">
+        {tabs.map(t => <button key={t.id} className={"mobile-nav-btn " + (tab === t.id ? "active" : "")} onClick={() => setTab(t.id)}><span className="nav-icon">{t.icon}</span>{t.ml}{t.count > 0 && tab !== t.id && <span className="nav-badge">{t.count}</span>}</button>)}
+        <button className="mobile-nav-btn" onClick={handleLogout}><span className="nav-icon">&#x1F6AA;</span>Sortir</button>
+      </nav>
+      {error && <div className="error-box" style={{ margin: "12px 16px 0" }}>{error}</div>}
+      <main style={{ padding: "28px 32px", maxWidth: 1400, margin: "0 auto" }}>
+        {tab === "dashboard" && <Dashboard sessions={sessions} candidats={candidats} inscriptions={inscriptions} matieres={matieres} onNav={setTab} />}
+        {tab === "sessions" && <SessionsView api={api} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
+        {tab === "candidats" && <CandidatsView api={api} candidats={candidats} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
+        {tab === "notes" && <NotesView api={api} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} reload={() => loadAll()} />}
+        {tab === "resultats" && <ResultatsView sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} />}
+        {tab === "deliberations" && <DeliberationsView api={api} sessions={sessions} inscriptions={inscriptions} deliberations={deliberations} reload={() => loadAll()} />}
+      </main>
+    </div>
+  );
+}
 
-    ReactDOM.createRoot(document.getElementById("app")).render(<App />);
-  </script>
+ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+
+</script>
 </body>
 </html>
