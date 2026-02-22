@@ -629,9 +629,9 @@ function SessionsView({ api, sessions, inscriptions, reload }) {
 
 /* ===== CANDIDATS VIEW ===== */
 function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
-  const [step, setStep] = useState("org");
+  const [step, setStep] = useState("org"); // org | list
   const [selectedOrg, setSelectedOrg] = useState("");
-  const [selectedSessionId, setSelectedSessionId] = useState("");
+  const [selectedSessionId, setSelectedSessionId] = useState("all"); // "all" = tous les candidats sans filtre session
   const [sf, setSf] = useState(false);
   const [ed, setEd] = useState(null);
   const [del, setDel] = useState(null);
@@ -644,9 +644,9 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
     return m;
   }, [candidats]);
 
-  const goOrg = () => { setStep("org"); setSelectedOrg(""); setSelectedSessionId(""); setSe(""); };
-  const goSessions = () => { setStep("sessions"); setSelectedSessionId(""); setSe(""); };
+  const goOrg = () => { setStep("org"); setSelectedOrg(""); setSelectedSessionId("all"); setSe(""); };
 
+  // Sessions qui ont au moins un candidat de cet organisme (pour le filtre dropdown)
   const sessionsForOrg = useMemo(() => {
     if (!selectedOrg) return [];
     const sset = new Set();
@@ -657,32 +657,59 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
     return (sessions || []).filter(s => sset.has(s.id));
   }, [selectedOrg, inscriptions, sessions, candById]);
 
-  const candidatsForOrgSession = useMemo(() => {
-    if (!selectedOrg || !selectedSessionId) return [];
-    const rows = [];
-    (inscriptions || [])
-      .filter(i => i.session_uuid === selectedSessionId)
-      .forEach(i => {
-        const c = candById.get(i.candidat_uuid);
-        if (c && (c.organisme_formation || "") === selectedOrg) rows.push({ inscription: i, candidat: c });
-      });
+  // Tous les candidats de l'organisme, avec filtre session optionnel
+  const candidatsForOrg = useMemo(() => {
+    if (!selectedOrg) return [];
 
-    const q = (se || "").trim().toLowerCase();
-    const filtered = !q ? rows : rows.filter(({ candidat }) => {
-      return (candidat.nom || "").toLowerCase().includes(q) ||
-             (candidat.prenom || "").toLowerCase().includes(q) ||
-             (candidat.matricule || "").toLowerCase().includes(q) ||
-             (candidat.cin || "").toLowerCase().includes(q);
+    // Build inscription lookup: candidat_uuid -> inscription (for session filter)
+    const inscByCandidat = new Map();
+    (inscriptions || []).forEach(i => {
+      // If filtering by session, only keep inscriptions for that session
+      if (selectedSessionId !== "all" && i.session_uuid !== selectedSessionId) return;
+      inscByCandidat.set(i.candidat_uuid, i);
     });
 
-    filtered.sort((a, b) => {
+    let rows = [];
+
+    if (selectedSessionId === "all") {
+      // Show ALL candidates of this org (even without inscription)
+      (candidats || []).forEach(c => {
+        if ((c.organisme_formation || "") !== selectedOrg) return;
+        // Find latest inscription for moyenne display
+        const latestInsc = (inscriptions || []).filter(i => i.candidat_uuid === c.id).sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")))[0] || null;
+        rows.push({ candidat: c, inscription: latestInsc });
+      });
+    } else {
+      // Show only candidates inscribed to selected session
+      (inscriptions || [])
+        .filter(i => i.session_uuid === selectedSessionId)
+        .forEach(i => {
+          const c = candById.get(i.candidat_uuid);
+          if (c && (c.organisme_formation || "") === selectedOrg) {
+            rows.push({ candidat: c, inscription: i });
+          }
+        });
+    }
+
+    // Search filter
+    const q = (se || "").trim().toLowerCase();
+    if (q) {
+      rows = rows.filter(({ candidat }) =>
+        (candidat.nom || "").toLowerCase().includes(q) ||
+        (candidat.prenom || "").toLowerCase().includes(q) ||
+        (candidat.matricule || "").toLowerCase().includes(q) ||
+        (candidat.cin || "").toLowerCase().includes(q)
+      );
+    }
+
+    rows.sort((a, b) => {
       const an = `${a.candidat.nom || ""} ${a.candidat.prenom || ""}`.toLowerCase();
       const bn = `${b.candidat.nom || ""} ${b.candidat.prenom || ""}`.toLowerCase();
       return an.localeCompare(bn);
     });
 
-    return filtered;
-  }, [selectedOrg, selectedSessionId, inscriptions, candById, se]);
+    return rows;
+  }, [selectedOrg, selectedSessionId, candidats, inscriptions, candById, se]);
 
   const save = async (d) => {
     try {
@@ -702,7 +729,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
     }
   };
 
-  const session = (sessions || []).find(s => s.id === selectedSessionId);
+  const totalOrgCandidats = (candidats || []).filter(c => (c.organisme_formation || "") === selectedOrg).length;
 
   // STEP 1 — Organismes
   if (step === "org") {
@@ -718,18 +745,19 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))", gap:16 }}>
           {ORGANISMES.map(org => {
             const nb = (candidats || []).filter(c => (c.organisme_formation || "") === org).length;
+            const nbInscrits = (inscriptions || []).filter(i => { const c = candById.get(i.candidat_uuid); return c && (c.organisme_formation || "") === org; }).length;
             return (
               <div
                 key={org}
                 className="card card-padded"
                 style={{ cursor:"pointer" }}
-                onClick={() => { setSelectedOrg(org); setStep("sessions"); }}
+                onClick={() => { setSelectedOrg(org); setSelectedSessionId("all"); setStep("list"); }}
               >
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div>
                     <div className="label">Organisme</div>
                     <div style={{ fontSize: 24, fontWeight: 900, color:"var(--gold)" }}>{org}</div>
-                    <div className="hint" style={{ marginTop: 6 }}>{nb} candidats (base)</div>
+                    <div className="hint" style={{ marginTop: 6 }}>{nb} candidats · {nbInscrits} inscriptions</div>
                   </div>
                   <div style={{
                     width:56, height:56, borderRadius:18,
@@ -741,7 +769,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
                   </div>
                 </div>
                 <div style={{ marginTop: 14 }}>
-                  <button className="btn-outline btn-sm">Voir les sessions →</button>
+                  <button className="btn-outline btn-sm">Voir les candidats →</button>
                 </div>
               </div>
             );
@@ -755,105 +783,100 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
     );
   }
 
-  // STEP 2 — Sessions pour organisme
-  if (step === "sessions") {
-    return (
-      <div>
-        <div className="filters">
-          <button className="btn-outline" onClick={goOrg}>← Organismes</button>
-          <div className="hint">Organisme: <b style={{ color:"var(--gold)" }}>{selectedOrg}</b></div>
-          <div className="spacer" />
-        </div>
-
-        <div className="table-container">
-          <div className="table-head" style={{ gridTemplateColumns: "140px 1fr 180px 140px" }}>
-            <div>ID</div><div>Intitule</div><div>Dates / Lieu</div><div>Statut</div>
-          </div>
-
-          {sessionsForOrg.length === 0 ? (
-            <Empty text="Aucune session trouvee pour cet organisme." />
-          ) : (
-            sessionsForOrg
-              .slice()
-              .sort((a,b)=> (String(b.created_at||"")).localeCompare(String(a.created_at||"")) || String(b.date_debut||"").localeCompare(String(a.date_debut||"")))
-              .map(s => {
-                const nb = (inscriptions || []).filter(i => {
-                  if (i.session_uuid !== s.id) return false;
-                  const c = candById.get(i.candidat_uuid);
-                  return c && (c.organisme_formation || "") === selectedOrg;
-                }).length;
-
-                return (
-                  <div
-                    key={s.id}
-                    className="table-row"
-                    style={{ gridTemplateColumns: "140px 1fr 180px 140px" }}
-                    onClick={() => { setSelectedSessionId(s.id); setStep("candidats"); }}
-                  >
-                    <div className="mono" style={{ fontWeight: 900 }}>{s.session_id || "—"}</div>
-                    <div>
-                      <div style={{ fontWeight: 900 }}>{s.intitule}</div>
-                      <div className="hint">{s.lieu || "—"} · <span style={{ color:"var(--cyan)" }}>{nb} candidats</span></div>
-                    </div>
-                    {/* FIX #1: fmtDate is now defined */}
-                    <div className="hint">{fmtDate(s.date_debut)} → {fmtDate(s.date_fin)}</div>
-                    <div><Tag label={s.statut} /></div>
-                  </div>
-                );
-              })
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // STEP 3 — Candidats de la session sélectionnée
+  // STEP 2 — Liste des candidats de l'organisme (avec filtre session optionnel)
   return (
     <div>
       <div className="filters">
-        <button className="btn-outline" onClick={goSessions}>← Sessions</button>
+        <button className="btn-outline" onClick={goOrg}>← Organismes</button>
         <div className="hint">
-          Organisme: <b style={{ color:"var(--gold)" }}>{selectedOrg}</b>
-          {" "}· Session: <b>{session?.session_id || "—"}</b> — {session?.intitule || ""}
+          <b style={{ color:"var(--gold)" }}>{selectedOrg}</b> — {totalOrgCandidats} candidats
         </div>
         <div className="spacer" />
-        <input className="input" style={{ maxWidth: 340 }} placeholder="Rechercher matricule/nom/CIN…" value={se} onChange={e => setSe(e.target.value)} />
+        <select className="select" value={selectedSessionId} onChange={e => setSelectedSessionId(e.target.value)} style={{ maxWidth: 280 }}>
+          <option value="all">Toutes les sessions</option>
+          {sessionsForOrg
+            .slice()
+            .sort((a,b) => String(b.date_debut||"").localeCompare(String(a.date_debut||"")))
+            .map(s => <option key={s.id} value={s.id}>{s.intitule} ({s.session_id})</option>)
+          }
+        </select>
+        <input className="input" style={{ maxWidth: 280 }} placeholder="Rechercher matricule/nom/CIN…" value={se} onChange={e => setSe(e.target.value)} />
       </div>
 
-      <div className="table-container">
-        <div className="table-head" style={{ gridTemplateColumns: "140px 1fr 160px 120px 120px" }}>
-          <div>Matricule</div><div>Nom & Prenom</div><div>CIN</div><div>Moyenne</div><div>Action</div>
+      <div style={{ marginBottom: 12, fontSize: 12, color: "var(--dim)" }}>
+        {candidatsForOrg.length} candidat{candidatsForOrg.length !== 1 ? "s" : ""} affiche{candidatsForOrg.length !== 1 ? "s" : ""}
+        {selectedSessionId !== "all" && (() => {
+          const sess = (sessions || []).find(s => s.id === selectedSessionId);
+          return sess ? " — Session: " + sess.intitule : "";
+        })()}
+      </div>
+
+      {/* Desktop table */}
+      <div className="table-container desktop-only">
+        <div className="table-head" style={{ gridTemplateColumns: "120px 1fr 130px 100px 100px 100px" }}>
+          <div>Matricule</div><div>Nom & Prenom</div><div>CIN</div><div>Session</div><div>Moyenne</div><div>Action</div>
         </div>
 
-        {candidatsForOrgSession.length === 0 ? (
-          <Empty text="Aucun candidat de cet organisme n'est inscrit a cette session." />
+        {candidatsForOrg.length === 0 ? (
+          <Empty text="Aucun candidat trouve." />
         ) : (
-          candidatsForOrgSession.map(({ candidat, inscription }) => (
-            <div
-              key={candidat.id}
-              className="table-row"
-              style={{ gridTemplateColumns: "140px 1fr 160px 120px 120px" }}
-            >
-              <div className="mono" style={{ fontWeight: 900 }}>{candidat.matricule || "—"}</div>
-              <div>
-                <div style={{ fontWeight: 900 }}>{candidat.prenom} {candidat.nom}</div>
-                <div className="hint">{candidat.email || "—"} · {candidat.telephone || "—"}</div>
+          candidatsForOrg.map(({ candidat, inscription }) => {
+            const sessLabel = inscription ? ((sessions || []).find(s => s.id === inscription.session_uuid)?.session_id || "—") : "—";
+            return (
+              <div
+                key={candidat.id + (inscription ? inscription.id : "")}
+                className="table-row"
+                style={{ gridTemplateColumns: "120px 1fr 130px 100px 100px 100px" }}
+              >
+                <div className="mono" style={{ fontWeight: 900, fontSize: 11 }}>{candidat.matricule || "—"}</div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>{candidat.prenom} {candidat.nom}</div>
+                  <div className="hint">{candidat.email || candidat.telephone || "—"}</div>
+                </div>
+                <div className="mono" style={{ color:"var(--muted)", fontSize: 11 }}>{candidat.cin || "—"}</div>
+                <div className="hint" style={{ fontSize: 10 }}>{sessLabel}</div>
+                <div className="mono" style={{ fontWeight: 900, fontSize: 13, color: (inscription?.moyenne_ponderee ?? null) === null ? "var(--muted)" : (Number(inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") }}>
+                  {(inscription?.moyenne_ponderee ?? null) === null ? "—" : Number(inscription.moyenne_ponderee).toFixed(2)}
+                </div>
+                <div style={{ display:"flex", justifyContent:"flex-end", gap:6 }}>
+                  <button className="btn-outline btn-sm" onClick={() => { setEd(candidat); setSf(true); }}>Ouvrir</button>
+                  <button className="btn-outline btn-sm" onClick={() => setDel(candidat)} title="Supprimer">&#128465;</button>
+                </div>
               </div>
-              <div className="mono" style={{ color:"var(--muted)" }}>{candidat.cin || "—"}</div>
-              <div style={{ fontWeight: 900, color: (inscription?.moyenne_ponderee ?? null) === null ? "var(--muted)" : (Number(inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") }}>
-                {(inscription?.moyenne_ponderee ?? null) === null ? "—" : Number(inscription.moyenne_ponderee).toFixed(2)}
-              </div>
-              <div style={{ textAlign:"right", display:"flex", justifyContent:"flex-end", gap:8 }}>
+            );
+          })
+        )}
+      </div>
+
+      {/* Mobile cards */}
+      <div className="mobile-only">
+        {candidatsForOrg.length === 0 ? (
+          <Empty text="Aucun candidat trouve." />
+        ) : (
+          candidatsForOrg.map(({ candidat, inscription }) => (
+            <div key={candidat.id + (inscription ? inscription.id : "")} className="mobile-card">
+              <div className="mobile-card-header">
+                <div>
+                  <div className="mobile-card-title">{candidat.prenom} {candidat.nom}</div>
+                  <div className="mobile-card-id">{candidat.matricule} · CIN: {candidat.cin || "—"}</div>
+                </div>
                 <button className="btn-outline btn-sm" onClick={() => { setEd(candidat); setSf(true); }}>Ouvrir</button>
-                <button className="btn-outline btn-sm" onClick={() => setDel(candidat)} title="Supprimer">&#128465;</button>
+              </div>
+              <div className="mobile-card-footer">
+                <span className="mono" style={{ fontSize: 15, fontWeight: 700, color: (inscription?.moyenne_ponderee ?? null) === null ? "var(--muted)" : (Number(inscription.moyenne_ponderee) >= PASS_MARK ? "var(--green)" : "var(--red-tn)") }}>
+                  {(inscription?.moyenne_ponderee ?? null) === null ? "—" : Number(inscription.moyenne_ponderee).toFixed(2) + "/20"}
+                </span>
+                <button className="btn-icon" onClick={() => setDel(candidat)}>&#128465;</button>
               </div>
             </div>
           ))
         )}
       </div>
 
+      <FAB onClick={() => { setEd(null); setSf(true); }} />
       {sf && <CandidatForm candidat={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
       {del && <ConfirmDelete item={del.prenom + " " + del.nom} onConfirm={rm} onCancel={() => setDel(null)} />}
+      {importModal && <ImportExcelModal api={api} sessions={sessions} onClose={() => setImportModal(false)} onDone={() => { setImportModal(false); reload(); }} />}
     </div>
   );
 }
