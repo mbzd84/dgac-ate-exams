@@ -1071,11 +1071,28 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
 }
 
 /* ===== MAIN APP ===== */
+function normalizeTab(tabValue) {
+  const raw = String(tabValue || "").trim().toLowerCase();
+  const aliases = {
+    accueil: "dashboard",
+    home: "dashboard",
+    session: "sessions",
+    candidat: "candidats",
+    candidats: "candidats",
+    canadidat: "candidats",
+    canadidats: "candidats",
+    note: "notes",
+    resultat: "resultats",
+    deliberation: "deliberations"
+  };
+  return aliases[raw] || "dashboard";
+}
+
 function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [api, setApi] = useState(null);
-  const [tab, setTab] = useState("dashboard");
+  const [tab, setTab] = useState(() => normalizeTab((window.location.hash || "").replace(/^#/, "")));
   const [sessions, setSessions] = useState([]);
   const [candidats, setCandidats] = useState([]);
   const [inscriptions, setInscriptions] = useState([]);
@@ -1101,14 +1118,21 @@ function App() {
     setLoading(false);
   }, [api]);
 
+  const setTabSafe = (nextTab) => setTab(normalizeTab(nextTab));
+
   const handleLogin = (t, u) => { const a = createApi(t); setToken(t); setUser(u); setApi(a); loadAll(a); };
-  const handleLogout = async () => { try { if (token) await authApi.logout(token); } catch (e) {} localStorage.removeItem("ate_token"); setUser(null); setToken(null); setApi(null); };
+  const handleLogout = async () => { try { if (token) await authApi.logout(token); } catch (e) {} localStorage.removeItem("ate_token"); setUser(null); setToken(null); setApi(null); setTabSafe("dashboard"); };
 
   useEffect(() => {
     const t = localStorage.getItem("ate_token");
     if (t) { authApi.getUser(t).then(u => { const a = createApi(t); setToken(t); setUser(u); setApi(a); loadAll(a); setCs(false); }).catch(() => { localStorage.removeItem("ate_token"); setCs(false); }); }
     else setCs(false);
   }, []);
+
+  useEffect(() => {
+    if (!tab) return;
+    window.location.hash = tab;
+  }, [tab]);
 
   if (cs) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg)" }}><div style={{ textAlign: "center" }}><div style={{ fontSize: 48, marginBottom: 12 }}>&#9992;</div><div style={{ color: "var(--muted)", fontSize: 14 }}>Chargement...</div></div></div>;
   if (lookup) return <CandidatLookup onBack={() => setLookup(false)} />;
@@ -1131,7 +1155,7 @@ function App() {
           <div className="logo-mark">&#9992;</div>
           <div><div className="header-title">Examens ATE — DGAC</div><div className="header-sub">Agent Technique d'Exploitation</div></div>
         </div>
-        <div className="desktop-tabs">{tabs.map(t => <button key={t.id} className={"tab-btn " + (tab === t.id ? "active" : "")} onClick={() => setTab(t.id)}><span>{t.icon}</span> {t.label}{t.count > 0 && <span className="tab-count">{t.count}</span>}</button>)}</div>
+        <div className="desktop-tabs">{tabs.map(t => <button key={t.id} className={"tab-btn " + (tab === t.id ? "active" : "")} onClick={() => setTabSafe(t.id)}><span>{t.icon}</span> {t.label}{t.count > 0 && <span className="tab-count">{t.count}</span>}</button>)}</div>
         <div className="header-right">
           <div className="user-badge"><div className="user-dot" />{user.email}</div>
           <button className="btn-outline btn-sm" onClick={() => loadAll()}>{loading ? "\u23F3" : "\u21BB"}</button>
@@ -1139,12 +1163,12 @@ function App() {
         </div>
       </header>
       <nav className="mobile-nav">
-        {tabs.map(t => <button key={t.id} className={"mobile-nav-btn " + (tab === t.id ? "active" : "")} onClick={() => setTab(t.id)}><span className="nav-icon">{t.icon}</span>{t.ml}{t.count > 0 && tab !== t.id && <span className="nav-badge">{t.count}</span>}</button>)}
+        {tabs.map(t => <button key={t.id} className={"mobile-nav-btn " + (tab === t.id ? "active" : "")} onClick={() => setTabSafe(t.id)}><span className="nav-icon">{t.icon}</span>{t.ml}{t.count > 0 && tab !== t.id && <span className="nav-badge">{t.count}</span>}</button>)}
         <button className="mobile-nav-btn" onClick={handleLogout}><span className="nav-icon">&#x1F6AA;</span>Sortir</button>
       </nav>
       {error && <div className="error-box" style={{ margin: "12px 16px 0" }}>{error}</div>}
       <main style={{ padding: "28px 32px", maxWidth: 1400, margin: "0 auto" }}>
-        {tab === "dashboard" && <Dashboard sessions={sessions} candidats={candidats} inscriptions={inscriptions} matieres={matieres} onNav={setTab} />}
+        {tab === "dashboard" && <Dashboard sessions={sessions} candidats={candidats} inscriptions={inscriptions} matieres={matieres} onNav={setTabSafe} />}
         {tab === "sessions" && <SessionsView api={api} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
         {tab === "candidats" && <CandidatsView api={api} candidats={candidats} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
         {tab === "notes" && <NotesView api={api} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} reload={() => loadAll()} />}
