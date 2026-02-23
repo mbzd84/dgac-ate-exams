@@ -46,29 +46,29 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(36,99,235,0.2);border-radius:4px}
 .header{padding:0 32px;height:64px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.92);box-shadow:0 10px 30px rgba(2,6,23,0.06);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
 .header-left{display:flex;align-items:center;gap:14px}
-.logo-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 12px rgba(36,99,235,0.2);font-size:18px}
-.header-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold-light)}
+.logo-mark{width:38px;height:38px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 12px rgba(36,99,235,0.2);font-size:18px}
+.header-title{font-size:16px;font-weight:700;color:var(--accent)}
 .header-sub{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
 .desktop-tabs{display:flex;gap:2px;padding:3px;border-radius:10px;background:rgba(36,99,235,0.04);border:1px solid var(--border)}
 .tab-btn{padding:8px 16px;border-radius:8px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;background:transparent;color:var(--muted);transition:var(--tr);white-space:nowrap;letter-spacing:0.3px;text-transform:uppercase}
-.tab-btn:hover{color:var(--text)}.tab-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
-.tab-count{font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:6px;background:rgba(36,99,235,0.15);color:var(--gold)}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{background:rgba(36,99,235,0.12);color:var(--accent)}
+.tab-count{font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:6px;background:rgba(36,99,235,0.15);color:var(--accent)}
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(11,21,40,0.98);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:6px 4px;padding-bottom:calc(6px + var(--safe-bottom));z-index:100;justify-content:space-around}
 .mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-size:9px;font-family:inherit;font-weight:600;cursor:pointer;padding:5px 4px;border-radius:8px;min-width:44px;position:relative;transition:var(--tr)}
-.mobile-nav-btn.active{color:var(--gold)}.mobile-nav-btn .nav-icon{font-size:18px}
+.mobile-nav-btn.active{color:var(--accent)}.mobile-nav-btn .nav-icon{font-size:18px}
 .mobile-nav-btn .nav-badge{position:absolute;top:0;right:2px;font-size:8px;font-weight:700;background:var(--red-tn);color:#fff;padding:1px 4px;border-radius:6px}
 .btn{padding:10px 22px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:var(--tr);letter-spacing:0.5px;text-transform:uppercase}
 .btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.2)}.btn:active{transform:scale(0.97)}.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
-.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0B1528}
+.btn-accent{background:var(--accent);color:#0B1528}
 .btn-red{background:var(--red-tn);color:#fff}.btn-green{background:var(--green);color:#fff}.btn-purple{background:var(--purple);color:#fff}.btn-orange{background:var(--orange);color:#fff}
-.btn-outline{padding:9px 18px;background:transparent;border:1px solid rgba(36,99,235,0.25);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--gold);transition:var(--tr)}
-.btn-outline:hover{border-color:var(--gold)}.btn-outline-red{border-color:rgba(200,16,46,0.3);color:var(--red-tn)}
+.btn-outline{padding:9px 18px;background:transparent;border:1px solid rgba(36,99,235,0.25);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--accent);transition:var(--tr)}
+.btn-outline:hover{border-color:var(--accent)}.btn-outline-red{border-color:rgba(200,16,46,0.3);color:var(--red-tn)}
 .btn-sm{padding:6px 14px;font-size:10px}.btn-full{width:100%;padding:14px 0}
-.btn-icon{background:none;border:none;color:var(--dim);cursor:pointer;padding:8px;transition:var(--tr);border-radius:6px}.btn-icon:hover{color:var(--gold)}
-.btn-fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;border-radius:50%;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 24px rgba(36,99,235,0.25);z-index:90;display:none;align-items:center;justify-content:center;color:#0B1528;background:linear-gradient(135deg,var(--gold),var(--gold-dark))}
+.btn-icon{background:none;border:none;color:var(--dim);cursor:pointer;padding:8px;transition:var(--tr);border-radius:6px}.btn-icon:hover{color:var(--accent)}
+.btn-fab{position:fixed;bottom:80px;right:18px;width:52px;height:52px;border-radius:50%;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 24px rgba(36,99,235,0.25);z-index:90;display:none;align-items:center;justify-content:center;color:#0B1528;background:var(--accent)}
 .input,.select,.textarea{width:100%;padding:12px 16px;background:rgba(36,99,235,0.04);border:1px solid var(--border-light);border-radius:8px;color:var(--text);font-size:14px;outline:none;font-family:inherit;transition:var(--tr)}
-.input:focus,.select:focus,.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(36,99,235,0.08)}.select{cursor:pointer}.textarea{min-height:80px;resize:vertical}
-.label{font-size:10px;color:var(--gold);margin-bottom:6px;display:block;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(36,99,235,0.08)}.select{cursor:pointer}.textarea{min-height:80px;resize:vertical}
+.label{font-size:10px;color:var(--accent);margin-bottom:6px;display:block;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;transition:var(--tr)}.card-padded{padding:24px}
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:28px}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:var(--tr)}.kpi:hover{border-color:var(--border-light);transform:translateY(-2px)}
@@ -78,7 +78,7 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
 .badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
 .table-container{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
 /* FIX #2: Added missing .table-head CSS */
-.table-head{display:grid;padding:12px 22px;border-bottom:2px solid var(--border);background:rgba(36,99,235,0.04);font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;align-items:center}
+.table-head{display:grid;padding:12px 22px;border-bottom:2px solid var(--border);background:rgba(36,99,235,0.04);font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;align-items:center}
 .table-row{display:grid;padding:14px 22px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:var(--tr)}.table-row:hover{background:var(--card-hover)}.table-row:last-child{border-bottom:none}
 .mobile-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;cursor:pointer;transition:var(--tr)}.mobile-card:hover{border-color:var(--border-light)}
 .mobile-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
@@ -88,37 +88,41 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:12px;animation:fadeIn 0.2s}
 .modal{background:linear-gradient(180deg,#FFFFFF,#F3F6FF);border:1px solid var(--border-light);border-radius:20px;padding:28px;max-width:94vw;max-height:90vh;overflow-y:auto;width:560px;animation:slideUp 0.3s cubic-bezier(0.4,0,0.2,1)}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.modal-title{font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--gold-light)}
+.modal-title{font-size:20px;font-weight:700;color:var(--accent)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-span{grid-column:1/-1}
 .filters{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;align-items:center}
 .filter-group{display:flex;gap:3px;background:rgba(36,99,235,0.04);border-radius:10px;padding:3px;border:1px solid var(--border)}
-.filter-btn{padding:7px 14px;border-radius:7px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:var(--muted);white-space:nowrap;transition:var(--tr)}.filter-btn.active{background:rgba(36,99,235,0.12);color:var(--gold)}
+.filter-btn{padding:7px 14px;border-radius:7px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:var(--muted);white-space:nowrap;transition:var(--tr)}.filter-btn.active{background:rgba(36,99,235,0.12);color:var(--accent)}
 .spacer{flex:1}.empty{padding:48px 24px;text-align:center;color:var(--dim);font-size:14px;font-style:italic}
 /* FIX #3: Added missing .hint CSS */
 .hint{font-size:12px;color:var(--muted);font-weight:400}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#F6F8FC,#EAF1FF,#F6F8FC)}
 .login-box{width:440px;max-width:100%}.login-header{text-align:center;margin-bottom:36px}
-.login-title{font-size:26px;font-weight:800;font-family:'Playfair Display',serif;color:var(--gold-light)}
+.login-title{font-size:26px;font-weight:800;color:var(--accent)}
 .login-sub{color:var(--muted);font-size:14px;margin-top:10px}
 .error-box{padding:12px 16px;background:rgba(200,16,46,0.08);border:1px solid rgba(200,16,46,0.2);border-radius:10px;color:var(--red-tn);font-size:12px;margin-bottom:16px}
 .user-badge{display:flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(36,99,235,0.06);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--muted)}
 .user-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
-.section-title{font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:18px;margin-top:32px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-title{font-size:18px;font-weight:700;color:var(--accent);margin-bottom:18px;margin-top:32px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .section-title:first-child{margin-top:0}
 .stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}.stat-row:last-child{border:none}
 .note-grid{display:grid;gap:6px;margin:16px 0}
 .note-row{display:grid;grid-template-columns:1fr 80px 50px;gap:10px;align-items:center;padding:10px 14px;background:rgba(36,99,235,0.02);border:1px solid var(--border);border-radius:10px}
-.note-row .matiere-name{font-size:12px;font-weight:500}.note-row .coef{font-size:10px;color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:600}
+.note-row .module-name{font-size:12px;font-weight:500}.note-row .coef{font-size:10px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:600}
 .note-input{width:100%;padding:8px;background:rgba(36,99,235,0.06);border:1px solid var(--border-light);border-radius:6px;color:var(--text);font-size:14px;font-family:'JetBrains Mono',monospace;text-align:center;outline:none;transition:var(--tr)}
-.note-input:focus{border-color:var(--gold)}.note-input.absent{background:rgba(200,16,46,0.08);border-color:rgba(200,16,46,0.25);color:var(--red-tn)}
+.note-input:focus{border-color:var(--accent)}.note-input.absent{background:rgba(200,16,46,0.08);border-color:rgba(200,16,46,0.25);color:var(--red-tn)}
 .result-admis{color:var(--green);font-weight:700}.result-ajourne{color:var(--red-tn);font-weight:700}.result-attente{color:var(--orange);font-weight:700}
 .moyenne-display{font-size:32px;font-weight:800;text-align:center;padding:20px;border-radius:14px;margin-bottom:18px;font-family:'Playfair Display',serif}
 .stats-table{width:100%;border-collapse:collapse;font-size:12px}
-.stats-table th{text-align:left;padding:10px 12px;background:rgba(36,99,235,0.06);color:var(--gold);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;border-bottom:1px solid var(--border)}
+.stats-table th{text-align:left;padding:10px 12px;background:rgba(36,99,235,0.06);color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;border-bottom:1px solid var(--border)}
 .stats-table td{padding:10px 12px;border-bottom:1px solid var(--border)}.stats-table tr:hover td{background:rgba(36,99,235,0.02)}
-.tn-stripe{height:3px;background:linear-gradient(90deg,var(--red-tn),var(--gold),var(--red-tn));opacity:0.6}
+.tn-stripe{height:3px;background:linear-gradient(90deg,var(--red-tn),#0F172A,var(--red-tn));opacity:0.6}
+.progress-bar{height:6px;border-radius:3px;background:var(--bg);overflow:hidden}.progress-fill{height:100%;border-radius:3px;transition:width .4s}
+.centre-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;cursor:pointer;transition:var(--tr)}.centre-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.alert-card{padding:12px 16px;border-radius:10px;font-size:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cas-limite{background:rgba(234,88,12,.06)!important;border-left:3px solid var(--orange)!important}
 @media(max-width:768px){
   .header{padding:0 16px;height:56px}.header-title{font-size:14px}.header-sub{display:none}
   .desktop-tabs{display:none!important}.header-right .user-badge{display:none}.header-right .btn-outline:not(.btn-outline-red){display:none}
@@ -139,6 +143,10 @@ h1,h2,h3,.serif{font-family:'Playfair Display',serif}
 </head>
 <body>
 <div class="tn-stripe"></div>
+.progress-bar{height:6px;border-radius:3px;background:var(--bg);overflow:hidden}.progress-fill{height:100%;border-radius:3px;transition:width .4s}
+.centre-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;cursor:pointer;transition:var(--tr)}.centre-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.alert-card{padding:12px 16px;border-radius:10px;font-size:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cas-limite{background:rgba(234,88,12,.06)!important;border-left:3px solid var(--orange)!important}
 <div id="app"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -152,6 +160,11 @@ const SB_URL = "https://rvsldfentjjuukgozrzv.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2c2xkZmVudGpqdXVrZ296cnp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NzA0MDEsImV4cCI6MjA4NzI0NjQwMX0.PAFfUgH1-cmrd7HULo0H46Bzs9q3fwX3qoxjBgnvCdQ";
 const PASS_MARK = 13;
 const ORGANISMES = ["CIFAC", "AFA", "OSC"];
+const ORGANISMES_DATA = {
+  CIFAC: { color: "#2563EB", bg: "rgba(37,99,235,.08)", icon: "🎓" },
+  AFA:   { color: "#7C3AED", bg: "rgba(124,58,237,.08)", icon: "🛩" },
+  OSC:   { color: "#0891B2", bg: "rgba(8,145,178,.08)", icon: "🌐" }
+};
 
 /* FIX #1: Added missing fmtDate utility function */
 function fmtDate(d) {
@@ -201,8 +214,10 @@ function Sel({ value, onChange, options }) { return <select className="select" v
 function ConfirmDelete({ item, onConfirm, onCancel }) {
   return (<Modal onClose={onCancel} title="Confirmer la suppression" width={420}><p style={{ color: "var(--muted)", fontSize: 14, marginBottom: 20 }}>Supprimer <strong style={{ color: "var(--red-tn)" }}>{item}</strong> ?</p><div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}><button className="btn btn-outline" onClick={onCancel}>Annuler</button><button className="btn btn-red" onClick={onConfirm}>Supprimer</button></div></Modal>);
 }
-function FAB({ onClick, color }) { return <button className="btn-fab" style={{ background: color || "linear-gradient(135deg,var(--gold),var(--gold-dark))" }} onClick={onClick}>+</button>; }
+function FAB({ onClick, color }) { return <button className="btn-fab" style={{ background: color || "var(--accent)" }} onClick={onClick}>+</button>; }
 function ResultBadge({ r }) { return <span className={r === "Admis" ? "result-admis" : r === "Ajourne" ? "result-ajourne" : "result-attente"}>{r}</span>; }
+function OrgIcon({org,size}){const d=ORGANISMES_DATA[org]||{color:"#64748B",icon:"🏫"};const s=size||36;return(<div style={{width:s,height:s,borderRadius:s*.3,display:"flex",alignItems:"center",justifyContent:"center",fontSize:s*.5,fontWeight:800,color:"#fff",background:d.color,flexShrink:0}}>{d.icon}</div>);}
+function ProgressBar({value,color}){return(<div className="progress-bar"><div className="progress-fill" style={{width:Math.min(100,Math.max(0,value))+"%",background:color||"var(--accent)"}}/></div>);}
 
 /* ===== LOGIN ===== */
 function LoginScreen({ onLogin, onLookup }) {
@@ -220,7 +235,7 @@ function LoginScreen({ onLogin, onLookup }) {
   return (
     <div className="login-page"><div className="login-box">
       <div className="login-header">
-        <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", fontSize: 28, boxShadow: "0 4px 24px rgba(36,99,235,0.3)" }}>&#9992;</div>
+        <div style={{ width: 64, height: 64, borderRadius: 16, background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", fontSize: 28, boxShadow: "0 4px 24px rgba(36,99,235,0.3)" }}>&#9992;</div>
         <h1 className="login-title">Examens ATE</h1>
         <p className="login-sub">Direction Generale de l'Aviation Civile — Tunisie</p>
       </div>
@@ -228,10 +243,10 @@ function LoginScreen({ onLogin, onLookup }) {
         <div style={{ marginBottom: 18 }}><label className="label">Email</label><input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="votre.email@dgac.tn" onKeyDown={e => e.key === "Enter" && go()} /></div>
         <div style={{ marginBottom: 18 }}><label className="label">Mot de passe</label><input className="input" type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="••••••••" onKeyDown={e => e.key === "Enter" && go()} /></div>
         {err && <div className="error-box">{err}</div>}
-        <button className="btn btn-gold btn-full" onClick={go} disabled={ld}>{ld ? "Connexion..." : "Se connecter"}</button>
+        <button className="btn btn-accent btn-full" onClick={go} disabled={ld}>{ld ? "Connexion..." : "Se connecter"}</button>
       </div>
       <div style={{ textAlign: "center", marginTop: 20 }}>
-        <button onClick={onLookup} style={{ background: "none", border: "none", color: "var(--gold)", cursor: "pointer", fontFamily: "inherit", fontSize: 13, textDecoration: "underline" }}>Espace candidat — Consulter mes resultats</button>
+        <button onClick={onLookup} style={{ background: "none", border: "none", color: "var(--accent)", cursor: "pointer", fontFamily: "inherit", fontSize: 13, textDecoration: "underline" }}>Espace candidat — Consulter mes resultats</button>
       </div>
     </div></div>
   );
@@ -240,7 +255,7 @@ function LoginScreen({ onLogin, onLookup }) {
 /* ===== CANDIDATE LOOKUP ===== */
 /* FIX #7 (note): This uses anonymous Supabase access (anon key only).
    Ensure your Supabase RLS policies allow anonymous SELECT on:
-   candidats, inscriptions, notes, matieres
+   candidats, inscriptions, notes, modules
    Otherwise the lookup will silently fail or return empty results. */
 function CandidatLookup({ onBack }) {
   const [cin, setCin] = useState("");
@@ -248,7 +263,7 @@ function CandidatLookup({ onBack }) {
   const [err, setErr] = useState("");
   const [result, setResult] = useState(null);
   const [notes, setNotes] = useState([]);
-  const [matieres, setMatieres] = useState([]);
+  const [modules, setModules] = useState([]);
 
   const search = async () => {
     if (!cin.trim()) { setErr("Entrez votre numero CIN"); return; }
@@ -272,7 +287,7 @@ function CandidatLookup({ onBack }) {
       const mats = mr.ok ? await mr.json() : [];
       setResult({ candidat: cand, inscription: insc });
       setNotes(nts);
-      setMatieres(mats);
+      setModules(mats);
     } catch (e) { setErr("Erreur: " + e.message); }
     setLoading(false);
   };
@@ -280,7 +295,7 @@ function CandidatLookup({ onBack }) {
   return (
     <div className="login-page"><div className="login-box" style={{ width: 520 }}>
       <div className="login-header">
-        <div style={{ width: 64, height: 64, borderRadius: 16, background: "linear-gradient(135deg,var(--gold),var(--gold-dark))", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", fontSize: 28, boxShadow: "0 4px 24px rgba(36,99,235,0.3)" }}>&#9992;</div>
+        <div style={{ width: 64, height: 64, borderRadius: 16, background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", fontSize: 28, boxShadow: "0 4px 24px rgba(36,99,235,0.3)" }}>&#9992;</div>
         <h1 className="login-title">Espace Candidat</h1>
         <p className="login-sub">Consultation des resultats — Examens ATE</p>
       </div>
@@ -288,8 +303,8 @@ function CandidatLookup({ onBack }) {
         <div className="card card-padded">
           <div style={{ marginBottom: 18 }}><label className="label">Numero CIN</label><input className="input" value={cin} onChange={e => setCin(e.target.value)} placeholder="Entrez votre numero CIN" onKeyDown={e => e.key === "Enter" && search()} /></div>
           {err && <div className="error-box">{err}</div>}
-          <button className="btn btn-gold btn-full" onClick={search} disabled={loading}>{loading ? "Recherche..." : "Consulter mes resultats"}</button>
-          <div style={{ textAlign: "center", marginTop: 16 }}><button onClick={onBack} style={{ background: "none", border: "none", color: "var(--gold)", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>&#8592; Retour</button></div>
+          <button className="btn btn-accent btn-full" onClick={search} disabled={loading}>{loading ? "Recherche..." : "Consulter mes resultats"}</button>
+          <div style={{ textAlign: "center", marginTop: 16 }}><button onClick={onBack} style={{ background: "none", border: "none", color: "var(--accent)", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>&#8592; Retour</button></div>
         </div>
       ) : (
         <div>
@@ -305,11 +320,11 @@ function CandidatLookup({ onBack }) {
           </div>
           <div className="card card-padded">
             <div className="section-title" style={{ marginTop: 0 }}>Detail des notes</div>
-            {matieres.map(m => {
+            {modules.map(m => {
               const n = notes.find(x => x.matiere_uuid === m.id);
               return (
                 <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", fontSize: 13 }}>
-                  <span>{m.nom} <span className="mono" style={{ color: "var(--gold)", fontSize: 10 }}>x{m.coefficient}</span></span>
+                  <span>{m.nom} <span className="mono" style={{ color: "var(--accent)", fontSize: 10 }}>x{m.coefficient}</span></span>
                   <span className="mono" style={{ fontWeight: 700, color: n && n.absent ? "var(--red-tn)" : n && n.note !== null ? moyColor(n.note) : "var(--dim)" }}>{n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "—"}</span>
                 </div>
               );
@@ -323,50 +338,116 @@ function CandidatLookup({ onBack }) {
 }
 
 /* ===== DASHBOARD ===== */
-function Dashboard({ sessions, candidats, inscriptions, matieres, onNav }) {
+function Dashboard({ sessions, candidats, inscriptions, notes, modules, deliberations, onNav }) {
   const actives = sessions.filter(s => s.statut === "Planifiee" || s.statut === "En cours");
-  const admis = inscriptions.filter(i => i.resultat === "Admis").length;
-  const ajournes = inscriptions.filter(i => i.resultat === "Ajourne").length;
-  const total = admis + ajournes;
-  const taux = total > 0 ? Math.round((admis / total) * 100) : 0;
+  const allWithResult = inscriptions.filter(i => i.resultat === "Admis" || i.resultat === "Ajourne");
+  const admisTotal = allWithResult.filter(i => i.resultat === "Admis").length;
+  const totalDelibered = allWithResult.length;
+  const tauxGlobal = totalDelibered > 0 ? Math.round((admisTotal / totalDelibered) * 100) : 0;
   const avecMoy = inscriptions.filter(i => i.moyenne_ponderee !== null);
   const moyG = avecMoy.length > 0 ? (avecMoy.reduce((s, i) => s + Number(i.moyenne_ponderee), 0) / avecMoy.length).toFixed(2) : "—";
+
+  /* Alerts (#6) */
+  const sessionsNoDelib = sessions.filter(s => s.statut === "Terminee" && !(deliberations||[]).find(d => d.session_uuid === s.id));
+  const pvNonValides = (deliberations||[]).filter(d => !d.pv_valide);
+  const inscSansNotes = inscriptions.filter(i => i.statut === "Inscrit" && !(notes||[]).find(n => n.inscription_uuid === i.id));
+
+  /* Stats par centre (#2,3) */
+  const centreStats = ORGANISMES.map(org => {
+    const orgCands = new Set(candidats.filter(c => (c.organisme_formation || "") === org).map(c => c.id));
+    const orgInscs = inscriptions.filter(i => orgCands.has(i.candidat_uuid));
+    const orgAdmis = orgInscs.filter(i => i.resultat === "Admis").length;
+    const orgAj = orgInscs.filter(i => i.resultat === "Ajourne").length;
+    const orgTotal = orgAdmis + orgAj;
+    const taux = orgTotal > 0 ? Math.round((orgAdmis / orgTotal) * 100) : 0;
+    const moys = orgInscs.filter(i => i.moyenne_ponderee !== null).map(i => Number(i.moyenne_ponderee));
+    const best = moys.length > 0 ? Math.max(...moys) : null;
+    const worst = moys.length > 0 ? Math.min(...moys) : null;
+    return { org, total: orgCands.size, admis: orgAdmis, ajournes: orgAj, taux, best, worst };
+  });
+
+  /* Top/Flop modules (#4,5) */
+  const moduleStats = (modules||[]).map(m => {
+    const mNotes = (notes||[]).filter(n => n.matiere_uuid === m.id && n.note !== null && !n.absent);
+    const passed = mNotes.filter(n => n.note >= PASS_MARK).length;
+    const total = mNotes.length;
+    const pct = total > 0 ? Math.round((passed / total) * 100) : 0;
+    return { nom: m.nom, passed, failed: total - passed, total, pct };
+  }).filter(m => m.total > 0);
+  const topModules = moduleStats.slice().sort((a, b) => b.pct - a.pct).slice(0, 5);
+  const flopModules = moduleStats.slice().sort((a, b) => a.pct - b.pct).slice(0, 5);
+
   return (
     <div>
+      {/* Alerts */}
+      {(sessionsNoDelib.length > 0 || pvNonValides.length > 0 || inscSansNotes.length > 0) && (
+        <div style={{ marginBottom: 20 }}>
+          {sessionsNoDelib.length > 0 && <div className="alert-card" style={{ background: "rgba(234,88,12,.06)", border: "1px solid rgba(234,88,12,.15)", color: "var(--orange)" }}>⚠️ <strong>{sessionsNoDelib.length} session{sessionsNoDelib.length > 1 ? "s" : ""}</strong> terminee{sessionsNoDelib.length > 1 ? "s" : ""} sans deliberation</div>}
+          {pvNonValides.length > 0 && <div className="alert-card" style={{ background: "rgba(124,58,237,.06)", border: "1px solid rgba(124,58,237,.15)", color: "var(--purple)" }}>📋 <strong>{pvNonValides.length} PV</strong> en attente de validation</div>}
+          {inscSansNotes.length > 0 && <div className="alert-card" style={{ background: "rgba(37,99,235,.06)", border: "1px solid rgba(37,99,235,.15)", color: "var(--accent)" }}>✏️ <strong>{inscSansNotes.length} inscription{inscSansNotes.length > 1 ? "s" : ""}</strong> sans notes saisies</div>}
+        </div>
+      )}
+
       <div className="kpi-grid">
-        <KPI label="Sessions" value={sessions.length} sub={actives.length + " actives"} color="var(--gold)" />
-        <KPI label="Candidats" value={candidats.length} sub="inscrits" color="var(--cyan)" />
-        <KPI label="Taux reussite" value={taux + "%"} sub={admis + " admis / " + total} color="var(--green)" />
+        <KPI label="Sessions" value={sessions.length} sub={actives.length + " actives"} color="var(--accent)" />
+        <KPI label="Candidats" value={candidats.length} sub="total" color="var(--cyan)" />
+        <KPI label="Taux reussite" value={tauxGlobal + "%"} sub={admisTotal + " admis / " + totalDelibered} color="var(--green)" />
         <KPI label="Moyenne gen." value={moyG} sub="/20" color={Number(moyG) >= PASS_MARK ? "var(--green)" : "var(--orange)"} />
       </div>
+
+      {/* Performance par centre (#2,3) */}
+      <div className="section-title" style={{ marginTop: 0 }}>Performance par centre</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 12, marginBottom: 24 }}>
+        {centreStats.map(cs => { const d = ORGANISMES_DATA[cs.org]; return (
+          <div key={cs.org} className="card card-padded">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+              <OrgIcon org={cs.org} size={40} />
+              <div><div style={{ fontWeight: 800, fontSize: 16 }}>{cs.org}</div><div className="hint">{cs.total} candidats</div></div>
+              <div className="spacer" />
+              <div style={{ textAlign: "right" }}><div style={{ fontSize: 22, fontWeight: 800, color: cs.taux >= 50 ? "var(--green)" : "var(--red-tn)" }}>{cs.taux}%</div><div className="hint">reussite</div></div>
+            </div>
+            <ProgressBar value={cs.taux} color={cs.taux >= 50 ? "var(--green)" : "var(--red-tn)"} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12, fontSize: 12 }}>
+              <div><span className="hint">Meilleure:</span> <strong className="mono" style={{ color: "var(--green)" }}>{cs.best !== null ? cs.best.toFixed(2) : "—"}</strong></div>
+              <div><span className="hint">Pire:</span> <strong className="mono" style={{ color: "var(--red-tn)" }}>{cs.worst !== null ? cs.worst.toFixed(2) : "—"}</strong></div>
+              <div><span className="hint">Admis:</span> <strong style={{ color: "var(--green)" }}>{cs.admis}</strong></div>
+              <div><span className="hint">Ajournes:</span> <strong style={{ color: "var(--red-tn)" }}>{cs.ajournes}</strong></div>
+            </div>
+          </div>
+        ); })}
+      </div>
+
+      {/* Top / Flop modules (#4,5) */}
       <div className="grid-2">
         <div className="card card-padded">
-          <div className="section-title" style={{ marginTop: 0 }}>Sessions actives</div>
-          {actives.length === 0 && <div style={{ color: "var(--dim)", fontSize: 13 }}>Aucune session active</div>}
-          {actives.slice(0, 5).map(s => {
-            const nb = inscriptions.filter(i => i.session_uuid === s.id).length;
-            return (<div key={s.id} className="stat-row"><div><div style={{ fontSize: 13, fontWeight: 600 }}>{s.intitule}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{s.date_debut || "—"} — {s.lieu || "—"}</div></div><div style={{ display: "flex", gap: 6, alignItems: "center" }}><Tag label={s.statut} /><Badge color="var(--cyan)">{nb}</Badge></div></div>);
-          })}
-          <button className="btn-outline btn-sm" onClick={() => onNav("sessions")} style={{ marginTop: 14 }}>Voir toutes &#8594;</button>
-        </div>
-        <div className="card card-padded">
-          <div className="section-title" style={{ marginTop: 0 }}>Resultats recents</div>
-          {inscriptions.filter(i => i.resultat !== "En attente").length === 0 && <div style={{ color: "var(--dim)", fontSize: 13 }}>Aucun resultat</div>}
-          {inscriptions.filter(i => i.resultat !== "En attente").slice(0, 8).map(i => {
-            const c = candidats.find(x => x.id === i.candidat_uuid);
-            return (<div key={i.id} className="stat-row"><div><div style={{ fontSize: 13, fontWeight: 500 }}>{c ? c.prenom + " " + c.nom : "—"}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{c ? c.organisme_formation : ""}</div></div><div style={{ display: "flex", gap: 8, alignItems: "center" }}><span className="mono" style={{ fontSize: 13, color: moyColor(i.moyenne_ponderee) }}>{Number(i.moyenne_ponderee).toFixed(2)}</span><ResultBadge r={i.resultat} /></div></div>);
-          })}
-        </div>
-      </div>
-      <div className="card card-padded" style={{ marginTop: 20 }}>
-        <div className="section-title" style={{ marginTop: 0 }}>Programme ATE — {matieres.length} matieres</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))", gap: 8 }}>
-          {matieres.sort((a, b) => a.ordre - b.ordre).map(m => (
-            <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "7px 12px", background: "rgba(36,99,235,0.03)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}>
-              <span>{m.nom}</span><span className="mono" style={{ color: "var(--gold)", fontWeight: 700 }}>x{m.coefficient}</span>
+          <div className="section-title" style={{ marginTop: 0, color: "var(--green)" }}>🏆 Top 5 modules reussis</div>
+          {topModules.length === 0 ? <div className="hint">Pas de donnees</div> : topModules.map((m, i) => (
+            <div key={i} style={{ marginBottom: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 3 }}><span style={{ fontWeight: 600 }}>{m.nom}</span><span className="mono" style={{ color: "var(--green)", fontWeight: 700 }}>{m.pct}%</span></div>
+              <ProgressBar value={m.pct} color="var(--green)" />
             </div>
           ))}
         </div>
+        <div className="card card-padded">
+          <div className="section-title" style={{ marginTop: 0, color: "var(--red-tn)" }}>⚠ Top 5 modules les plus echoues</div>
+          {flopModules.length === 0 ? <div className="hint">Pas de donnees</div> : flopModules.map((m, i) => (
+            <div key={i} style={{ marginBottom: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 3 }}><span style={{ fontWeight: 600 }}>{m.nom}</span><span className="mono" style={{ color: "var(--red-tn)", fontWeight: 700 }}>{100 - m.pct}% echec</span></div>
+              <ProgressBar value={100 - m.pct} color="var(--red-tn)" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Sessions actives */}
+      <div className="card card-padded" style={{ marginTop: 20 }}>
+        <div className="section-title" style={{ marginTop: 0 }}>Sessions actives</div>
+        {actives.length === 0 && <div className="hint">Aucune session active</div>}
+        {actives.slice(0, 5).map(s => {
+          const nb = inscriptions.filter(i => i.session_uuid === s.id).length;
+          return (<div key={s.id} className="stat-row"><div><div style={{ fontSize: 13, fontWeight: 600 }}>{s.intitule}</div><div className="hint">{fmtDate(s.date_debut)} — {s.lieu || "—"}</div></div><div style={{ display: "flex", gap: 6, alignItems: "center" }}><Tag label={s.statut} /><Badge color="var(--cyan)">{nb}</Badge></div></div>);
+        })}
+        <button className="btn-outline btn-sm" onClick={() => onNav("sessions")} style={{ marginTop: 14 }}>Voir toutes →</button>
       </div>
     </div>
   );
@@ -387,7 +468,7 @@ function SessionForm({ session, onClose, onSave }) {
       <Field label="Membres jury" span><textarea className="textarea" value={f.membres_jury || ""} onChange={e => setF({ ...f, membres_jury: e.target.value })} /></Field>
       <Field label="Notes" span><textarea className="textarea" value={f.notes || ""} onChange={e => setF({ ...f, notes: e.target.value })} /></Field>
     </div>
-    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{session ? "Enregistrer" : "Creer"}</button>
+    <button className="btn btn-accent btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{session ? "Enregistrer" : "Creer"}</button>
   </Modal>);
 }
 function CandidatForm({ candidat, onClose, onSave }) {
@@ -404,7 +485,7 @@ function CandidatForm({ candidat, onClose, onSave }) {
       <Field label="Email"><input className="input" type="email" value={f.email || ""} onChange={e => setF({ ...f, email: e.target.value })} /></Field>
       <Field label="Notes" span><textarea className="textarea" value={f.notes || ""} onChange={e => setF({ ...f, notes: e.target.value })} /></Field>
     </div>
-    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{candidat ? "Enregistrer" : "Creer"}</button>
+    <button className="btn btn-accent btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{candidat ? "Enregistrer" : "Creer"}</button>
   </Modal>);
 }
 function InscriptionForm({ sessions, candidats, inscription, onClose, onSave }) {
@@ -416,7 +497,7 @@ function InscriptionForm({ sessions, candidats, inscription, onClose, onSave }) 
       <Field label="Statut"><Sel value={f.statut} onChange={v => setF({ ...f, statut: v })} options={["Inscrit", "Absent", "Retire"]} /></Field>
       <Field label="Observations" span><textarea className="textarea" value={f.observations || ""} onChange={e => setF({ ...f, observations: e.target.value })} /></Field>
     </div>
-    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{inscription ? "Enregistrer" : "Inscrire"}</button>
+    <button className="btn btn-accent btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{inscription ? "Enregistrer" : "Inscrire"}</button>
   </Modal>);
 }
 function DeliberationForm({ delib, sessions, onClose, onSave }) {
@@ -430,30 +511,30 @@ function DeliberationForm({ delib, sessions, onClose, onSave }) {
       <Field label="Decision jury" span><textarea className="textarea" value={f.decision_jury || ""} onChange={e => setF({ ...f, decision_jury: e.target.value })} /></Field>
       <Field label="PV valide"><label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}><input type="checkbox" checked={f.pv_valide} onChange={e => setF({ ...f, pv_valide: e.target.checked })} /><span style={{ fontSize: 13 }}>Oui</span></label></Field>
     </div>
-    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{delib ? "Enregistrer" : "Creer"}</button>
+    <button className="btn btn-accent btn-full" style={{ marginTop: 18 }} onClick={() => onSave(f)}>{delib ? "Enregistrer" : "Creer"}</button>
   </Modal>);
 }
 
 /* ===== NOTES ENTRY ===== */
-function NotesEntry({ api, inscription, matieres, existingNotes, onClose, onSaved }) {
+function NotesEntry({ api, inscription, modules, existingNotes, onClose, onSaved }) {
   const [nv, setNv] = useState({});
   const [saving, setSaving] = useState(false);
   useEffect(() => {
     const o = {};
-    matieres.forEach(m => { const ex = existingNotes.find(n => n.matiere_uuid === m.id); o[m.id] = ex ? { note: ex.note !== null ? String(ex.note) : "", absent: ex.absent || false } : { note: "", absent: false }; });
+    modules.forEach(m => { const ex = existingNotes.find(n => n.matiere_uuid === m.id); o[m.id] = ex ? { note: ex.note !== null ? String(ex.note) : "", absent: ex.absent || false } : { note: "", absent: false }; });
     setNv(o);
-  }, [matieres, existingNotes]);
+  }, [modules, existingNotes]);
   const setNote = (mid, val) => setNv(p => ({ ...p, [mid]: { ...p[mid], note: val, absent: false } }));
   const toggleAbs = (mid) => setNv(p => ({ ...p, [mid]: { note: "", absent: !p[mid].absent } }));
   let tCN = 0, tC = 0;
-  matieres.forEach(m => { const v = nv[m.id]; if (v && !v.absent && v.note !== "") { const n = parseFloat(v.note); if (!isNaN(n)) { tCN += n * m.coefficient; tC += m.coefficient; } } });
+  modules.forEach(m => { const v = nv[m.id]; if (v && !v.absent && v.note !== "") { const n = parseFloat(v.note); if (!isNaN(n)) { tCN += n * m.coefficient; tC += m.coefficient; } } });
   const moy = tC > 0 ? tCN / tC : null;
   const moyStr = moy !== null ? moy.toFixed(2) : "—";
   const passed = moy !== null && moy >= PASS_MARK;
   const handleSave = async () => {
     setSaving(true);
     try {
-      for (const m of matieres) { const v = nv[m.id] || {}; const nd = { inscription_uuid: inscription.id, matiere_uuid: m.id, note: v.absent ? null : (v.note !== "" ? parseFloat(v.note) : null), absent: v.absent || false }; const ex = existingNotes.find(x => x.matiere_uuid === m.id); if (ex) await api.update("notes", ex.id, nd); else await api.insert("notes", nd); }
+      for (const m of modules) { const v = nv[m.id] || {}; const nd = { inscription_uuid: inscription.id, matiere_uuid: m.id, note: v.absent ? null : (v.note !== "" ? parseFloat(v.note) : null), absent: v.absent || false }; const ex = existingNotes.find(x => x.matiere_uuid === m.id); if (ex) await api.update("notes", ex.id, nd); else await api.insert("notes", nd); }
       const res = moy !== null ? (moy >= PASS_MARK ? "Admis" : "Ajourne") : "En attente";
       await api.update("inscriptions", inscription.id, { moyenne_ponderee: moy, resultat: res });
       onSaved();
@@ -464,18 +545,18 @@ function NotesEntry({ api, inscription, matieres, existingNotes, onClose, onSave
     <div className="moyenne-display" style={{ background: moy === null ? "rgba(36,99,235,0.04)" : passed ? "rgba(46,204,113,0.1)" : "rgba(200,16,46,0.1)", color: moy === null ? "var(--dim)" : passed ? "var(--green)" : "var(--red-tn)" }}>
       {moyStr}<span style={{ fontSize: 16, fontWeight: 400, marginLeft: 8 }}>/20 {moy !== null && (passed ? "— ADMIS" : "— AJOURNE")}</span>
     </div>
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 60px 45px", gap: 8, padding: "6px 14px", fontSize: 10, color: "var(--gold)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>
-      <span>Matiere (coef)</span><span style={{ textAlign: "center" }}>Note</span><span style={{ textAlign: "center" }}>Abs.</span>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 60px 45px", gap: 8, padding: "6px 14px", fontSize: 10, color: "var(--accent)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>
+      <span>Module (coef)</span><span style={{ textAlign: "center" }}>Note</span><span style={{ textAlign: "center" }}>Abs.</span>
     </div>
     <div className="note-grid">
-      {matieres.sort((a, b) => a.ordre - b.ordre).map(m => { const v = nv[m.id] || {}; return (
+      {modules.sort((a, b) => a.ordre - b.ordre).map(m => { const v = nv[m.id] || {}; return (
         <div key={m.id} className="note-row">
-          <div><div className="matiere-name">{m.nom}</div><div className="coef">x{m.coefficient}</div></div>
+          <div><div className="module-name">{m.nom}</div><div className="coef">x{m.coefficient}</div></div>
           <input className={"note-input" + (v.absent ? " absent" : "")} type="number" min="0" max="20" step="0.25" value={v.absent ? "" : (v.note || "")} disabled={v.absent} onChange={e => setNote(m.id, e.target.value)} placeholder="—" />
           <div style={{ textAlign: "center" }}><input type="checkbox" checked={v.absent || false} onChange={() => toggleAbs(m.id)} style={{ cursor: "pointer", width: 18, height: 18 }} /></div>
         </div>); })}
     </div>
-    <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={handleSave} disabled={saving}>{saving ? "Enregistrement..." : "Enregistrer les notes"}</button>
+    <button className="btn btn-accent btn-full" style={{ marginTop: 18 }} onClick={handleSave} disabled={saving}>{saving ? "Enregistrement..." : "Enregistrer les notes"}</button>
   </Modal>);
 }
 
@@ -557,7 +638,7 @@ function ImportExcelModal({ api, sessions, onClose, onDone }) {
       </Field>
     </div>
     <div style={{ marginTop: 12, padding: 14, background: "rgba(36,99,235,0.04)", borderRadius: 10, border: "1px solid var(--border)", fontSize: 12, color: "var(--muted)" }}>
-      <strong style={{ color: "var(--gold)" }}>Colonnes attendues:</strong> Matricule | NOMS ET PRENOM | DATE DE NAISSANCE | CIN_PASS | Nationalite
+      <strong style={{ color: "var(--accent)" }}>Colonnes attendues:</strong> Matricule | NOMS ET PRENOM | DATE DE NAISSANCE | CIN_PASS | Nationalite
     </div>
     {result && (
       <div style={{ marginTop: 14, padding: 14, borderRadius: 10, background: result.error ? "rgba(200,16,46,0.08)" : "rgba(46,204,113,0.08)", border: result.error ? "1px solid rgba(200,16,46,0.2)" : "1px solid rgba(46,204,113,0.2)" }}>
@@ -578,7 +659,7 @@ function ImportExcelModal({ api, sessions, onClose, onDone }) {
       </div>
     )}
     {!result ? (
-      <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={doImport} disabled={importing || !file || !sess}>{importing ? "Import en cours..." : "Importer et inscrire"}</button>
+      <button className="btn btn-accent btn-full" style={{ marginTop: 18 }} onClick={doImport} disabled={importing || !file || !sess}>{importing ? "Import en cours..." : "Importer et inscrire"}</button>
     ) : (
       <button className="btn btn-outline btn-full" style={{ marginTop: 18 }} onClick={onDone}>Fermer</button>
     )}
@@ -586,37 +667,115 @@ function ImportExcelModal({ api, sessions, onClose, onDone }) {
 }
 
 /* ===== SESSIONS VIEW ===== */
-function SessionsView({ api, sessions, inscriptions, reload }) {
+function SessionsView({ api, sessions, inscriptions, candidats, notes, modules, reload }) {
   const [sf, setSf] = useState(false);
   const [ed, setEd] = useState(null);
   const [del, setDel] = useState(null);
   const [fil, setFil] = useState("Tous");
+  const [detail, setDetail] = useState(null); /* session detail view */
   const fl = sessions.filter(s => fil === "Tous" || s.statut === fil);
   const save = async (d) => { try { if (ed) await api.update("sessions", ed.id, d); else await api.insert("sessions", d); setSf(false); setEd(null); reload(); } catch (e) { alert(e.message); } };
   const rm = async () => { if (del) { try { await api.remove("sessions", del.id); } catch (e) { alert(e.message); } setDel(null); reload(); } };
+
+  /* Session detail view (#7,8,10) */
+  if (detail) {
+    const s = detail;
+    const sInscs = (inscriptions||[]).filter(i => i.session_uuid === s.id);
+    const sAdmis = sInscs.filter(i => i.resultat === "Admis").length;
+    const sAj = sInscs.filter(i => i.resultat === "Ajourne").length;
+    const sTotal = sAdmis + sAj;
+    const sTaux = sTotal > 0 ? Math.round((sAdmis / sTotal) * 100) : 0;
+    /* Module stats for this session */
+    const modStats = (modules||[]).slice().sort((a,b) => a.ordre - b.ordre).map(m => {
+      const mNotes = []; sInscs.forEach(i => { const n = (notes||[]).find(x => x.inscription_uuid === i.id && x.matiere_uuid === m.id); if (n && n.note !== null && !n.absent) mNotes.push(n.note); });
+      const avg = mNotes.length > 0 ? (mNotes.reduce((a, b) => a + b, 0) / mNotes.length) : null;
+      const passed = mNotes.filter(n => n >= PASS_MARK).length;
+      return { ...m, avg, passed, total: mNotes.length, pct: mNotes.length > 0 ? Math.round((passed / mNotes.length) * 100) : 0 };
+    });
+    /* Centre breakdown */
+    const centreBreak = ORGANISMES.map(org => {
+      const orgInscs = sInscs.filter(i => { const c = (candidats||[]).find(x => x.id === i.candidat_uuid); return c && c.organisme_formation === org; });
+      return { org, count: orgInscs.length, admis: orgInscs.filter(i => i.resultat === "Admis").length };
+    });
+    return (
+      <div>
+        <div className="filters"><button className="btn-outline" onClick={() => setDetail(null)}>← Sessions</button><div className="spacer" /><button className="btn-outline" onClick={() => { setEd(s); setSf(true); }}>Modifier</button></div>
+        <div style={{ marginBottom: 20 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800 }}>{s.intitule}</h2>
+          <div className="hint">{s.session_id} · {fmtDate(s.date_debut)} → {fmtDate(s.date_fin)} · {s.lieu || "—"} · President: {s.president_jury || "—"}</div>
+        </div>
+        <div className="kpi-grid">
+          <KPI label="Candidats" value={sInscs.length} color="var(--cyan)" />
+          <KPI label="Admis" value={sAdmis} color="var(--green)" />
+          <KPI label="Ajournes" value={sAj} color="var(--red-tn)" />
+          <KPI label="Taux" value={sTaux + "%"} color={sTaux >= 50 ? "var(--green)" : "var(--red-tn)"} />
+        </div>
+        {/* Repartition par centre */}
+        <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
+          {centreBreak.map(cb => (
+            <div key={cb.org} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", background: "#fff", border: "1px solid var(--border)", borderRadius: 10, fontSize: 12 }}>
+              <OrgIcon org={cb.org} size={28} />
+              <div><div style={{ fontWeight: 700 }}>{cb.org}</div><div className="hint">{cb.count} cand. · {cb.admis} admis</div></div>
+            </div>
+          ))}
+        </div>
+        {/* Modules */}
+        <div className="section-title">Modules — {(modules||[]).length} epreuves</div>
+        <div className="table-container">
+          <div className="table-head" style={{ gridTemplateColumns: "1fr 50px 70px 70px" }}><div>Module</div><div>Coef</div><div>Moyenne</div><div>Reussite</div></div>
+          {modStats.map(m => (
+            <div key={m.id} className="table-row" style={{ gridTemplateColumns: "1fr 50px 70px 70px", cursor: "default" }}>
+              <div style={{ fontSize: 12, fontWeight: 600 }}>{m.nom}</div>
+              <div className="mono" style={{ fontSize: 11, color: "var(--accent)" }}>x{m.coefficient}</div>
+              <div className="mono" style={{ fontSize: 12, fontWeight: 700, color: m.avg !== null && m.avg >= PASS_MARK ? "var(--green)" : "var(--orange)" }}>{m.avg !== null ? m.avg.toFixed(2) : "—"}</div>
+              <div><span className="mono" style={{ fontSize: 11, color: m.pct >= 50 ? "var(--green)" : "var(--red-tn)" }}>{m.pct}%</span><span className="hint" style={{ marginLeft: 4, fontSize: 10 }}>({m.passed}/{m.total})</span></div>
+            </div>
+          ))}
+        </div>
+        {/* Candidats */}
+        <div className="section-title" style={{ marginTop: 24 }}>Candidats inscrits</div>
+        <div className="table-container">
+          <div className="table-head" style={{ gridTemplateColumns: "30px 80px 1fr 70px 70px 60px" }}><div>#</div><div>Matricule</div><div>Candidat</div><div>Centre</div><div>Moyenne</div><div>Resultat</div></div>
+          {sInscs.sort((a, b) => (b.moyenne_ponderee || 0) - (a.moyenne_ponderee || 0)).map((ins, idx) => { const c = (candidats||[]).find(x => x.id === ins.candidat_uuid); return (
+            <div key={ins.id} className="table-row" style={{ gridTemplateColumns: "30px 80px 1fr 70px 70px 60px", cursor: "default" }}>
+              <span className="mono" style={{ fontSize: 11, color: "var(--dim)" }}>{idx + 1}</span>
+              <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{c ? c.matricule : "—"}</span>
+              <span style={{ fontSize: 12, fontWeight: 600 }}>{c ? c.prenom + " " + c.nom : "—"}</span>
+              <span>{c ? <Badge color={ORGANISMES_DATA[c.organisme_formation]?.color}>{c.organisme_formation}</Badge> : "—"}</span>
+              <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: moyColor(ins.moyenne_ponderee) }}>{ins.moyenne_ponderee !== null ? Number(ins.moyenne_ponderee).toFixed(2) : "—"}</span>
+              <ResultBadge r={ins.resultat} />
+            </div>); })}
+          {sInscs.length === 0 && <Empty text="Aucun candidat" />}
+        </div>
+        {sf && <SessionForm session={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
+      </div>
+    );
+  }
+
+  /* Sessions list */
   return (
     <div>
       <div className="filters">
         <div className="filter-group">{["Tous", ...STATUTS_SESSION].map(s => <button key={s} className={"filter-btn " + (fil === s ? "active" : "")} onClick={() => setFil(s)}>{s}</button>)}</div>
-        <div className="spacer" /><button className="btn btn-gold" onClick={() => { setEd(null); setSf(true); }}>+ Session</button>
+        <div className="spacer" /><button className="btn btn-accent" onClick={() => { setEd(null); setSf(true); }}>+ Session</button>
       </div>
       <div className="table-container desktop-only">
         {fl.map(s => { const nb = inscriptions.filter(i => i.session_uuid === s.id).length; return (
-          <div key={s.id} className="table-row" style={{ gridTemplateColumns: "90px 1fr 100px 90px 70px 36px" }} onClick={() => { setEd(s); setSf(true); }}>
+          <div key={s.id} className="table-row" style={{ gridTemplateColumns: "80px 1fr 100px 90px 70px 36px" }} onClick={() => setDetail(s)}>
             <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{s.session_id}</span>
-            <div><div style={{ fontSize: 13, fontWeight: 600 }}>{s.intitule}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{s.lieu || "—"} — {s.president_jury || "—"}</div></div>
-            <span style={{ fontSize: 11, color: "var(--dim)" }}>{s.date_debut || "—"}</span>
-            <Tag label={s.statut} /><Badge color="var(--cyan)">{nb} cand.</Badge>
-            <button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(s); }}>&#128465;</button>
+            <div><div style={{ fontSize: 13, fontWeight: 600 }}>{s.intitule}</div><div className="hint">{s.lieu || "—"} — {s.president_jury || "—"}</div></div>
+            <span className="hint">{fmtDate(s.date_debut)}</span>
+            <Tag label={s.statut} /><Badge color="var(--cyan)">{nb}</Badge>
+            <button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(s); }}>🗑</button>
           </div>); })}
         {fl.length === 0 && <Empty text="Aucune session" />}
       </div>
       <div className="mobile-only">
         {fl.map(s => { const nb = inscriptions.filter(i => i.session_uuid === s.id).length; return (
-          <div key={s.id} className="mobile-card" onClick={() => { setEd(s); setSf(true); }}>
-            <div className="mobile-card-header"><div><div className="mobile-card-title">{s.intitule}</div><div className="mobile-card-id">{s.session_id}</div></div><button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(s); }}>&#128465;</button></div>
-            <div className="mobile-card-meta"><Tag label={s.statut} /><Badge color="var(--cyan)">{nb} cand.</Badge></div>
-            <div className="mobile-card-footer"><span style={{ fontSize: 11, color: "var(--dim)" }}>{s.lieu || "—"} — {s.date_debut || "—"}</span></div>
+          <div key={s.id} className="mobile-card" onClick={() => setDetail(s)}>
+            <div className="mobile-card-header"><div><div className="mobile-card-title">{s.intitule}</div><div className="mobile-card-id">{s.session_id}</div></div><button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(s); }}>🗑</button></div>
+            <div className="mobile-card-meta"><Tag label={s.statut} /><Badge color="var(--cyan)">{nb}</Badge></div>
+            <div className="mobile-card-footer"><span className="hint">{s.lieu || "—"} — {fmtDate(s.date_debut)}</span></div>
           </div>); })}
         {fl.length === 0 && <Empty text="Aucune session" />}
       </div>
@@ -671,7 +830,7 @@ function BulkInscriptionModal({ api, selectedCandidats, sessions, inscriptions, 
     <Modal onClose={onClose} title="Affecter a une session" width={560}>
       <div style={{ marginBottom: 18, padding: 16, background: "rgba(36,99,235,0.04)", borderRadius: 12, border: "1px solid var(--border)" }}>
         <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 4 }}>Candidats selectionnes</div>
-        <div style={{ fontSize: 28, fontWeight: 800, color: "var(--gold)", fontFamily: "'Playfair Display',serif" }}>{selectedCandidats.length}</div>
+        <div style={{ fontSize: 28, fontWeight: 800, color: "var(--accent)", fontFamily: "'Playfair Display',serif" }}>{selectedCandidats.length}</div>
         <div style={{ marginTop: 8, maxHeight: 120, overflowY: "auto", fontSize: 12, color: "var(--dim)" }}>
           {selectedCandidats.map((c, i) => (
             <span key={c.id}>{c.prenom} {c.nom}{i < selectedCandidats.length - 1 ? " · " : ""}</span>
@@ -713,7 +872,7 @@ function BulkInscriptionModal({ api, selectedCandidats, sessions, inscriptions, 
           )}
 
           <button
-            className="btn btn-gold btn-full"
+            className="btn btn-accent btn-full"
             style={{ marginTop: 18 }}
             onClick={doInscribe}
             disabled={processing || !targetSession || toInscribe.length === 0}
@@ -739,7 +898,7 @@ function BulkInscriptionModal({ api, selectedCandidats, sessions, inscriptions, 
               </div>
             )}
           </div>
-          <button className="btn btn-gold btn-full" style={{ marginTop: 18 }} onClick={onDone}>Fermer et actualiser</button>
+          <button className="btn btn-accent btn-full" style={{ marginTop: 18 }} onClick={onDone}>Fermer et actualiser</button>
         </div>
       )}
     </Modal>
@@ -871,37 +1030,26 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
           <div className="hint">Choisis un organisme de formation.</div>
           <div className="spacer" />
           <button className="btn-outline" onClick={() => setImportModal(true)}>Importer Excel</button>
-          <button className="btn btn-gold" onClick={() => { setEd(null); setSf(true); }}>+ Nouveau candidat</button>
+          <button className="btn btn-accent" onClick={() => { setEd(null); setSf(true); }}>+ Nouveau candidat</button>
         </div>
 
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))", gap:16 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:14 }}>
           {ORGANISMES.map(org => {
             const nb = (candidats || []).filter(c => (c.organisme_formation || "") === org).length;
             const nbInscrits = (inscriptions || []).filter(i => { const c = candById.get(i.candidat_uuid); return c && (c.organisme_formation || "") === org; }).length;
             return (
               <div
                 key={org}
-                className="card card-padded"
-                style={{ cursor:"pointer" }}
+                className="centre-card"
                 onClick={() => { setSelectedOrg(org); setSelectedSessionId("all"); setStep("list"); setSelected(new Set()); }}
               >
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                  <div>
-                    <div className="label">Organisme</div>
-                    <div style={{ fontSize: 24, fontWeight: 900, color:"var(--gold)" }}>{org}</div>
-                    <div className="hint" style={{ marginTop: 6 }}>{nb} candidats · {nbInscrits} inscriptions</div>
+                <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+                  <OrgIcon org={org} size={48} />
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontWeight: 800, fontSize: 18 }}>{org}</div>
+                    <div className="hint">{nb} candidats · {nbInscrits} inscriptions</div>
                   </div>
-                  <div style={{
-                    width:56, height:56, borderRadius:18,
-                    display:"grid", placeItems:"center",
-                    background:"rgba(36,99,235,0.10)",
-                    border:"1px solid var(--border)"
-                  }}>
-                    <span style={{ fontSize: 26 }}>🏫</span>
-                  </div>
-                </div>
-                <div style={{ marginTop: 14 }}>
-                  <button className="btn-outline btn-sm">Voir les candidats →</button>
+                  <div style={{ fontSize: 24, color: "var(--dim)" }}>→</div>
                 </div>
               </div>
             );
@@ -921,7 +1069,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
       <div className="filters">
         <button className="btn-outline" onClick={goOrg}>← Organismes</button>
         <div className="hint">
-          <b style={{ color:"var(--gold)" }}>{selectedOrg}</b> — {totalOrgCandidats} candidats
+          <b style={{ color:"var(--accent)" }}>{selectedOrg}</b> — {totalOrgCandidats} candidats
         </div>
         <div className="spacer" />
         <select className="select" value={selectedSessionId} onChange={e => { setSelectedSessionId(e.target.value); setSelected(new Set()); }} style={{ maxWidth: 280 }}>
@@ -944,11 +1092,11 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
           display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap",
           animation: "fadeIn 0.2s"
         }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--gold)" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent)" }}>
             {selected.size} candidat{selected.size > 1 ? "s" : ""} selectionne{selected.size > 1 ? "s" : ""}
           </div>
           <div className="spacer" />
-          <button className="btn btn-gold" onClick={() => setBulkModal(true)} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button className="btn btn-accent" onClick={() => setBulkModal(true)} style={{ display: "flex", alignItems: "center", gap: 6 }}>
             📋 Affecter a une session
           </button>
           <button className="btn-outline btn-sm" onClick={() => setSelected(new Set())}>Deselectionner tout</button>
@@ -968,7 +1116,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
         <div className="table-head" style={{ gridTemplateColumns: "40px 110px 1fr 120px 90px 90px 90px" }}>
           <div style={{ textAlign: "center" }}>
             <input type="checkbox" checked={allSelected} onChange={toggleSelectAll}
-              style={{ width: 16, height: 16, cursor: "pointer", accentColor: "var(--gold)" }} />
+              style={{ width: 16, height: 16, cursor: "pointer", accentColor: "var(--accent)" }} />
           </div>
           <div>Matricule</div><div>Nom & Prenom</div><div>CIN</div><div>Session</div><div>Moyenne</div><div>Action</div>
         </div>
@@ -991,7 +1139,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
               >
                 <div style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
                   <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(candidat.id)}
-                    style={{ width: 16, height: 16, cursor: "pointer", accentColor: "var(--gold)" }} />
+                    style={{ width: 16, height: 16, cursor: "pointer", accentColor: "var(--accent)" }} />
                 </div>
                 <div className="mono" style={{ fontWeight: 900, fontSize: 11 }}>{candidat.matricule || "—"}</div>
                 <div>
@@ -1022,14 +1170,14 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
             const isChecked = selected.has(candidat.id);
             return (
               <div key={candidat.id + (inscription ? inscription.id : "")} className="mobile-card"
-                style={{ border: isChecked ? "2px solid var(--gold)" : undefined }}
+                style={{ border: isChecked ? "2px solid var(--accent)" : undefined }}
                 onClick={() => toggleSelect(candidat.id)}
               >
                 <div className="mobile-card-header">
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(candidat.id)}
                       onClick={e => e.stopPropagation()}
-                      style={{ width: 18, height: 18, cursor: "pointer", accentColor: "var(--gold)", flexShrink: 0 }} />
+                      style={{ width: 18, height: 18, cursor: "pointer", accentColor: "var(--accent)", flexShrink: 0 }} />
                     <div>
                       <div className="mobile-card-title">{candidat.prenom} {candidat.nom}</div>
                       <div className="mobile-card-id">{candidat.matricule} · CIN: {candidat.cin || "—"}</div>
@@ -1069,7 +1217,7 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
 
 
 /* ===== NOTES VIEW ===== */
-function NotesView({ api, sessions, candidats, inscriptions, notes, matieres, reload }) {
+function NotesView({ api, sessions, candidats, inscriptions, notes, modules, reload }) {
   const [selS, setSelS] = useState("");
   const [sf, setSf] = useState(false);
   const [ed, setEd] = useState(null);
@@ -1092,9 +1240,9 @@ function NotesView({ api, sessions, candidats, inscriptions, notes, matieres, re
               <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{c ? c.matricule : "—"}</span>
               <div style={{ fontSize: 13, fontWeight: 600 }}>{c ? c.prenom + " " + c.nom : "—"}</div>
               <Tag label={i.statut} />
-              <span style={{ fontSize: 11, color: "var(--dim)" }}>{nb}/{matieres.length}</span>
+              <span style={{ fontSize: 11, color: "var(--dim)" }}>{nb}/{modules.length}</span>
               <span className="mono" style={{ fontSize: 14, fontWeight: 700, color: moyColor(i.moyenne_ponderee) }}>{i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—"}</span>
-              <button className="btn btn-gold btn-sm" onClick={() => setNm(i)}>Notes</button>
+              <button className="btn btn-accent btn-sm" onClick={() => setNm(i)}>Notes</button>
               <button className="btn-icon" onClick={() => setDel(i)}>&#128465;</button>
             </div>); })}
           {sInscr.length === 0 && <Empty text="Aucun candidat inscrit" />}
@@ -1102,8 +1250,8 @@ function NotesView({ api, sessions, candidats, inscriptions, notes, matieres, re
         <div className="mobile-only">
           {sInscr.map(i => { const c = candidats.find(x => x.id === i.candidat_uuid); const nb = notes.filter(n => n.inscription_uuid === i.id && n.note !== null).length; return (
             <div key={i.id} className="mobile-card">
-              <div className="mobile-card-header"><div><div className="mobile-card-title">{c ? c.prenom + " " + c.nom : "—"}</div><div className="mobile-card-id">{c ? c.matricule : ""}</div></div><button className="btn btn-gold btn-sm" onClick={() => setNm(i)}>Notes</button></div>
-              <div className="mobile-card-meta"><Tag label={i.statut} /><Badge color="var(--cyan)">{nb}/{matieres.length}</Badge>{i.resultat !== "En attente" && <ResultBadge r={i.resultat} />}</div>
+              <div className="mobile-card-header"><div><div className="mobile-card-title">{c ? c.prenom + " " + c.nom : "—"}</div><div className="mobile-card-id">{c ? c.matricule : ""}</div></div><button className="btn btn-accent btn-sm" onClick={() => setNm(i)}>Notes</button></div>
+              <div className="mobile-card-meta"><Tag label={i.statut} /><Badge color="var(--cyan)">{nb}/{modules.length}</Badge>{i.resultat !== "En attente" && <ResultBadge r={i.resultat} />}</div>
               <div className="mobile-card-footer"><span className="mono" style={{ fontSize: 16, fontWeight: 700, color: moyColor(i.moyenne_ponderee) }}>{i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—"}/20</span><button className="btn-icon" onClick={() => setDel(i)}>&#128465;</button></div>
             </div>); })}
           {sInscr.length === 0 && <Empty text="Aucun candidat inscrit" />}
@@ -1112,49 +1260,100 @@ function NotesView({ api, sessions, candidats, inscriptions, notes, matieres, re
       <FAB onClick={() => { setEd(null); setSf(true); }} color="linear-gradient(135deg,var(--orange),#e67e22)" />
       {sf && <InscriptionForm sessions={sessions} candidats={candidats} inscription={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
       {del && <ConfirmDelete item="cette inscription" onConfirm={rm} onCancel={() => setDel(null)} />}
-      {nm && <NotesEntry api={api} inscription={nm} matieres={matieres} existingNotes={notes.filter(n => n.inscription_uuid === nm.id)} onClose={() => setNm(null)} onSaved={() => { setNm(null); reload(); }} />}
+      {nm && <NotesEntry api={api} inscription={nm} modules={modules} existingNotes={notes.filter(n => n.inscription_uuid === nm.id)} onClose={() => setNm(null)} onSaved={() => { setNm(null); reload(); }} />}
     </div>
   );
 }
 
 /* ===== DELIBERATIONS VIEW ===== */
-function DeliberationsView({ api, sessions, inscriptions, deliberations, reload }) {
+function DeliberationsView({ api, sessions, candidats, inscriptions, deliberations, reload }) {
   const [sf, setSf] = useState(false);
   const [ed, setEd] = useState(null);
   const [del, setDel] = useState(null);
+  const [rachatModal, setRachatModal] = useState(null);
+  const [rachatMotif, setRachatMotif] = useState("");
   const save = async (d) => { try { if (ed) await api.update("deliberations", ed.id, d); else await api.insert("deliberations", d); setSf(false); setEd(null); reload(); } catch (e) { alert(e.message); } };
   const rm = async () => { if (del) { try { await api.remove("deliberations", del.id); } catch (e) { alert(e.message); } setDel(null); reload(); } };
+
+  /* Rachat (#15) */
+  const doRachat = async () => {
+    if (!rachatModal) return;
+    try {
+      await api.update("inscriptions", rachatModal.id, { resultat: "Admis", observations: (rachatModal.observations || "") + "\n[RACHAT] " + rachatMotif });
+      setRachatModal(null); setRachatMotif(""); reload();
+    } catch (e) { alert(e.message); }
+  };
+
   return (
     <div>
       <div className="filters"><div className="spacer" /><button className="btn btn-purple" onClick={() => { setEd(null); setSf(true); }}>+ Deliberation</button></div>
-      <div className="table-container desktop-only">
-        {deliberations.map(d => { const s = sessions.find(x => x.id === d.session_uuid); const iS = inscriptions.filter(i => i.session_uuid === d.session_uuid); const ad = iS.filter(i => i.resultat === "Admis").length; return (
-          <div key={d.id} className="table-row" style={{ gridTemplateColumns: "1fr 80px 80px 80px 50px 36px" }} onClick={() => { setEd(d); setSf(true); }}>
-            <div><div style={{ fontSize: 13, fontWeight: 600 }}>{s ? s.intitule : "—"}</div><div style={{ fontSize: 11, color: "var(--dim)" }}>{d.date_deliberation}</div></div>
-            <span style={{ fontSize: 11, color: "var(--dim)" }}>{iS.length} cand.</span>
-            <Badge color="var(--green)">{ad} admis</Badge><Badge color="var(--red-tn)">{iS.length - ad} aj.</Badge>
-            <span style={{ fontSize: 16 }}>{d.pv_valide ? "\u2705" : "\u23F3"}</span>
-            <button className="btn-icon" onClick={e => { e.stopPropagation(); setDel(d); }}>&#128465;</button>
-          </div>); })}
-        {deliberations.length === 0 && <Empty text="Aucune deliberation" />}
-      </div>
-      <div className="mobile-only">
-        {deliberations.map(d => { const s = sessions.find(x => x.id === d.session_uuid); const iS = inscriptions.filter(i => i.session_uuid === d.session_uuid); const ad = iS.filter(i => i.resultat === "Admis").length; return (
-          <div key={d.id} className="mobile-card" onClick={() => { setEd(d); setSf(true); }}>
-            <div className="mobile-card-header"><div><div className="mobile-card-title">{s ? s.intitule : "—"}</div><div className="mobile-card-id">{d.date_deliberation}</div></div><span style={{ fontSize: 18 }}>{d.pv_valide ? "\u2705" : "\u23F3"}</span></div>
-            <div className="mobile-card-meta"><Badge color="var(--green)">{ad} admis</Badge><Badge color="var(--red-tn)">{iS.length - ad} aj.</Badge></div>
-          </div>); })}
-        {deliberations.length === 0 && <Empty text="Aucune deliberation" />}
-      </div>
-      <FAB onClick={() => { setEd(null); setSf(true); }} color="linear-gradient(135deg,var(--purple),#7d3c98)" />
+      {deliberations.map(d => {
+        const s = sessions.find(x => x.id === d.session_uuid);
+        const iS = inscriptions.filter(i => i.session_uuid === d.session_uuid);
+        const ad = iS.filter(i => i.resultat === "Admis").length;
+        /* Cas limites (#14): moyenne entre 12 et 13 */
+        const casLimites = iS.filter(i => i.moyenne_ponderee !== null && Number(i.moyenne_ponderee) >= 12 && Number(i.moyenne_ponderee) < 13);
+        return (
+          <div key={d.id} className="card card-padded" style={{ marginBottom: 14 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: 15 }}>{s ? s.intitule : "—"}</div>
+                <div className="hint">{d.date_deliberation} · {d.pv_valide ? "✅ PV valide" : "⏳ PV en attente"}</div>
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                <button className="btn-outline btn-sm" onClick={() => { setEd(d); setSf(true); }}>Modifier</button>
+                <button className="btn-icon" onClick={() => setDel(d)}>🗑</button>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+              <Badge color="var(--green)">{ad} admis</Badge>
+              <Badge color="var(--red-tn)">{iS.length - ad} aj.</Badge>
+              <Badge color="var(--cyan)">{iS.length} total</Badge>
+              {casLimites.length > 0 && <Badge color="var(--orange)">⚠ {casLimites.length} cas limite{casLimites.length > 1 ? "s" : ""}</Badge>}
+            </div>
+            {/* Cas limites detail */}
+            {casLimites.length > 0 && (
+              <div style={{ marginTop: 8 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "var(--orange)", marginBottom: 6, textTransform: "uppercase", letterSpacing: 1 }}>Cas limites (12-13)</div>
+                {casLimites.map(i => {
+                  const c = (candidats||[]).find(x => x.id === i.candidat_uuid);
+                  return (
+                    <div key={i.id} className="cas-limite" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", borderRadius: 8, marginBottom: 4, border: "1px solid var(--border)", fontSize: 12 }}>
+                      <div><span style={{ fontWeight: 700 }}>{c ? c.prenom + " " + c.nom : "—"}</span><span className="hint" style={{ marginLeft: 6 }}>{c ? c.organisme_formation : ""}</span></div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span className="mono" style={{ fontWeight: 700, color: "var(--orange)" }}>{Number(i.moyenne_ponderee).toFixed(2)}</span>
+                        <ResultBadge r={i.resultat} />
+                        {i.resultat === "Ajourne" && <button className="btn btn-green btn-sm" onClick={() => { setRachatModal(i); setRachatMotif(""); }}>Rachat</button>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {deliberations.length === 0 && <Empty text="Aucune deliberation" />}
+      <FAB onClick={() => { setEd(null); setSf(true); }} color="var(--purple)" />
       {sf && <DeliberationForm delib={ed} sessions={sessions} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
       {del && <ConfirmDelete item="cette deliberation" onConfirm={rm} onCancel={() => setDel(null)} />}
+      {rachatModal && (
+        <Modal onClose={() => setRachatModal(null)} title="Rachat — Decision du jury" width={460}>
+          {(() => { const c = (candidats||[]).find(x => x.id === rachatModal.candidat_uuid); return (
+            <div>
+              <div style={{ marginBottom: 14, fontSize: 13 }}><strong>{c ? c.prenom + " " + c.nom : "—"}</strong> — Moyenne: <strong className="mono" style={{ color: "var(--orange)" }}>{Number(rachatModal.moyenne_ponderee).toFixed(2)}/20</strong></div>
+              <Field label="Motif du rachat *" span><textarea className="textarea" value={rachatMotif} onChange={e => setRachatMotif(e.target.value)} placeholder="Decision du jury: proximite du seuil, progression, circonstances..." /></Field>
+              <button className="btn btn-green btn-full" style={{ marginTop: 14 }} onClick={doRachat} disabled={!rachatMotif.trim()}>Confirmer le rachat → Admis</button>
+            </div>
+          ); })()}
+        </Modal>
+      )}
     </div>
   );
 }
 
 /* ===== PDF EXPORT ===== */
-function exportReleve(candidat, inscription, notesArr, matieres) {
+function exportReleve(candidat, inscription, notesArr, modules) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.setFontSize(16); doc.text("DGAC — Direction Generale de l'Aviation Civile", 14, 20);
@@ -1164,11 +1363,11 @@ function exportReleve(candidat, inscription, notesArr, matieres) {
   doc.text("Candidat: " + candidat.prenom + " " + candidat.nom, 14, 55);
   doc.text("Matricule: " + candidat.matricule + "    CIN: " + (candidat.cin || "—"), 14, 62);
   doc.text("Organisme: " + (candidat.organisme_formation || "—"), 14, 69);
-  const rows = matieres.sort((a, b) => a.ordre - b.ordre).map(m => {
+  const rows = modules.sort((a, b) => a.ordre - b.ordre).map(m => {
     const n = notesArr.find(x => x.matiere_uuid === m.id);
     return [m.nom, m.coefficient, n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "—"];
   });
-  doc.autoTable({ startY: 78, head: [["Matiere", "Coef", "Note"]], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [18, 32, 61] } });
+  doc.autoTable({ startY: 78, head: [["Module", "Coef", "Note"]], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [18, 32, 61] } });
   const fy = doc.lastAutoTable.finalY + 14;
   const moy = inscription.moyenne_ponderee !== null ? Number(inscription.moyenne_ponderee).toFixed(2) : "—";
   doc.setFontSize(13); doc.text("Moyenne Ponderee: " + moy + "/20", 14, fy);
@@ -1176,7 +1375,7 @@ function exportReleve(candidat, inscription, notesArr, matieres) {
   doc.save("Releve_" + candidat.matricule + ".pdf");
 }
 
-function exportPV(session, inscriptions, candidats, matieres, notes) {
+function exportPV(session, inscriptions, candidats, modules, notes) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF("l");
   doc.setFontSize(14); doc.text("DGAC — Proces-Verbal de Deliberation", 14, 18);
@@ -1198,7 +1397,7 @@ function exportPV(session, inscriptions, candidats, matieres, notes) {
 }
 
 /* ===== RESULTS VIEW ===== */
-function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
+function ResultatsView({ sessions, candidats, inscriptions, notes, modules }) {
   const [selS, setSelS] = useState("");
   const [orgF, setOrgF] = useState("Tous");
   const [detail, setDetail] = useState(null);
@@ -1214,7 +1413,7 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
   const admis = sI.filter(i => i.resultat === "Admis").length;
   const total = sI.length;
 
-  const matStats = matieres.sort((a, b) => a.ordre - b.ordre).map(m => {
+  const matStats = modules.sort((a, b) => a.ordre - b.ordre).map(m => {
     const matNotes = [];
     allSI.forEach(i => { const n = notes.find(x => x.inscription_uuid === i.id && x.matiere_uuid === m.id); if (n && n.note !== null && !n.absent) matNotes.push(n.note); });
     const max = matNotes.length > 0 ? Math.max(...matNotes) : null;
@@ -1239,7 +1438,7 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
         <div className="filter-group">{["Tous", ...ORGANISMES].map(o => <button key={o} className={"filter-btn " + (orgF === o ? "active" : "")} onClick={() => setOrgF(o)}>{o}</button>)}</div>
         <div className="spacer" />
         <button className="btn btn-outline" onClick={() => setShowStats(!showStats)}>{showStats ? "Tableau" : "Statistiques"}</button>
-        {session && <button className="btn btn-purple" onClick={() => exportPV(session, inscriptions, candidats, matieres, notes)}>PDF PV</button>}
+        {session && <button className="btn btn-purple" onClick={() => exportPV(session, inscriptions, candidats, modules, notes)}>PDF PV</button>}
       </div>
       {cur && (<div>
         <div className="kpi-grid">
@@ -1251,7 +1450,7 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
 
         {!showStats ? (
           <div className="table-container">
-            <div className="table-row" style={{ gridTemplateColumns: "40px 80px 1fr 80px 80px 80px 70px", background: "rgba(36,99,235,0.04)", fontWeight: 700, fontSize: 10, color: "var(--gold)", textTransform: "uppercase", letterSpacing: 1, cursor: "default" }}>
+            <div className="table-row" style={{ gridTemplateColumns: "40px 80px 1fr 80px 80px 80px 70px", background: "rgba(36,99,235,0.04)", fontWeight: 700, fontSize: 10, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 1, cursor: "default" }}>
               <span>#</span><span>Matricule</span><span>Candidat</span><span>Organisme</span><span>Moyenne</span><span>Resultat</span><span>PDF</span>
             </div>
             {sI.map((i, idx) => { const c = candidats.find(x => x.id === i.candidat_uuid); return (
@@ -1259,10 +1458,10 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
                 <span className="mono" style={{ fontSize: 12, color: "var(--dim)" }}>{idx + 1}</span>
                 <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{c ? c.matricule : "—"}</span>
                 <span style={{ fontSize: 13, fontWeight: 500 }}>{c ? c.prenom + " " + c.nom : "—"}</span>
-                <Badge color="var(--gold)">{c ? c.organisme_formation : "—"}</Badge>
+                <Badge color="var(--accent)">{c ? c.organisme_formation : "—"}</Badge>
                 <span className="mono" style={{ fontSize: 14, fontWeight: 700, color: moyColor(i.moyenne_ponderee) }}>{i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—"}</span>
                 <ResultBadge r={i.resultat} />
-                <button className="btn btn-outline btn-sm" onClick={e => { e.stopPropagation(); if (c) exportReleve(c, i, notes.filter(n => n.inscription_uuid === i.id), matieres); }}>PDF</button>
+                <button className="btn btn-outline btn-sm" onClick={e => { e.stopPropagation(); if (c) exportReleve(c, i, notes.filter(n => n.inscription_uuid === i.id), modules); }}>PDF</button>
               </div>); })}
             {sI.length === 0 && <Empty text="Aucun resultat" />}
           </div>
@@ -1272,9 +1471,9 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
               <div className="section-title" style={{ marginTop: 0 }}>Statistiques par module</div>
               <div style={{ overflowX: "auto" }}>
                 <table className="stats-table">
-                  <thead><tr><th>Matiere</th><th>Coef</th><th>Note Max</th><th>Moyenne</th><th>Nb &ge; 13</th><th>% &ge; 13</th></tr></thead>
+                  <thead><tr><th>Module</th><th>Coef</th><th>Note Max</th><th>Moyenne</th><th>Nb &ge; 13</th><th>% &ge; 13</th></tr></thead>
                   <tbody>{matStats.map((m, i) => (
-                    <tr key={i}><td style={{ fontWeight: 500 }}>{m.nom}</td><td className="mono">{m.coefficient}</td><td className="mono" style={{ color: "var(--gold)" }}>{m.max !== null ? m.max.toFixed(2) : "—"}</td><td className="mono" style={{ color: m.avg !== null && m.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{m.avg !== null ? m.avg.toFixed(2) : "—"}</td><td className="mono">{m.sup13}/{m.total}</td><td className="mono" style={{ color: m.pct >= 50 ? "var(--green)" : "var(--red-tn)" }}>{m.pct}%</td></tr>
+                    <tr key={i}><td style={{ fontWeight: 500 }}>{m.nom}</td><td className="mono">{m.coefficient}</td><td className="mono" style={{ color: "var(--accent)" }}>{m.max !== null ? m.max.toFixed(2) : "—"}</td><td className="mono" style={{ color: m.avg !== null && m.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{m.avg !== null ? m.avg.toFixed(2) : "—"}</td><td className="mono">{m.sup13}/{m.total}</td><td className="mono" style={{ color: m.pct >= 50 ? "var(--green)" : "var(--red-tn)" }}>{m.pct}%</td></tr>
                   ))}</tbody>
                 </table>
               </div>
@@ -1284,7 +1483,7 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
               <table className="stats-table">
                 <thead><tr><th>Organisme</th><th>Candidats</th><th>Admis</th><th>Ajournes</th><th>Taux</th><th>Moyenne</th></tr></thead>
                 <tbody>{orgStats.map((o, i) => (
-                  <tr key={i}><td style={{ fontWeight: 700, color: "var(--gold)" }}>{o.org}</td><td className="mono">{o.total}</td><td className="mono" style={{ color: "var(--green)" }}>{o.admis}</td><td className="mono" style={{ color: "var(--red-tn)" }}>{o.total - o.admis}</td><td className="mono" style={{ color: o.taux >= 50 ? "var(--green)" : "var(--red-tn)" }}>{o.taux}%</td><td className="mono" style={{ color: o.avg !== null && o.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{o.avg !== null ? o.avg.toFixed(2) : "—"}</td></tr>
+                  <tr key={i}><td style={{ fontWeight: 700, color: "var(--accent)" }}>{o.org}</td><td className="mono">{o.total}</td><td className="mono" style={{ color: "var(--green)" }}>{o.admis}</td><td className="mono" style={{ color: "var(--red-tn)" }}>{o.total - o.admis}</td><td className="mono" style={{ color: o.taux >= 50 ? "var(--green)" : "var(--red-tn)" }}>{o.taux}%</td><td className="mono" style={{ color: o.avg !== null && o.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{o.avg !== null ? o.avg.toFixed(2) : "—"}</td></tr>
                 ))}</tbody>
               </table>
             </div>
@@ -1301,12 +1500,12 @@ function ResultatsView({ sessions, candidats, inscriptions, notes, matieres }) {
             </div>
             <ResultBadge r={detail.resultat} />
           </div>
-          {matieres.sort((a, b) => a.ordre - b.ordre).map(m => { const n = iNotes.find(x => x.matiere_uuid === m.id); return (
+          {modules.sort((a, b) => a.ordre - b.ordre).map(m => { const n = iNotes.find(x => x.matiere_uuid === m.id); return (
             <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", fontSize: 13 }}>
-              <span>{m.nom} <span className="mono" style={{ color: "var(--gold)", fontSize: 10 }}>x{m.coefficient}</span></span>
+              <span>{m.nom} <span className="mono" style={{ color: "var(--accent)", fontSize: 10 }}>x{m.coefficient}</span></span>
               <span className="mono" style={{ fontWeight: 700, color: n && n.absent ? "var(--red-tn)" : n && n.note !== null ? moyColor(n.note) : "var(--dim)" }}>{n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "—"}</span>
             </div>); })}
-          <div style={{ textAlign: "center", marginTop: 18 }}><button className="btn btn-purple" onClick={() => { if (c) exportReleve(c, detail, iNotes, matieres); }}>Telecharger PDF</button></div>
+          <div style={{ textAlign: "center", marginTop: 18 }}><button className="btn btn-purple" onClick={() => { if (c) exportReleve(c, detail, iNotes, modules); }}>Telecharger PDF</button></div>
         </div>); })()}
       </Modal>)}
     </div>
@@ -1322,7 +1521,7 @@ function App() {
   const [candidats, setCandidats] = useState([]);
   const [inscriptions, setInscriptions] = useState([]);
   const [notes, setNotes] = useState([]);
-  const [matieres, setMatieres] = useState([]);
+  const [modules, setModules] = useState([]);
   const [deliberations, setDeliberations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -1343,7 +1542,7 @@ function App() {
         a.select("inscriptions", "order=created_at.desc"), a.select("notes", ""),
         a.select("matieres", "order=ordre.asc"), a.select("deliberations", "order=date_deliberation.desc")
       ]);
-      setSessions(se); setCandidats(ca); setInscriptions(ins); setNotes(no); setMatieres(ma); setDeliberations(de);
+      setSessions(se); setCandidats(ca); setInscriptions(ins); setNotes(no); setModules(ma); setDeliberations(de);
     } catch (e) { setError("Erreur: " + e.message); }
     setLoading(false);
   }, []);
@@ -1392,12 +1591,16 @@ function App() {
   ];
 
   /* FIX #4: Removed duplicate tn-stripe — the one in static HTML body is sufficient */
+.progress-bar{height:6px;border-radius:3px;background:var(--bg);overflow:hidden}.progress-fill{height:100%;border-radius:3px;transition:width .4s}
+.centre-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;cursor:pointer;transition:var(--tr)}.centre-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.alert-card{padding:12px 16px;border-radius:10px;font-size:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cas-limite{background:rgba(234,88,12,.06)!important;border-left:3px solid var(--orange)!important}
   return (
     <div>
       <header className="header">
         <div className="header-left">
-          <div className="logo-mark">&#9992;</div>
-          <div><div className="header-title">Examens ATE — DGAC</div><div className="header-sub">Agent Technique d'Exploitation</div></div>
+          <div className="logo-mark">✈</div>
+          <div><div className="header-title">Examens ATE</div><div className="header-sub">Agent Technique d'Exploitation</div></div>
         </div>
         <div className="desktop-tabs">{tabs.map(t => <button key={t.id} className={"tab-btn " + (tab === t.id ? "active" : "")} onClick={() => setTab(t.id)}><span>{t.icon}</span> {t.label}{t.count > 0 && <span className="tab-count">{t.count}</span>}</button>)}</div>
         <div className="header-right">
@@ -1412,12 +1615,12 @@ function App() {
       </nav>
       {error && <div className="error-box" style={{ margin: "12px 16px 0" }}>{error}</div>}
       <main style={{ padding: "28px 32px", maxWidth: 1400, margin: "0 auto" }}>
-        {tab === "dashboard" && <Dashboard sessions={sessions} candidats={candidats} inscriptions={inscriptions} matieres={matieres} onNav={setTab} />}
-        {tab === "sessions" && <SessionsView api={apiRef.current} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
+        {tab === "dashboard" && <Dashboard sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} modules={modules} deliberations={deliberations} onNav={setTab} />}
+        {tab === "sessions" && <SessionsView api={apiRef.current} sessions={sessions} inscriptions={inscriptions} candidats={candidats} notes={notes} modules={modules} reload={() => loadAll()} />}
         {tab === "candidats" && <CandidatsView api={apiRef.current} candidats={candidats} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
-        {tab === "notes" && <NotesView api={apiRef.current} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} reload={() => loadAll()} />}
-        {tab === "resultats" && <ResultatsView sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} matieres={matieres} />}
-        {tab === "deliberations" && <DeliberationsView api={apiRef.current} sessions={sessions} inscriptions={inscriptions} deliberations={deliberations} reload={() => loadAll()} />}
+        {tab === "notes" && <NotesView api={apiRef.current} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} modules={modules} reload={() => loadAll()} />}
+        {tab === "resultats" && <ResultatsView sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} modules={modules} />}
+        {tab === "deliberations" && <DeliberationsView api={apiRef.current} sessions={sessions} candidats={candidats} inscriptions={inscriptions} deliberations={deliberations} reload={() => loadAll()} />}
       </main>
     </div>
   );
