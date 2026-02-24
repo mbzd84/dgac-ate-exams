@@ -187,7 +187,30 @@ const createApi = (t) => {
     async select(tb, q) { const r = await fetch(b + "/" + tb + "?" + (q || ""), { headers: h }); if (!r.ok) throw new Error(r.statusText); return r.json(); },
     async insert(tb, d) { const r = await fetch(b + "/" + tb, { method: "POST", headers: h, body: JSON.stringify(d) }); if (!r.ok) { const e = await r.json(); throw new Error(e.message || r.statusText); } return r.json(); },
     async update(tb, id, d) { const r = await fetch(b + "/" + tb + "?id=eq." + id, { method: "PATCH", headers: h, body: JSON.stringify(d) }); if (!r.ok) throw new Error(r.statusText); return r.json(); },
-    async remove(tb, id) { const r = await fetch(b + "/" + tb + "?id=eq." + id, { method: "DELETE", headers: h }); if (!r.ok) throw new Error(r.statusText); return true; }
+    async remove(tb, id) { const r = await fetch(b + "/" + tb + "?id=eq." + id, { method: "DELETE", headers: h }); if (!r.ok) throw new Error(r.statusText); return true; },
+    async upload(bucket, path, file) {
+      const r = await fetch(SB_URL + "/storage/v1/object/" + bucket + "/" + path, {
+        method: "POST", headers: { apikey: SB_KEY, Authorization: "Bearer " + t }, body: file
+      });
+      if (!r.ok) throw new Error("Upload echoue");
+      return SB_URL + "/storage/v1/object/" + bucket + "/" + path;
+    },
+    async getSignedUrl(bucket, path) {
+      const r = await fetch(SB_URL + "/storage/v1/object/sign/" + bucket + "/" + path, {
+        method: "POST", headers: { apikey: SB_KEY, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+        body: JSON.stringify({ expiresIn: 3600 })
+      });
+      if (!r.ok) return null;
+      const d = await r.json();
+      return d.signedURL ? SB_URL + "/storage/v1" + d.signedURL : null;
+    },
+    async removeFile(bucket, paths) {
+      const r = await fetch(SB_URL + "/storage/v1/object/" + bucket, {
+        method: "DELETE", headers: { apikey: SB_KEY, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+        body: JSON.stringify({ prefixes: paths })
+      });
+      return r.ok;
+    }
   };
 };
 
@@ -817,6 +840,29 @@ function SessionsView({ api, sessions, inscriptions, candidats, notes, modules, 
           const ep = selectedEpreuve;
           const mod = (modules||[]).find(m => m.id === ep.matiere_uuid);
           const stats = getModuleStats(ep.matiere_uuid);
+          const handleUploadPDF = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.type !== "application/pdf") { alert("Seuls les fichiers PDF sont acceptes"); return; }
+            try {
+              const path = s.id + "/" + ep.id + ".pdf";
+              await api.upload("sujets-examens", path, file);
+              const url = await api.getSignedUrl("sujets-examens", path);
+              await api.update("planning_epreuves", ep.id, { notes: (ep.notes ? ep.notes + " " : "") + "[PDF]" });
+              setSelectedEpreuve({ ...ep, _pdfUploaded: true });
+              alert("PDF uploade avec succes !");
+              reload();
+            } catch (err) { alert("Erreur upload: " + err.message); }
+          };
+          const viewPDF = async () => {
+            try {
+              const path = s.id + "/" + ep.id + ".pdf";
+              const url = await api.getSignedUrl("sujets-examens", path);
+              if (url) window.open(url, "_blank");
+              else alert("Aucun PDF trouve");
+            } catch (err) { alert("Erreur: " + err.message); }
+          };
+          const hasPDF = (ep.notes || "").includes("[PDF]") || ep._pdfUploaded;
           return (
             <Modal onClose={() => setSelectedEpreuve(null)} title={mod ? mod.nom : "Epreuve"} width={480}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
@@ -843,13 +889,23 @@ function SessionsView({ api, sessions, inscriptions, candidats, notes, modules, 
                   <div><span className="hint">Duree:</span> <strong>{ep.duree_minutes} min</strong></div>
                   <div><span className="hint">Salle:</span> <strong>{ep.salle || "—"}</strong></div>
                 </div>
-                {ep.notes && <div style={{ marginTop: 8, fontSize: 12 }}><span className="hint">Notes:</span> {ep.notes}</div>}
               </div>
-              {/* PDF placeholder */}
-              <div style={{ padding: 16, borderRadius: 10, border: "1.5px dashed var(--border-light)", textAlign: "center", color: "var(--dim)", fontSize: 12 }}>
-                📄 Sujet d'examen — Upload bientot disponible
+              {/* PDF Upload / View */}
+              <div style={{ padding: 16, borderRadius: 10, border: "1.5px solid " + (hasPDF ? "rgba(22,163,74,0.3)" : "var(--border-light)"), background: hasPDF ? "rgba(22,163,74,0.04)" : "#fff", marginBottom: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>
+                    {hasPDF ? "📄 Sujet d'examen uploade" : "📄 Sujet d'examen"}
+                  </div>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {hasPDF && <button className="btn btn-accent btn-sm" onClick={viewPDF}>Voir PDF</button>}
+                    <label className="btn btn-outline btn-sm" style={{ cursor: "pointer", display: "inline-flex", alignItems: "center" }}>
+                      {hasPDF ? "Remplacer" : "Uploader PDF"}
+                      <input type="file" accept=".pdf" onChange={handleUploadPDF} style={{ display: "none" }} />
+                    </label>
+                  </div>
+                </div>
               </div>
-              <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+              <div style={{ display: "flex", gap: 8 }}>
                 <button className="btn-outline" style={{ flex: 1 }} onClick={() => { setPlanEdit(ep); setPlanForm({ ...ep }); setSelectedEpreuve(null); }}>✏️ Modifier</button>
                 <button className="btn-outline btn-outline-red" style={{ flex: 1 }} onClick={() => { if (confirm("Supprimer cette epreuve ?")) { rmPlan(ep.id); setSelectedEpreuve(null); } }}>🗑 Supprimer</button>
               </div>
