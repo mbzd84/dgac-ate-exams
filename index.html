@@ -1324,66 +1324,94 @@ function ImportNotesModal({ api, session, modules, inscriptions, candidats, note
   const [importing, setImporting] = useState(false);
   const [result, setResult] = useState(null);
   const [step, setStep] = useState("upload");
+  const [selMods, setSelMods] = useState([]);
 
   const sMods = modules.filter(m => m.session_uuid === session.id).sort((a,b) => a.ordre - b.ordre);
   const sInscr = inscriptions.filter(i => i.session_uuid === session.id);
 
   const downloadTemplate = () => {
     const wb = XLSX.utils.book_new();
-    const headers = ["CIN", "Nom", "Prenom"].concat(sMods.map(m => m.nom));
-    const rows = sInscr.map(ins => {
-      const cand = candidats.find(x => x.id === ins.candidat_uuid) || {};
-      const row = [cand.cin || "", cand.nom || "", cand.prenom || ""];
-      sMods.forEach(() => row.push(""));
-      return row;
+    const modsToExport = selMods.length > 0 ? sMods.filter(m => selMods.includes(m.id)) : sMods;
+    modsToExport.forEach(mod => {
+      const headers = ["CIN", "Nom", "Prenom", "Note (/20)"];
+      const rows = sInscr.map(ins => {
+        const cand = candidats.find(x => x.id === ins.candidat_uuid) || {};
+        return [cand.cin || "", cand.nom || "", cand.prenom || "", ""];
+      });
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+      ws["!cols"] = [{ wch: 14 }, { wch: 18 }, { wch: 18 }, { wch: 12 }];
+      var sheetName = mod.nom.substring(0, 31).replace(/[\[\]\*\?\/\\:]/g, "-");
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
     });
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-    const colWidths = headers.map((h, i) => ({ wch: i < 3 ? 16 : Math.max(12, h.length + 2) }));
-    ws["!cols"] = colWidths;
-    XLSX.utils.book_append_sheet(wb, ws, "Notes");
-    XLSX.writeFile(wb, "Template_Notes_" + (session.intitule || "session").replace(/\s/g, "_") + ".xlsx");
+    XLSX.writeFile(wb, "Notes_" + (session.intitule || "session").replace(/\s/g, "_") + ".xlsx");
   };
+
+  const toggleMod = (id) => setSelMods(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
+  const selectAll = () => setSelMods(selMods.length === sMods.length ? [] : sMods.map(m => m.id));
 
   const handleFile = async (f) => {
     setFile(f);
     try {
       const data = await f.arrayBuffer();
       const wb = XLSX.read(data);
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
-      if (rows.length === 0) { setResult({ error: "Fichier vide" }); return; }
-
-      const headers = Object.keys(rows[0]);
-      const cinCol = headers.find(h => h.toLowerCase().includes("cin")) || headers[0];
-
       const matched = [];
       const errors = [];
-      rows.forEach((row, ri) => {
-        const cin = String(row[cinCol] || "").trim();
-        if (!cin) return;
-        const cand = candidats.find(x => String(x.cin).trim() === cin);
-        if (!cand) { errors.push("Ligne " + (ri+2) + ": CIN " + cin + " non trouve"); return; }
-        const ins = sInscr.find(i => i.candidat_uuid === cand.id);
-        if (!ins) { errors.push("Ligne " + (ri+2) + ": " + cin + " non inscrit"); return; }
+      var totalNotes = 0;
 
-        const noteData = [];
-        sMods.forEach(mod => {
-          const modCol = headers.find(h => h.toLowerCase().trim() === mod.nom.toLowerCase().trim())
-            || headers.find(h => mod.nom.toLowerCase().includes(h.toLowerCase().trim()))
-            || headers.find(h => h.toLowerCase().includes(mod.nom.toLowerCase().substring(0, 8)));
-          if (modCol && row[modCol] !== "" && row[modCol] !== null && row[modCol] !== undefined) {
-            const val = parseFloat(row[modCol]);
-            if (!isNaN(val) && val >= 0 && val <= 20) {
-              noteData.push({ module: mod, note: val });
-            } else if (String(row[modCol]).toLowerCase() === "abs" || String(row[modCol]).toLowerCase() === "absent") {
-              noteData.push({ module: mod, note: null, absent: true });
+      wb.SheetNames.forEach(sheetName => {
+        const ws = wb.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+        if (rows.length === 0) return;
+
+        var mod = sMods.find(m => m.nom.toLowerCase().trim() === sheetName.toLowerCase().trim())
+          || sMods.find(m => sheetName.toLowerCase().includes(m.nom.toLowerCase().substring(0, 10).trim()))
+          || sMods.find(m => m.nom.toLowerCase().includes(sheetName.toLowerCase().substring(0, 10).trim()));
+
+        if (!mod) {
+          errors.push("Feuille \"" + sheetName + "\" : module non reconnu");
+          return;
+        }
+
+        const headers = Object.keys(rows[0]);
+        const cinCol = headers.find(h => h.toLowerCase().includes("cin")) || headers[0];
+        const noteCol = headers.find(h => h.toLowerCase().includes("note")) || headers[headers.length - 1];
+
+        rows.forEach(function(row, ri) {
+          const cin = String(row[cinCol] || "").trim();
+          if (!cin) return;
+          const cand = candidats.find(function(x) { return String(x.cin).trim() === cin; });
+          if (!cand) { errors.push(sheetName + " L" + (ri+2) + ": CIN " + cin + " non trouve"); return; }
+          const ins = sInscr.find(function(i) { return i.candidat_uuid === cand.id; });
+          if (!ins) { errors.push(sheetName + " L" + (ri+2) + ": " + cin + " non inscrit"); return; }
+
+          var val = row[noteCol];
+          var absent = false;
+          var note = null;
+          if (String(val).toLowerCase() === "abs" || String(val).toLowerCase() === "absent") {
+            absent = true;
+          } else if (val !== "" && val !== null && val !== undefined) {
+            var parsed = parseFloat(val);
+            if (!isNaN(parsed) && parsed >= 0 && parsed <= 20) {
+              note = parsed;
+            } else {
+              errors.push(sheetName + " L" + (ri+2) + ": note invalide \"" + val + "\"");
+              return;
             }
+          } else {
+            return;
           }
+
+          var existing = matched.find(function(m) { return m.ins.id === ins.id; });
+          if (!existing) {
+            existing = { cin: cin, cand: cand, ins: ins, notes: [] };
+            matched.push(existing);
+          }
+          existing.notes.push({ module: mod, note: note, absent: absent });
+          totalNotes++;
         });
-        matched.push({ cin, cand, ins, notes: noteData });
       });
 
-      setPreview({ matched, errors, total: rows.length });
+      setPreview({ matched: matched, errors: errors, total: totalNotes, sheets: wb.SheetNames.length });
       setStep("preview");
     } catch (e) { setResult({ error: "Erreur lecture: " + e.message }); }
   };
@@ -1391,7 +1419,7 @@ function ImportNotesModal({ api, session, modules, inscriptions, candidats, note
   const doImport = async () => {
     if (!preview) return;
     setImporting(true);
-    let saved = 0, errs = 0;
+    var saved = 0, errs = 0;
     try {
       for (const item of preview.matched) {
         for (const nd of item.notes) {
@@ -1401,7 +1429,7 @@ function ImportNotesModal({ api, session, modules, inscriptions, candidats, note
             note: nd.absent ? null : nd.note,
             absent: nd.absent || false
           };
-          const existing = notes.find(n => n.inscription_uuid === item.ins.id && n.matiere_uuid === nd.module.id);
+          const existing = notes.find(function(n) { return n.inscription_uuid === item.ins.id && n.matiere_uuid === nd.module.id; });
           try {
             if (existing) { await api.update("notes", existing.id, noteRecord); }
             else { await api.insert("notes", noteRecord); }
@@ -1409,98 +1437,122 @@ function ImportNotesModal({ api, session, modules, inscriptions, candidats, note
           } catch (e) { errs++; }
         }
         if (item.notes.length > 0) {
-          let tCN = 0, tC = 0;
-          const allNotes = [...notes.filter(n => n.inscription_uuid === item.ins.id)];
-          item.notes.forEach(nd => {
-            const idx = allNotes.findIndex(n => n.matiere_uuid === nd.module.id);
-            if (idx >= 0) allNotes[idx] = { ...allNotes[idx], note: nd.absent ? null : nd.note, absent: nd.absent };
-            else allNotes.push({ matiere_uuid: nd.module.id, note: nd.absent ? null : nd.note, absent: nd.absent });
+          var tCN = 0, tC = 0;
+          const allNotes = notes.filter(function(n) { return n.inscription_uuid === item.ins.id; }).map(function(n) { return Object.assign({}, n); });
+          item.notes.forEach(function(nd) {
+            var idx = allNotes.findIndex(function(n) { return n.matiere_uuid === nd.module.id; });
+            if (idx >= 0) { allNotes[idx].note = nd.absent ? null : nd.note; allNotes[idx].absent = nd.absent; }
+            else { allNotes.push({ matiere_uuid: nd.module.id, note: nd.absent ? null : nd.note, absent: nd.absent }); }
           });
-          sMods.forEach(m => {
-            const n = allNotes.find(x => x.matiere_uuid === m.id);
+          sMods.forEach(function(m) {
+            var n = allNotes.find(function(x) { return x.matiere_uuid === m.id; });
             if (n && !n.absent && n.note !== null) { tCN += n.note * m.coefficient; tC += m.coefficient; }
           });
-          const moy = tC > 0 ? tCN / tC : null;
-          const res = moy !== null ? (moy >= PASS_MARK ? "Admis" : "Ajourne") : "En attente";
+          var moy = tC > 0 ? tCN / tC : null;
+          var res = moy !== null ? (moy >= PASS_MARK ? "Admis" : "Ajourne") : "En attente";
           await api.update("inscriptions", item.ins.id, { moyenne_ponderee: moy, resultat: res });
         }
       }
-      setResult({ saved, errs, candidates: preview.matched.length });
+      setResult({ saved: saved, errs: errs, candidates: preview.matched.length });
       setStep("done");
     } catch (e) { setResult({ error: "Erreur import: " + e.message }); }
     setImporting(false);
   };
 
-  return (<Modal onClose={onClose} title="Import Notes Excel" width={660}>
+  return (<Modal onClose={onClose} title="Import Notes Excel" width={680}>
     {step === "upload" && <div style={{ padding: 20 }}>
       <p style={{ marginBottom: 16, color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>
-        Importez les notes depuis un fichier Excel. Le fichier doit contenir une colonne <strong>CIN</strong> et une colonne par module avec les notes sur 20.
-        Utilisez <strong>"abs"</strong> pour marquer un absent.
+        Importez les notes depuis un fichier Excel. Chaque <strong>feuille</strong> correspond a un <strong>module</strong>.
+        Colonnes attendues : CIN, Nom, Prenom, Note (/20). Ecrivez <strong>"abs"</strong> pour les absents.
       </p>
-      <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
-        <button className="btn btn-accent" onClick={downloadTemplate}>
-          ⬇ Telecharger le template
+
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <strong style={{ fontSize: 13 }}>⬇ Generer un template</strong>
+          <button className="btn btn-sm" onClick={selectAll} style={{ fontSize: 11 }}>
+            {selMods.length === sMods.length ? "Deselectionner tout" : "Tout selectionner"}
+          </button>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10, maxHeight: 150, overflowY: "auto", padding: 4 }}>
+          {sMods.map(m => <button key={m.id}
+            onClick={() => toggleMod(m.id)}
+            style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, cursor: "pointer",
+              border: selMods.includes(m.id) ? "1.5px solid var(--accent)" : "1px solid var(--border)",
+              background: selMods.includes(m.id) ? "rgba(36,99,235,0.08)" : "var(--card)",
+              color: selMods.includes(m.id) ? "var(--accent)" : "var(--muted)", fontWeight: selMods.includes(m.id) ? 600 : 400
+            }}>{m.nom}</button>)}
+        </div>
+        <button className="btn btn-accent btn-sm" onClick={downloadTemplate} disabled={selMods.length === 0}>
+          Telecharger template ({selMods.length} module{selMods.length > 1 ? "s" : ""})
         </button>
       </div>
-      <div style={{ border: "2px dashed var(--border-light)", borderRadius: 12, padding: 32, textAlign: "center", cursor: "pointer", background: "var(--bg)" }}
-        onClick={() => document.getElementById("import-notes-file").click()}
-        onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = "var(--accent)"; }}
-        onDragLeave={e => { e.currentTarget.style.borderColor = ""; }}
-        onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = ""; if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }}>
-        <div style={{ fontSize: 32, marginBottom: 8 }}>📂</div>
-        <div style={{ fontWeight: 600, marginBottom: 4 }}>Glisser-deposer ou cliquer</div>
-        <div style={{ fontSize: 12, color: "var(--muted)" }}>.xlsx, .xls, .csv</div>
+
+      <div style={{ borderTop: "1px solid var(--border)", paddingTop: 16, marginTop: 8 }}>
+        <strong style={{ fontSize: 13, display: "block", marginBottom: 10 }}>📂 Importer un fichier rempli</strong>
+        <div style={{ border: "2px dashed var(--border-light)", borderRadius: 12, padding: 28, textAlign: "center", cursor: "pointer", background: "var(--bg)" }}
+          onClick={() => document.getElementById("import-notes-file").click()}
+          onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = "var(--accent)"; }}
+          onDragLeave={e => { e.currentTarget.style.borderColor = ""; }}
+          onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = ""; if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }}>
+          <div style={{ fontSize: 28, marginBottom: 6 }}>📎</div>
+          <div style={{ fontWeight: 600, marginBottom: 4, fontSize: 13 }}>Glisser-deposer ou cliquer</div>
+          <div style={{ fontSize: 11, color: "var(--muted)" }}>.xlsx, .xls — une feuille par module</div>
+        </div>
+        <input id="import-notes-file" type="file" accept=".xlsx,.xls,.csv" style={{ display: "none" }}
+          onChange={e => { if(e.target.files[0]) handleFile(e.target.files[0]); }} />
       </div>
-      <input id="import-notes-file" type="file" accept=".xlsx,.xls,.csv" style={{ display: "none" }}
-        onChange={e => { if(e.target.files[0]) handleFile(e.target.files[0]); }} />
       {result && result.error && <div style={{ marginTop: 12, padding: 10, background: "rgba(200,16,46,0.08)", border: "1px solid rgba(200,16,46,0.2)", borderRadius: 8, color: "var(--red-tn)", fontSize: 12 }}>{result.error}</div>}
     </div>}
 
     {step === "preview" && preview && <div style={{ padding: 20 }}>
-      <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-        <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(22,163,74,0.08)", fontSize: 13 }}>
-          <strong style={{ color: "var(--green-tn)" }}>{preview.matched.length}</strong> candidats reconnus
-        </div>
+      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(36,99,235,0.08)", fontSize: 13 }}>
-          <strong style={{ color: "var(--accent)" }}>{preview.matched.reduce((s,m) => s + m.notes.length, 0)}</strong> notes a importer
+          <strong style={{ color: "var(--accent)" }}>{preview.sheets}</strong> feuille{preview.sheets > 1 ? "s" : ""} lue{preview.sheets > 1 ? "s" : ""}
+        </div>
+        <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(22,163,74,0.08)", fontSize: 13 }}>
+          <strong style={{ color: "var(--green-tn)" }}>{preview.matched.length}</strong> candidat{preview.matched.length > 1 ? "s" : ""}
+        </div>
+        <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(124,58,237,0.08)", fontSize: 13 }}>
+          <strong style={{ color: "#7c3aed" }}>{preview.total}</strong> note{preview.total > 1 ? "s" : ""}
         </div>
         {preview.errors.length > 0 && <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(234,179,8,0.08)", fontSize: 13 }}>
-          <strong style={{ color: "#b45309" }}>{preview.errors.length}</strong> avertissements
+          <strong style={{ color: "#b45309" }}>{preview.errors.length}</strong> avert.
         </div>}
       </div>
-      <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 16 }}>
-        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
-          <thead><tr style={{ background: "var(--bg)", position: "sticky", top: 0 }}>
-            <th style={{ padding: "6px 8px", textAlign: "left" }}>Candidat</th>
-            {sMods.map(m => <th key={m.id} style={{ padding: "6px 4px", textAlign: "center", fontSize: 10 }}>{m.nom.substring(0,10)}</th>)}
-          </tr></thead>
-          <tbody>{preview.matched.map((item, i) => <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
-            <td style={{ padding: "5px 8px", fontWeight: 600 }}>{item.cand.prenom} {item.cand.nom}<div style={{ fontSize: 10, color: "var(--muted)" }}>{item.cin}</div></td>
-            {sMods.map(m => {
-              const nd = item.notes.find(n => n.module.id === m.id);
-              return <td key={m.id} style={{ padding: "4px", textAlign: "center", fontFamily: "var(--mono)", fontWeight: 600, color: nd ? (nd.absent ? "var(--muted)" : (nd.note < 10 ? "var(--red-tn)" : "var(--green-tn)")) : "var(--border)" }}>
-                {nd ? (nd.absent ? "ABS" : nd.note) : "—"}
-              </td>;
-            })}
-          </tr>)}</tbody>
-        </table>
+
+      <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 16, border: "1px solid var(--border)", borderRadius: 8 }}>
+        {preview.matched.map((item, i) => <div key={i} style={{ padding: "8px 12px", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 13 }}>{item.cand.prenom} {item.cand.nom}</div>
+            <div style={{ fontSize: 10, color: "var(--muted)" }}>CIN: {item.cin}</div>
+          </div>
+          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            {item.notes.map((nd, ni) => <span key={ni} style={{
+              fontSize: 10, padding: "2px 6px", borderRadius: 4, fontFamily: "var(--mono)", fontWeight: 600,
+              background: nd.absent ? "rgba(156,163,175,0.1)" : nd.note < 10 ? "rgba(200,16,46,0.08)" : "rgba(22,163,74,0.08)",
+              color: nd.absent ? "var(--muted)" : nd.note < 10 ? "var(--red-tn)" : "var(--green-tn)"
+            }}>{nd.module.nom.substring(0, 8)}: {nd.absent ? "ABS" : nd.note}</span>)}
+          </div>
+        </div>)}
       </div>
+
       {preview.errors.length > 0 && <details style={{ marginBottom: 12, fontSize: 12 }}>
-        <summary style={{ cursor: "pointer", color: "#b45309", fontWeight: 600 }}>\u26A0 {preview.errors.length} avertissement(s)</summary>
+        <summary style={{ cursor: "pointer", color: "#b45309", fontWeight: 600 }}>{chr(0x26A0)} {preview.errors.length} avertissement(s)</summary>
         <div style={{ padding: 8, background: "rgba(234,179,8,0.05)", borderRadius: 6, marginTop: 4 }}>
           {preview.errors.map((e, i) => <div key={i} style={{ color: "#92400e", padding: "2px 0" }}>{e}</div>)}
         </div>
       </details>}
+
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
         <button className="btn" onClick={() => { setStep("upload"); setPreview(null); setFile(null); }}>Retour</button>
-        <button className="btn btn-accent" onClick={doImport} disabled={importing || preview.matched.length === 0}>
-          {importing ? "Import en cours..." : "Importer " + preview.matched.reduce((s,m) => s + m.notes.length, 0) + " notes"}
+        <button className="btn btn-accent" onClick={doImport} disabled={importing || preview.total === 0}>
+          {importing ? "Import en cours..." : "Importer " + preview.total + " note" + (preview.total > 1 ? "s" : "")}
         </button>
       </div>
     </div>}
 
     {step === "done" && result && <div style={{ padding: 20, textAlign: "center" }}>
-      <div style={{ fontSize: 48, marginBottom: 12 }}>\u2705</div>
+      <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
       <h3 style={{ marginBottom: 8 }}>Import termine !</h3>
       <p style={{ color: "var(--muted)", fontSize: 13, marginBottom: 16 }}>
         <strong>{result.saved}</strong> notes enregistrees pour <strong>{result.candidates}</strong> candidats
