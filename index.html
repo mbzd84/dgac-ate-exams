@@ -1316,6 +1316,201 @@ function CandidatsView({ api, candidats, sessions, inscriptions, reload }) {
 }
 
 
+
+/* ===== IMPORT NOTES MODAL ===== */
+function ImportNotesModal({ api, session, modules, inscriptions, candidats, notes, onClose, onDone }) {
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [importing, setImporting] = useState(false);
+  const [result, setResult] = useState(null);
+  const [step, setStep] = useState("upload");
+
+  const sMods = modules.filter(m => m.session_uuid === session.id).sort((a,b) => a.ordre - b.ordre);
+  const sInscr = inscriptions.filter(i => i.session_uuid === session.id);
+
+  const downloadTemplate = () => {
+    const wb = XLSX.utils.book_new();
+    const headers = ["CIN", "Nom", "Prenom"].concat(sMods.map(m => m.nom));
+    const rows = sInscr.map(ins => {
+      const cand = candidats.find(x => x.id === ins.candidat_uuid) || {};
+      const row = [cand.cin || "", cand.nom || "", cand.prenom || ""];
+      sMods.forEach(() => row.push(""));
+      return row;
+    });
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const colWidths = headers.map((h, i) => ({ wch: i < 3 ? 16 : Math.max(12, h.length + 2) }));
+    ws["!cols"] = colWidths;
+    XLSX.utils.book_append_sheet(wb, ws, "Notes");
+    XLSX.writeFile(wb, "Template_Notes_" + (session.intitule || "session").replace(/\s/g, "_") + ".xlsx");
+  };
+
+  const handleFile = async (f) => {
+    setFile(f);
+    try {
+      const data = await f.arrayBuffer();
+      const wb = XLSX.read(data);
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+      if (rows.length === 0) { setResult({ error: "Fichier vide" }); return; }
+
+      const headers = Object.keys(rows[0]);
+      const cinCol = headers.find(h => h.toLowerCase().includes("cin")) || headers[0];
+
+      const matched = [];
+      const errors = [];
+      rows.forEach((row, ri) => {
+        const cin = String(row[cinCol] || "").trim();
+        if (!cin) return;
+        const cand = candidats.find(x => String(x.cin).trim() === cin);
+        if (!cand) { errors.push("Ligne " + (ri+2) + ": CIN " + cin + " non trouve"); return; }
+        const ins = sInscr.find(i => i.candidat_uuid === cand.id);
+        if (!ins) { errors.push("Ligne " + (ri+2) + ": " + cin + " non inscrit"); return; }
+
+        const noteData = [];
+        sMods.forEach(mod => {
+          const modCol = headers.find(h => h.toLowerCase().trim() === mod.nom.toLowerCase().trim())
+            || headers.find(h => mod.nom.toLowerCase().includes(h.toLowerCase().trim()))
+            || headers.find(h => h.toLowerCase().includes(mod.nom.toLowerCase().substring(0, 8)));
+          if (modCol && row[modCol] !== "" && row[modCol] !== null && row[modCol] !== undefined) {
+            const val = parseFloat(row[modCol]);
+            if (!isNaN(val) && val >= 0 && val <= 20) {
+              noteData.push({ module: mod, note: val });
+            } else if (String(row[modCol]).toLowerCase() === "abs" || String(row[modCol]).toLowerCase() === "absent") {
+              noteData.push({ module: mod, note: null, absent: true });
+            }
+          }
+        });
+        matched.push({ cin, cand, ins, notes: noteData });
+      });
+
+      setPreview({ matched, errors, total: rows.length });
+      setStep("preview");
+    } catch (e) { setResult({ error: "Erreur lecture: " + e.message }); }
+  };
+
+  const doImport = async () => {
+    if (!preview) return;
+    setImporting(true);
+    let saved = 0, errs = 0;
+    try {
+      for (const item of preview.matched) {
+        for (const nd of item.notes) {
+          const noteRecord = {
+            inscription_uuid: item.ins.id,
+            matiere_uuid: nd.module.id,
+            note: nd.absent ? null : nd.note,
+            absent: nd.absent || false
+          };
+          const existing = notes.find(n => n.inscription_uuid === item.ins.id && n.matiere_uuid === nd.module.id);
+          try {
+            if (existing) { await api.update("notes", existing.id, noteRecord); }
+            else { await api.insert("notes", noteRecord); }
+            saved++;
+          } catch (e) { errs++; }
+        }
+        if (item.notes.length > 0) {
+          let tCN = 0, tC = 0;
+          const allNotes = [...notes.filter(n => n.inscription_uuid === item.ins.id)];
+          item.notes.forEach(nd => {
+            const idx = allNotes.findIndex(n => n.matiere_uuid === nd.module.id);
+            if (idx >= 0) allNotes[idx] = { ...allNotes[idx], note: nd.absent ? null : nd.note, absent: nd.absent };
+            else allNotes.push({ matiere_uuid: nd.module.id, note: nd.absent ? null : nd.note, absent: nd.absent });
+          });
+          sMods.forEach(m => {
+            const n = allNotes.find(x => x.matiere_uuid === m.id);
+            if (n && !n.absent && n.note !== null) { tCN += n.note * m.coefficient; tC += m.coefficient; }
+          });
+          const moy = tC > 0 ? tCN / tC : null;
+          const res = moy !== null ? (moy >= PASS_MARK ? "Admis" : "Ajourne") : "En attente";
+          await api.update("inscriptions", item.ins.id, { moyenne_ponderee: moy, resultat: res });
+        }
+      }
+      setResult({ saved, errs, candidates: preview.matched.length });
+      setStep("done");
+    } catch (e) { setResult({ error: "Erreur import: " + e.message }); }
+    setImporting(false);
+  };
+
+  return (<Modal onClose={onClose} title="Import Notes Excel" width={660}>
+    {step === "upload" && <div style={{ padding: 20 }}>
+      <p style={{ marginBottom: 16, color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>
+        Importez les notes depuis un fichier Excel. Le fichier doit contenir une colonne <strong>CIN</strong> et une colonne par module avec les notes sur 20.
+        Utilisez <strong>"abs"</strong> pour marquer un absent.
+      </p>
+      <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
+        <button className="btn btn-accent" onClick={downloadTemplate}>
+          ⬇ Telecharger le template
+        </button>
+      </div>
+      <div style={{ border: "2px dashed var(--border-light)", borderRadius: 12, padding: 32, textAlign: "center", cursor: "pointer", background: "var(--bg)" }}
+        onClick={() => document.getElementById("import-notes-file").click()}
+        onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = "var(--accent)"; }}
+        onDragLeave={e => { e.currentTarget.style.borderColor = ""; }}
+        onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = ""; if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }}>
+        <div style={{ fontSize: 32, marginBottom: 8 }}>📂</div>
+        <div style={{ fontWeight: 600, marginBottom: 4 }}>Glisser-deposer ou cliquer</div>
+        <div style={{ fontSize: 12, color: "var(--muted)" }}>.xlsx, .xls, .csv</div>
+      </div>
+      <input id="import-notes-file" type="file" accept=".xlsx,.xls,.csv" style={{ display: "none" }}
+        onChange={e => { if(e.target.files[0]) handleFile(e.target.files[0]); }} />
+      {result && result.error && <div style={{ marginTop: 12, padding: 10, background: "rgba(200,16,46,0.08)", border: "1px solid rgba(200,16,46,0.2)", borderRadius: 8, color: "var(--red-tn)", fontSize: 12 }}>{result.error}</div>}
+    </div>}
+
+    {step === "preview" && preview && <div style={{ padding: 20 }}>
+      <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+        <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(22,163,74,0.08)", fontSize: 13 }}>
+          <strong style={{ color: "var(--green-tn)" }}>{preview.matched.length}</strong> candidats reconnus
+        </div>
+        <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(36,99,235,0.08)", fontSize: 13 }}>
+          <strong style={{ color: "var(--accent)" }}>{preview.matched.reduce((s,m) => s + m.notes.length, 0)}</strong> notes a importer
+        </div>
+        {preview.errors.length > 0 && <div style={{ padding: "8px 14px", borderRadius: 8, background: "rgba(234,179,8,0.08)", fontSize: 13 }}>
+          <strong style={{ color: "#b45309" }}>{preview.errors.length}</strong> avertissements
+        </div>}
+      </div>
+      <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 16 }}>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
+          <thead><tr style={{ background: "var(--bg)", position: "sticky", top: 0 }}>
+            <th style={{ padding: "6px 8px", textAlign: "left" }}>Candidat</th>
+            {sMods.map(m => <th key={m.id} style={{ padding: "6px 4px", textAlign: "center", fontSize: 10 }}>{m.nom.substring(0,10)}</th>)}
+          </tr></thead>
+          <tbody>{preview.matched.map((item, i) => <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
+            <td style={{ padding: "5px 8px", fontWeight: 600 }}>{item.cand.prenom} {item.cand.nom}<div style={{ fontSize: 10, color: "var(--muted)" }}>{item.cin}</div></td>
+            {sMods.map(m => {
+              const nd = item.notes.find(n => n.module.id === m.id);
+              return <td key={m.id} style={{ padding: "4px", textAlign: "center", fontFamily: "var(--mono)", fontWeight: 600, color: nd ? (nd.absent ? "var(--muted)" : (nd.note < 10 ? "var(--red-tn)" : "var(--green-tn)")) : "var(--border)" }}>
+                {nd ? (nd.absent ? "ABS" : nd.note) : "—"}
+              </td>;
+            })}
+          </tr>)}</tbody>
+        </table>
+      </div>
+      {preview.errors.length > 0 && <details style={{ marginBottom: 12, fontSize: 12 }}>
+        <summary style={{ cursor: "pointer", color: "#b45309", fontWeight: 600 }}>\u26A0 {preview.errors.length} avertissement(s)</summary>
+        <div style={{ padding: 8, background: "rgba(234,179,8,0.05)", borderRadius: 6, marginTop: 4 }}>
+          {preview.errors.map((e, i) => <div key={i} style={{ color: "#92400e", padding: "2px 0" }}>{e}</div>)}
+        </div>
+      </details>}
+      <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+        <button className="btn" onClick={() => { setStep("upload"); setPreview(null); setFile(null); }}>Retour</button>
+        <button className="btn btn-accent" onClick={doImport} disabled={importing || preview.matched.length === 0}>
+          {importing ? "Import en cours..." : "Importer " + preview.matched.reduce((s,m) => s + m.notes.length, 0) + " notes"}
+        </button>
+      </div>
+    </div>}
+
+    {step === "done" && result && <div style={{ padding: 20, textAlign: "center" }}>
+      <div style={{ fontSize: 48, marginBottom: 12 }}>\u2705</div>
+      <h3 style={{ marginBottom: 8 }}>Import termine !</h3>
+      <p style={{ color: "var(--muted)", fontSize: 13, marginBottom: 16 }}>
+        <strong>{result.saved}</strong> notes enregistrees pour <strong>{result.candidates}</strong> candidats
+        {result.errs > 0 && <span style={{ color: "var(--red-tn)" }}> ({result.errs} erreurs)</span>}
+      </p>
+      <button className="btn btn-accent" onClick={() => { onDone(); }}>Fermer</button>
+    </div>}
+  </Modal>);
+}
+
 /* ===== NOTES VIEW ===== */
 function NotesView({ api, sessions, candidats, inscriptions, notes, modules, reload }) {
   const [selS, setSelS] = useState("");
@@ -1323,6 +1518,7 @@ function NotesView({ api, sessions, candidats, inscriptions, notes, modules, rel
   const [ed, setEd] = useState(null);
   const [del, setDel] = useState(null);
   const [nm, setNm] = useState(null);
+  const [showImport, setShowImport] = useState(false);
   const cur = selS || (sessions.length > 0 ? sessions[0].id : "");
   const sInscr = inscriptions.filter(i => i.session_uuid === cur);
   const save = async (d) => { try { if (ed) await api.update("inscriptions", ed.id, d); else await api.insert("inscriptions", d); setSf(false); setEd(null); reload(); } catch (e) { alert(e.message); } };
@@ -1331,7 +1527,7 @@ function NotesView({ api, sessions, candidats, inscriptions, notes, modules, rel
     <div>
       <div className="filters">
         <select className="select" value={cur} onChange={e => setSelS(e.target.value)} style={{ width: 260, maxWidth: "100%" }}><option value="">— Session —</option>{sessions.map(s => <option key={s.id} value={s.id}>{s.intitule}</option>)}</select>
-        <div className="spacer" /><button className="btn btn-orange" onClick={() => { setEd(null); setSf(true); }}>+ Inscrire</button>
+        <div className="spacer" />{cur && <button className="btn btn-accent" style={{ marginRight: 8 }} onClick={() => setShowImport(true)}>📂 Import Excel</button>}<button className="btn btn-orange" onClick={() => { setEd(null); setSf(true); }}>+ Inscrire</button>
       </div>
       {cur && (<div>
         <div className="table-container desktop-only">
@@ -1361,6 +1557,7 @@ function NotesView({ api, sessions, candidats, inscriptions, notes, modules, rel
       {sf && <InscriptionForm sessions={sessions} candidats={candidats} inscription={ed} onClose={() => { setSf(false); setEd(null); }} onSave={save} />}
       {del && <ConfirmDelete item="cette inscription" onConfirm={rm} onCancel={() => setDel(null)} />}
       {nm && <NotesEntry api={api} inscription={nm} modules={modules} existingNotes={notes.filter(n => n.inscription_uuid === nm.id)} onClose={() => setNm(null)} onSaved={() => { setNm(null); reload(); }} />}
+      {showImport && cur && <ImportNotesModal api={api} session={sessions.find(s => s.id === cur)} modules={modules} inscriptions={inscriptions} candidats={candidats} notes={notes} onClose={() => setShowImport(false)} onDone={() => { setShowImport(false); reload(); }} />}
     </div>
   );
 }
