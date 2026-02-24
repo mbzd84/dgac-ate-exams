@@ -796,11 +796,11 @@ function SessionsView({ api, sessions, inscriptions, candidats, notes, modules, 
 
         {/* ===== CALENDRIER DES EPREUVES (grille) ===== */}
         {(() => {
-          const sMods = (modules||[]).filter(m => m.session_uuid === session.id);
-          const sIns = inscriptions.filter(i => i.session_uuid === session.id);
+          const sMods = (modules||[]).filter(m => m.session_uuid === s.id);
+          const sIns = inscriptions.filter(i => i.session_uuid === s.id);
           if (sMods.length === 0 || sIns.length === 0) return null;
           const missing = sMods.map(m => {
-            const withNote = notes.filter(n => n.session_uuid === session.id && n.module_uuid === m.id && n.note !== "" && n.note != null);
+            const withNote = notes.filter(n => n.session_uuid === s.id && n.module_uuid === m.id && n.note !== "" && n.note != null);
             return { nom: m.nom, missing: sIns.length - withNote.length, total: sIns.length };
           }).filter(x => x.missing > 0);
           if (missing.length === 0) return null;
