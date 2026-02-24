@@ -1795,120 +1795,247 @@ function exportPV(session, inscriptions, candidats, modules, notes) {
 }
 
 /* ===== RESULTS VIEW ===== */
-function ResultatsView({ sessions, candidats, inscriptions, notes, modules }) {
-  const [selS, setSelS] = useState("");
+function ResultatsView({ sessions, candidats, inscriptions, notes, modules, api, reload }) {
+  const [selSession, setSelSession] = useState(null);
   const [orgF, setOrgF] = useState("Tous");
   const [detail, setDetail] = useState(null);
   const [showStats, setShowStats] = useState(false);
-  const cur = selS || (sessions.length > 0 ? sessions[0].id : "");
-  const session = sessions.find(s => s.id === cur);
-  const allSI = inscriptions.filter(i => i.session_uuid === cur);
+  const [rachatCand, setRachatCand] = useState(null);
+  const [rachatMotif, setRachatMotif] = useState("");
+
+  if (!selSession) {
+    return (<div>
+      <div className="section-title">📊 Résultats</div>
+      <p style={{ color: "var(--muted)", fontSize: 13, marginBottom: 16 }}>Sélectionnez une session pour consulter les résultats.</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+        {sessions.map(s => {
+          const sIns = inscriptions.filter(i => i.session_uuid === s.id);
+          const admis = sIns.filter(i => i.resultat === "Admis").length;
+          const ajourne = sIns.filter(i => i.resultat === "Ajourne").length;
+          const attente = sIns.length - admis - ajourne;
+          const taux = sIns.length > 0 ? Math.round(admis / sIns.length * 100) : 0;
+          return <div key={s.id} className="card" style={{ padding: 16, cursor: "pointer", transition: "var(--tr)" }}
+            onClick={() => setSelSession(s)}
+            onMouseEnter={e => e.currentTarget.style.borderColor = "var(--accent)"}
+            onMouseLeave={e => e.currentTarget.style.borderColor = ""}>
+            <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 6 }}>{s.intitule}</div>
+            <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 10 }}>{s.date_debut} → {s.date_fin} — {s.organisation || ""}</div>
+            <div style={{ display: "flex", gap: 12, fontSize: 12, marginBottom: 8 }}>
+              <span><strong style={{ color: "var(--green-tn)" }}>{admis}</strong> admis</span>
+              <span><strong style={{ color: "var(--red-tn)" }}>{ajourne}</strong> ajournés</span>
+              {attente > 0 && <span><strong style={{ color: "var(--muted)" }}>{attente}</strong> en attente</span>}
+              <span style={{ marginLeft: "auto", fontWeight: 700, color: taux >= 50 ? "var(--green-tn)" : "var(--red-tn)" }}>{taux}%</span>
+            </div>
+            <div style={{ height: 4, borderRadius: 2, background: "var(--border)", overflow: "hidden", display: "flex" }}>
+              <div style={{ height: "100%", width: (sIns.length > 0 ? admis/sIns.length*100 : 0) + "%", background: "var(--green-tn)" }} />
+              <div style={{ height: "100%", width: (sIns.length > 0 ? ajourne/sIns.length*100 : 0) + "%", background: "var(--red-tn)" }} />
+            </div>
+          </div>;
+        })}
+      </div>
+    </div>);
+  }
+
+  const session = selSession;
+  const sMods = modules.filter(m => m.session_uuid === session.id).sort((a,b) => a.ordre - b.ordre);
+  const allSI = inscriptions.filter(i => i.session_uuid === session.id);
   const sI = allSI.filter(i => {
     if (orgF === "Tous") return true;
-    const c = candidats.find(x => x.id === i.candidat_uuid);
-    return c && c.organisme_formation === orgF;
+    const cd = candidats.find(x => x.id === i.candidat_uuid);
+    return cd && cd.organisme_formation === orgF;
   }).sort((a, b) => (b.moyenne_ponderee || 0) - (a.moyenne_ponderee || 0));
   const admis = sI.filter(i => i.resultat === "Admis").length;
   const total = sI.length;
 
-  const matStats = modules.sort((a, b) => a.ordre - b.ordre).map(m => {
-    const matNotes = [];
-    allSI.forEach(i => { const n = notes.find(x => x.inscription_uuid === i.id && x.matiere_uuid === m.id); if (n && n.note !== null && !n.absent) matNotes.push(n.note); });
-    const max = matNotes.length > 0 ? Math.max(...matNotes) : null;
-    const avg = matNotes.length > 0 ? (matNotes.reduce((a, b) => a + b, 0) / matNotes.length) : null;
-    const sup13 = matNotes.filter(n => n >= 13).length;
-    const pct = matNotes.length > 0 ? Math.round((sup13 / matNotes.length) * 100) : 0;
-    return { nom: m.nom, coefficient: m.coefficient, max: max, avg: avg, sup13: sup13, pct: pct, total: matNotes.length };
+  const matStats = sMods.map(m => {
+    const mn = [];
+    allSI.forEach(i => { const n = notes.find(x => x.inscription_uuid === i.id && x.matiere_uuid === m.id); if (n && n.note !== null && !n.absent) mn.push(n.note); });
+    const max = mn.length > 0 ? Math.max(...mn) : null;
+    const avg = mn.length > 0 ? (mn.reduce((a, b) => a + b, 0) / mn.length) : null;
+    const sup = mn.filter(n => n >= 10).length;
+    return { nom: m.nom, coefficient: m.coefficient, max: max, avg: avg, sup: sup, total: mn.length };
   });
 
   const orgStats = ORGANISMES.map(o => {
-    const oInscrits = allSI.filter(i => { const c = candidats.find(x => x.id === i.candidat_uuid); return c && c.organisme_formation === o; });
-    const oAdmis = oInscrits.filter(i => i.resultat === "Admis").length;
-    const oMoy = oInscrits.filter(i => i.moyenne_ponderee !== null);
-    const avg = oMoy.length > 0 ? (oMoy.reduce((s, i) => s + Number(i.moyenne_ponderee), 0) / oMoy.length) : null;
-    return { org: o, total: oInscrits.length, admis: oAdmis, taux: oInscrits.length > 0 ? Math.round((oAdmis / oInscrits.length) * 100) : 0, avg: avg };
+    const oI = allSI.filter(i => { const cd = candidats.find(x => x.id === i.candidat_uuid); return cd && cd.organisme_formation === o; });
+    const oA = oI.filter(i => i.resultat === "Admis").length;
+    const oM = oI.filter(i => i.moyenne_ponderee !== null);
+    const avg = oM.length > 0 ? (oM.reduce((s, i) => s + Number(i.moyenne_ponderee), 0) / oM.length) : null;
+    return { org: o, total: oI.length, admis: oA, taux: oI.length > 0 ? Math.round((oA / oI.length) * 100) : 0, avg: avg };
   });
 
-  return (
-    <div>
-      <div className="filters">
-        <select className="select" value={cur} onChange={e => setSelS(e.target.value)} style={{ width: 260, maxWidth: "100%" }}>{sessions.map(s => <option key={s.id} value={s.id}>{s.intitule}</option>)}</select>
-        <div className="filter-group">{["Tous", ...ORGANISMES].map(o => <button key={o} className={"filter-btn " + (orgF === o ? "active" : "")} onClick={() => setOrgF(o)}>{o}</button>)}</div>
-        <div className="spacer" />
-        <button className="btn btn-outline" onClick={() => setShowStats(!showStats)}>{showStats ? "Tableau" : "Statistiques"}</button>
-        {session && <button className="btn btn-purple" onClick={() => exportPV(session, inscriptions, candidats, modules, notes)}>PDF PV</button>}
-      </div>
-      {cur && (<div>
-        <div className="kpi-grid">
-          <KPI label="Candidats" value={total} color="var(--cyan)" />
-          <KPI label="Admis" value={admis} color="var(--green)" />
-          <KPI label="Ajournes" value={total - admis} color="var(--red-tn)" />
-          <KPI label="Taux reussite" value={total > 0 ? Math.round((admis / total) * 100) + "%" : "—"} color="var(--green)" />
-        </div>
-
-        {!showStats ? (
-          <div className="table-container">
-            <div className="table-row" style={{ gridTemplateColumns: "40px 80px 1fr 80px 80px 80px 70px", background: "rgba(36,99,235,0.04)", fontWeight: 700, fontSize: 10, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 1, cursor: "default" }}>
-              <span>#</span><span>Matricule</span><span>Candidat</span><span>Organisme</span><span>Moyenne</span><span>Resultat</span><span>PDF</span>
-            </div>
-            {sI.map((i, idx) => { const c = candidats.find(x => x.id === i.candidat_uuid); return (
-              <div key={i.id} className="table-row" style={{ gridTemplateColumns: "40px 80px 1fr 80px 80px 80px 70px" }} onClick={() => setDetail(i)}>
-                <span className="mono" style={{ fontSize: 12, color: "var(--dim)" }}>{idx + 1}</span>
-                <span className="mono" style={{ fontSize: 10, color: "var(--dim)" }}>{c ? c.matricule : "—"}</span>
-                <span style={{ fontSize: 13, fontWeight: 500 }}>{c ? c.prenom + " " + c.nom : "—"}</span>
-                <Badge color="var(--accent)">{c ? c.organisme_formation : "—"}</Badge>
-                <span className="mono" style={{ fontSize: 14, fontWeight: 700, color: moyColor(i.moyenne_ponderee) }}>{i.moyenne_ponderee !== null ? Number(i.moyenne_ponderee).toFixed(2) : "—"}</span>
-                <ResultBadge r={i.resultat} />
-                <button className="btn btn-outline btn-sm" onClick={e => { e.stopPropagation(); if (c) exportReleve(c, i, notes.filter(n => n.inscription_uuid === i.id), modules); }}>PDF</button>
-              </div>); })}
-            {sI.length === 0 && <Empty text="Aucun resultat" />}
-          </div>
-        ) : (
-          <div>
-            <div className="card card-padded">
-              <div className="section-title" style={{ marginTop: 0 }}>Statistiques par module</div>
-              <div style={{ overflowX: "auto" }}>
-                <table className="stats-table">
-                  <thead><tr><th>Module</th><th>Coef</th><th>Note Max</th><th>Moyenne</th><th>Nb &ge; 13</th><th>% &ge; 13</th></tr></thead>
-                  <tbody>{matStats.map((m, i) => (
-                    <tr key={i}><td style={{ fontWeight: 500 }}>{m.nom}</td><td className="mono">{m.coefficient}</td><td className="mono" style={{ color: "var(--accent)" }}>{m.max !== null ? m.max.toFixed(2) : "—"}</td><td className="mono" style={{ color: m.avg !== null && m.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{m.avg !== null ? m.avg.toFixed(2) : "—"}</td><td className="mono">{m.sup13}/{m.total}</td><td className="mono" style={{ color: m.pct >= 50 ? "var(--green)" : "var(--red-tn)" }}>{m.pct}%</td></tr>
-                  ))}</tbody>
-                </table>
-              </div>
-            </div>
-            <div className="card card-padded" style={{ marginTop: 20 }}>
-              <div className="section-title" style={{ marginTop: 0 }}>Statistiques par organisme</div>
-              <table className="stats-table">
-                <thead><tr><th>Organisme</th><th>Candidats</th><th>Admis</th><th>Ajournes</th><th>Taux</th><th>Moyenne</th></tr></thead>
-                <tbody>{orgStats.map((o, i) => (
-                  <tr key={i}><td style={{ fontWeight: 700, color: "var(--accent)" }}>{o.org}</td><td className="mono">{o.total}</td><td className="mono" style={{ color: "var(--green)" }}>{o.admis}</td><td className="mono" style={{ color: "var(--red-tn)" }}>{o.total - o.admis}</td><td className="mono" style={{ color: o.taux >= 50 ? "var(--green)" : "var(--red-tn)" }}>{o.taux}%</td><td className="mono" style={{ color: o.avg !== null && o.avg >= 13 ? "var(--green)" : "var(--orange)" }}>{o.avg !== null ? o.avg.toFixed(2) : "—"}</td></tr>
-                ))}</tbody>
-              </table>
-            </div>
-          </div>
-        )}
-      </div>)}
-      {detail && (<Modal onClose={() => setDetail(null)} title="Detail des notes" width={560}>
-        {(() => { const c = candidats.find(x => x.id === detail.candidat_uuid); const iNotes = notes.filter(n => n.inscription_uuid === detail.id); return (<div>
-          <div style={{ textAlign: "center", marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 600 }}>{c ? c.prenom + " " + c.nom : "—"}</div>
-            <div style={{ fontSize: 12, color: "var(--dim)" }}>{c ? c.matricule : ""} — {c ? c.organisme_formation : ""}</div>
-            <div className="moyenne-display" style={{ background: detail.moyenne_ponderee !== null ? (Number(detail.moyenne_ponderee) >= PASS_MARK ? "rgba(46,204,113,0.1)" : "rgba(200,16,46,0.1)") : "rgba(36,99,235,0.04)", color: moyColor(detail.moyenne_ponderee), margin: "12px 0" }}>
-              {detail.moyenne_ponderee !== null ? Number(detail.moyenne_ponderee).toFixed(2) : "—"}<span style={{ fontSize: 16, fontWeight: 400, marginLeft: 8 }}>/20</span>
-            </div>
-            <ResultBadge r={detail.resultat} />
-          </div>
-          {modules.sort((a, b) => a.ordre - b.ordre).map(m => { const n = iNotes.find(x => x.matiere_uuid === m.id); return (
-            <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", fontSize: 13 }}>
-              <span>{m.nom} <span className="mono" style={{ color: "var(--accent)", fontSize: 10 }}>x{m.coefficient}</span></span>
-              <span className="mono" style={{ fontWeight: 700, color: n && n.absent ? "var(--red-tn)" : n && n.note !== null ? moyColor(n.note) : "var(--dim)" }}>{n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "—"}</span>
-            </div>); })}
-          <div style={{ textAlign: "center", marginTop: 18 }}><button className="btn btn-purple" onClick={() => { if (c) exportReleve(c, detail, iNotes, modules); }}>Telecharger PDF</button></div>
-        </div>); })()}
-      </Modal>)}
+  return (<div>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+      <button className="btn btn-sm" onClick={() => setSelSession(null)}>← Sessions</button>
+      <h2 style={{ fontSize: 18, fontWeight: 800, flex: 1 }}>{session.intitule}</h2>
+      <div className="filter-group">{["Tous", ...ORGANISMES].map(o => <button key={o} className={"filter-btn " + (orgF === o ? "active" : "")} onClick={() => setOrgF(o)}>{o}</button>)}</div>
+      <button className="btn btn-outline btn-sm" onClick={() => setShowStats(!showStats)}>{showStats ? "Tableau" : "Stats"}</button>
+      <button className="btn btn-purple btn-sm" onClick={() => exportPV(session, inscriptions, candidats, modules, notes)}>PDF PV</button>
     </div>
-  );
+
+    <div className="kpi-grid" style={{ marginBottom: 16 }}>
+      <KPI label="Candidats" value={total} color="var(--cyan)" />
+      <KPI label="Admis" value={admis} color="var(--green)" />
+      <KPI label="Ajourn\u00e9s" value={total - admis} color="var(--red-tn)" />
+      <KPI label="Taux r\u00e9ussite" value={total > 0 ? Math.round((admis / total) * 100) + "%" : "\u2014"} color="var(--green)" />
+    </div>
+
+    {showStats ? (<div>
+      <div className="section-title" style={{ marginBottom: 10 }}>Statistiques par module</div>
+      <div style={{ overflowX: "auto", marginBottom: 20 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <thead><tr style={{ background: "var(--bg)" }}>
+            <th style={{ padding: "8px", textAlign: "left" }}>Module</th>
+            <th style={{ padding: "8px", textAlign: "center" }}>Coef.</th>
+            <th style={{ padding: "8px", textAlign: "center" }}>Nb notes</th>
+            <th style={{ padding: "8px", textAlign: "center" }}>Moy. classe</th>
+            <th style={{ padding: "8px", textAlign: "center" }}>Max</th>
+            <th style={{ padding: "8px", textAlign: "center" }}>≥10</th>
+          </tr></thead>
+          <tbody>{matStats.map((ms, i) => <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
+            <td style={{ padding: "6px 8px", fontWeight: 600 }}>{ms.nom}</td>
+            <td style={{ padding: "6px", textAlign: "center" }}>x{ms.coefficient}</td>
+            <td style={{ padding: "6px", textAlign: "center" }}>{ms.total}</td>
+            <td style={{ padding: "6px", textAlign: "center", fontFamily: "var(--mono)", fontWeight: 700, color: ms.avg !== null && ms.avg >= 10 ? "var(--green-tn)" : "var(--red-tn)" }}>{ms.avg !== null ? ms.avg.toFixed(2) : "\u2014"}</td>
+            <td style={{ padding: "6px", textAlign: "center", fontFamily: "var(--mono)" }}>{ms.max !== null ? ms.max : "\u2014"}</td>
+            <td style={{ padding: "6px", textAlign: "center" }}>{ms.sup}/{ms.total}</td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+
+      <div className="section-title" style={{ marginBottom: 10 }}>Statistiques par organisme</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
+        {orgStats.map((os, i) => <div key={i} className="card" style={{ padding: 14 }}>
+          <div style={{ fontWeight: 700, marginBottom: 6 }}>{os.org}</div>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 4 }}>
+            <span>{os.admis}/{os.total} admis</span>
+            <span style={{ fontWeight: 700, color: os.taux >= 50 ? "var(--green-tn)" : "var(--red-tn)" }}>{os.taux}%</span>
+          </div>
+          {os.avg !== null && <div style={{ fontSize: 11, color: "var(--muted)" }}>Moy. classe: {os.avg.toFixed(2)}</div>}
+        </div>)}
+      </div>
+    </div>) : (
+      <div style={{ overflowX: "auto", border: "1px solid var(--border)", borderRadius: 10, background: "var(--card)" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <thead><tr style={{ background: "var(--bg)" }}>
+            <th style={{ padding: "10px 8px", textAlign: "center", width: 36 }}>#</th>
+            <th style={{ padding: "10px 8px", textAlign: "left", position: "sticky", left: 0, background: "var(--bg)", zIndex: 2, minWidth: 180 }}>Candidat</th>
+            <th style={{ padding: "10px 6px", textAlign: "center", minWidth: 70 }}>Organisme</th>
+            <th style={{ padding: "10px 6px", textAlign: "center", minWidth: 75, fontWeight: 800 }}>Moyenne</th>
+            <th style={{ padding: "10px 6px", textAlign: "center", minWidth: 85 }}>R\u00e9sultat</th>
+            <th style={{ padding: "10px 6px", textAlign: "center", minWidth: 70 }}>Actions</th>
+          </tr></thead>
+          <tbody>
+            {sI.map((ins, idx) => {
+              const cand = candidats.find(x => x.id === ins.candidat_uuid) || {};
+              const moy = ins.moyenne_ponderee;
+              const passed = moy !== null && moy !== undefined && moy >= PASS_MARK;
+              const isRachat = ins.rachat;
+              const nearPass = moy !== null && moy >= PASS_MARK - 1 && moy < PASS_MARK && !passed;
+              return <tr key={ins.id} style={{ borderBottom: "1px solid var(--border)", background: idx % 2 === 0 ? "transparent" : "rgba(36,99,235,0.015)" }}>
+                <td style={{ padding: "8px 6px", textAlign: "center", fontSize: 11, color: "var(--muted)" }}>{idx + 1}</td>
+                <td style={{ padding: "8px", position: "sticky", left: 0, background: idx % 2 === 0 ? "var(--card)" : "rgba(246,248,252,1)", zIndex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 12 }}>{cand.prenom} {cand.nom}</div>
+                  <div style={{ fontSize: 10, color: "var(--muted)" }}>{cand.cin} — {cand.matricule || ""}</div>
+                </td>
+                <td style={{ padding: "6px", textAlign: "center" }}><Badge color="var(--accent)">{cand.organisme_formation || "\u2014"}</Badge></td>
+                <td style={{ padding: "8px 6px", textAlign: "center", fontFamily: "var(--mono)", fontWeight: 800, fontSize: 15,
+                  color: moy === null || moy === undefined ? "var(--muted)" : passed ? "var(--green-tn)" : "var(--red-tn)" }}>
+                  {moy !== null && moy !== undefined ? Number(moy).toFixed(2) : "\u2014"}
+                </td>
+                <td style={{ padding: "6px", textAlign: "center" }}>
+                  {ins.resultat === "Admis" && <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: isRachat ? "rgba(234,179,8,0.12)" : "rgba(22,163,74,0.1)", color: isRachat ? "#b45309" : "var(--green-tn)" }}>{isRachat ? "RACHAT" : "ADMIS"}</span>}
+                  {ins.resultat === "Ajourne" && <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "rgba(200,16,46,0.08)", color: "var(--red-tn)" }}>AJOURN\u00c9</span>}
+                  {(!ins.resultat || ins.resultat === "En attente") && <span style={{ fontSize: 11, color: "var(--muted)" }}>En attente</span>}
+                </td>
+                <td style={{ padding: "6px", textAlign: "center" }}>
+                  <div style={{ display: "flex", gap: 4, justifyContent: "center" }}>
+                    <button className="btn btn-outline btn-sm" style={{ fontSize: 10, padding: "2px 6px" }} onClick={() => setDetail(ins)}>D\u00e9tail</button>
+                    <button className="btn btn-sm" style={{ fontSize: 10, padding: "2px 6px" }} onClick={e => { e.stopPropagation(); if(cand) exportReleve(cand, ins, notes.filter(n => n.inscription_uuid === ins.id), modules); }}>PDF</button>
+                    {nearPass && !isRachat && <button className="btn btn-sm" style={{ fontSize: 10, padding: "2px 6px", background: "rgba(234,179,8,0.1)", color: "#b45309", border: "1px solid rgba(234,179,8,0.3)" }}
+                      onClick={() => { setRachatCand(ins); setRachatMotif(""); }}>Rachat</button>}
+                  </div>
+                </td>
+              </tr>;
+            })}
+          </tbody>
+        </table>
+        {sI.length === 0 && <Empty text="Aucun r\u00e9sultat" />}
+      </div>
+    )}
+
+    {detail && (() => {
+      const cd = candidats.find(x => x.id === detail.candidat_uuid) || {};
+      const iNotes = notes.filter(n => n.inscription_uuid === detail.id);
+      return <Modal onClose={() => setDetail(null)} title={"D\u00e9tail — " + cd.prenom + " " + cd.nom} width={540}>
+        <div style={{ padding: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 12, color: "var(--muted)" }}>CIN: {cd.cin} — Matricule: {cd.matricule}</div>
+              <div style={{ fontSize: 12, color: "var(--muted)" }}>Organisme: {cd.organisme_formation}</div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 28, fontWeight: 800, fontFamily: "var(--mono)", color: detail.moyenne_ponderee >= PASS_MARK ? "var(--green-tn)" : "var(--red-tn)" }}>
+                {detail.moyenne_ponderee !== null ? Number(detail.moyenne_ponderee).toFixed(2) : "\u2014"}<span style={{ fontSize: 14, fontWeight: 400 }}>/20</span>
+              </div>
+              <ResultBadge r={detail.resultat} />
+            </div>
+          </div>
+          <div style={{ border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden" }}>
+            {sMods.map(m => {
+              const n = iNotes.find(x => x.matiere_uuid === m.id);
+              return <div key={m.id} style={{ display: "flex", justifyContent: "space-between", padding: "7px 12px", borderBottom: "1px solid var(--border)", fontSize: 12 }}>
+                <span>{m.nom} <span style={{ color: "var(--muted)" }}>x{m.coefficient}</span></span>
+                <span style={{ fontFamily: "var(--mono)", fontWeight: 700, color: n && n.absent ? "var(--red-tn)" : n && n.note !== null ? moyColor(n.note) : "var(--muted)" }}>
+                  {n && n.absent ? "ABS" : n && n.note !== null ? n.note + "/20" : "\u2014"}
+                </span>
+              </div>;
+            })}
+          </div>
+          <div style={{ display: "flex", gap: 8, marginTop: 16, justifyContent: "center" }}>
+            <button className="btn btn-purple btn-sm" onClick={() => { exportReleve(cd, detail, iNotes, modules); }}>T\u00e9l\u00e9charger relev\u00e9 PDF</button>
+          </div>
+        </div>
+      </Modal>;
+    })()}
+
+    {rachatCand && <div className="modal-overlay" onClick={() => setRachatCand(null)}>
+      <div className="modal-box" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>Rachat</h2>
+          <button className="btn-icon" onClick={() => setRachatCand(null)}>\u2715</button>
+        </div>
+        <div className="modal-body" style={{ padding: 20 }}>
+          {(() => {
+            const cd = candidats.find(x => x.id === rachatCand.candidat_uuid) || {};
+            return <div>
+              <p style={{ fontSize: 13, marginBottom: 12 }}>
+                Accorder le rachat \u00e0 <strong>{cd.prenom} {cd.nom}</strong> (moyenne: <strong style={{ color: "var(--red-tn)" }}>{Number(rachatCand.moyenne_ponderee).toFixed(2)}</strong>) ?
+              </p>
+              <div style={{ marginBottom: 12 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, display: "block", marginBottom: 4 }}>Motif du rachat :</label>
+                <textarea value={rachatMotif} onChange={e => setRachatMotif(e.target.value)}
+                  placeholder="D\u00e9cision du jury, compensation..."
+                  style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid var(--border)", fontSize: 12, minHeight: 60, resize: "vertical" }} />
+              </div>
+              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                <button className="btn btn-sm" onClick={() => setRachatCand(null)}>Annuler</button>
+                <button className="btn btn-accent btn-sm" onClick={async () => {
+                  try {
+                    await api.update("inscriptions", rachatCand.id, { resultat: "Admis", rachat: true, rachat_motif: rachatMotif || "D\u00e9cision du jury" });
+                    setRachatCand(null);
+                    reload && reload();
+                  } catch(e) { alert(e.message); }
+                }}>Confirmer le rachat</button>
+              </div>
+            </div>;
+          })()}
+        </div>
+      </div>
+    </div>}
+  </div>);
 }
+
 
 /* ===== MAIN APP ===== */
 function App() {
@@ -2015,7 +2142,7 @@ function App() {
         {tab === "sessions" && <SessionsView api={apiRef.current} sessions={sessions} inscriptions={inscriptions} candidats={candidats} notes={notes} modules={modules} planning={planning} reload={() => loadAll()} />}
         {tab === "candidats" && <CandidatsView api={apiRef.current} candidats={candidats} sessions={sessions} inscriptions={inscriptions} reload={() => loadAll()} />}
         {tab === "notes" && <NotesView api={apiRef.current} sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} modules={modules} reload={() => loadAll()} />}
-        {tab === "resultats" && <ResultatsView sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} modules={modules} />}
+        {tab === "resultats" && <ResultatsView sessions={sessions} candidats={candidats} inscriptions={inscriptions} notes={notes} modules={modules} api={apiRef.current} reload={() => loadAll()} />}
         {tab === "deliberations" && <DeliberationsView api={apiRef.current} sessions={sessions} candidats={candidats} inscriptions={inscriptions} deliberations={deliberations} reload={() => loadAll()} />}
       </main>
     </div>
